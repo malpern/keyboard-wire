@@ -125,17 +125,20 @@ def site_header(canonical: str) -> str:
     home = "" if is_root else f'<a href="{home_path}">home</a><span aria-hidden="true">·</span>'
     feed_path = relative_to_docs(canonical, "feed.xml")
     settings_path = relative_to_docs(canonical, "settings/")
+    archive_path = relative_to_docs(canonical, "archive/")
     source_path = "https://github.com/malpern/keyboard-wire"
     return f'''<header>
     <h1 class="site-title"><a href="{home_path}">malpern's keyboard wire</a></h1>
     <p class="tagline">daily mechanical keyboards, firmware &amp; tools</p>
     <p class="subscribe">
       {home}
+      <a href="{archive_path}">archive</a>
+      <span aria-hidden="true">·</span>
       <a href="{feed_path}">RSS</a>
       <span aria-hidden="true">·</span>
-      <a href="{source_path}">source</a>
-      <span aria-hidden="true">·</span>
       <a href="{settings_path}">settings</a>
+      <span aria-hidden="true">·</span>
+      <a href="{source_path}">source</a>
       {font_controls()}
     </p>
   </header>'''
@@ -258,15 +261,8 @@ def render_item(item: dict, topics_reg: dict, tags_reg: dict, *,
     if item.get("discussion_url") and item["discussion_url"] != item["url"]:
         bottom_parts.append(f'<a href="{html.escape(item["discussion_url"])}" rel="noopener" target="_blank">discuss</a>')
 
-    # Tags (utility row, secondary nav)
-    item_tags = item.get("tags") or []
-    if item_tags:
-        tags_html = "".join(
-            f'<a class="tag" href="{html.escape(rel_prefix)}tags/{html.escape(slug)}/">{html.escape(tags_reg.get(slug, {}).get("name", slug))}</a>'
-            for slug in item_tags
-        )
-        bottom_parts.append(f'<span class="tag-list">{tags_html}</span>')
-
+    # Tags hidden from item cards for now (still drive /tags/<slug>/ pages
+    # and feed the archive search index). Re-enable here later if desired.
     bottom_meta = "".join(bottom_parts) if bottom_parts else ""
     takeaway_html = f'<p class="item-takeaway">{takeaway}</p>' if takeaway else ""
 
@@ -283,10 +279,8 @@ def render_item(item: dict, topics_reg: dict, tags_reg: dict, *,
         thumb_html = ""
         item_classes = "item"
 
-    # NB: item is a <div> (not <a>) because nested anchors are invalid HTML.
-    # We use the stretched-link pattern: the title's <a> has ::before that
-    # covers the entire item, while topic/tag/discuss anchors sit on top via
-    # z-index so they remain individually clickable.
+    # Item is a <div> (not <a>) since topic/tag links inside would create
+    # invalid nested anchors. Title is the click target for the story.
     return f'''<div class="{item_classes}">
   <div class="item-body">
     <div class="item-topmeta">{top_meta}</div>
@@ -395,6 +389,248 @@ def render_browse_page(label: str, slug: str, items_with_dates: list[tuple],
 {font_script()}
 </body>
 </html>'''
+
+
+def render_archive_page(corpus: dict, topics_reg: dict, tags_reg: dict) -> str:
+    canonical = f"{SITE_URL}/archive/"
+    title = "Archive · malpern's keyboard wire"
+    desc = "Browse, filter, sort, and search the keyboard wire corpus."
+
+    # Flatten items + counts
+    flat = []
+    topic_counts: dict[str, int] = {}
+    tag_counts: dict[str, int] = {}
+    for day in corpus["days"]:
+        for it in day.get("items", []):
+            flat.append((day["date"], it))
+            for t in it.get("topics") or []:
+                topic_counts[t] = topic_counts.get(t, 0) + 1
+            for t in it.get("tags") or []:
+                tag_counts[t] = tag_counts.get(t, 0) + 1
+    flat.sort(key=lambda r: (r[0], r[1].get("score") or 0), reverse=True)
+
+    # Filter dropdown options (ordered by count desc)
+    topic_options = sorted(
+        [(slug, topics_reg[slug]["name"], topic_counts.get(slug, 0))
+         for slug in topics_reg if topic_counts.get(slug, 0) > 0],
+        key=lambda r: -r[2],
+    )
+    tag_options = sorted(
+        [(slug, tags_reg.get(slug, {}).get("name", slug), c)
+         for slug, c in tag_counts.items() if c > 0],
+        key=lambda r: -r[2],
+    )
+
+    topic_opts_html = "".join(
+        f'<option value="{html.escape(s)}">{html.escape(n)} ({c})</option>'
+        for s, n, c in topic_options
+    )
+    tag_opts_html = "".join(
+        f'<option value="{html.escape(s)}">{html.escape(n)} ({c})</option>'
+        for s, n, c in tag_options
+    )
+
+    # Suggestions for search autocomplete
+    suggestions = []
+    for slug, name, c in topic_options:
+        suggestions.append({"kind": "topic", "slug": slug, "label": name, "count": c})
+    for slug, name, c in tag_options:
+        suggestions.append({"kind": "tag", "slug": slug, "label": name, "count": c})
+
+    # Render items as compact rows (no thumbnails — archive is for scanning)
+    items_html_parts = []
+    for date, it in flat:
+        item_topics = " ".join(it.get("topics") or [])
+        item_tags = " ".join(it.get("tags") or [])
+        score = it.get("score") or 0
+        # title to display: original by default; rewritten swap is a runtime concern
+        if it.get("title_rewritten") and it.get("original_title"):
+            display_title = html.escape(it["original_title"])
+            rewritten_attr = f' data-rewritten="{html.escape(it["title"], quote=True)}"'
+        else:
+            display_title = html.escape(it["title"])
+            rewritten_attr = ""
+
+        meta_bits = [f'<time>{html.escape(fmt_date_short(date))}</time>',
+                     f'<span class="source">{html.escape(source_label(it))}</span>']
+        for ts in (it.get("topics") or [])[:2]:
+            t = topics_reg.get(ts)
+            if t:
+                meta_bits.append(f'<a href="../topics/{html.escape(ts)}/">{html.escape(t["name"])}</a>')
+        meta_html = '<span class="sep">·</span>'.join(meta_bits)
+
+        score_str = str(score) if score else ""
+        searchable = (it["title"] + " " + (it.get("takeaway") or "")).lower()
+        searchable = re.sub(r'[^a-z0-9 ]+', ' ', searchable)
+
+        url = html.escape(it["url"])
+        takeaway = html.escape(it.get("takeaway") or "")
+        takeaway_html = f'<p class="archive-takeaway">{takeaway}</p>' if takeaway else ""
+        items_html_parts.append(f'''<article class="archive-item"
+  data-date="{html.escape(date)}"
+  data-score="{html.escape(score_str)}"
+  data-topics=" {html.escape(item_topics)} "
+  data-tags=" {html.escape(item_tags)} "
+  data-search="{html.escape(searchable)}">
+  <div class="archive-meta">{meta_html}</div>
+  <h3 class="archive-title"{rewritten_attr}><a href="{url}" rel="noopener" target="_blank">{display_title}</a></h3>
+  {takeaway_html}
+</article>''')
+
+    items_html = "\n".join(items_html_parts)
+
+    suggestions_json = json.dumps(suggestions, ensure_ascii=False).replace("</", "<\\/")
+
+    return f'''{head(title, desc, canonical)}
+  {site_header(canonical)}
+  <section class="archive-page">
+    <header class="archive-header">
+      <h2 class="archive-title-page">Archive</h2>
+      <p class="archive-stats">{len(flat)} items · {len(topic_options)} topics · {len(tag_options)} tags</p>
+    </header>
+
+    <div class="archive-controls">
+      <div class="search-wrap">
+        <input type="search" id="archive-search" placeholder="Search titles, topics, tags…" autocomplete="off">
+        <ul id="search-suggest" class="search-suggest" hidden></ul>
+      </div>
+      <div class="filter-row">
+        <label class="filter-field">
+          <span>Topic</span>
+          <select id="filter-topic"><option value="">all</option>{topic_opts_html}</select>
+        </label>
+        <label class="filter-field">
+          <span>Tag</span>
+          <select id="filter-tag"><option value="">all</option>{tag_opts_html}</select>
+        </label>
+        <label class="filter-field">
+          <span>Sort</span>
+          <select id="filter-sort"><option value="date">newest</option><option value="score">top score</option></select>
+        </label>
+        <button type="button" id="filter-clear" class="filter-clear">clear</button>
+      </div>
+    </div>
+
+    <div id="archive-results" class="archive-results">
+      {items_html}
+    </div>
+    <p id="archive-empty" class="empty" hidden>No items match those filters.</p>
+  </section>
+  <footer><a href="../">home</a></footer>
+</main>
+<script>window.KW_SUGGESTIONS = {suggestions_json};</script>
+{font_script()}
+{archive_script()}
+</body>
+</html>'''
+
+
+def archive_script() -> str:
+    return '''<script>
+(function() {
+  var $ = function(id) { return document.getElementById(id); };
+  var resultsEl = $('archive-results');
+  var items = Array.from(resultsEl.querySelectorAll('.archive-item'));
+  var search = $('archive-search');
+  var topicSel = $('filter-topic');
+  var tagSel = $('filter-tag');
+  var sortSel = $('filter-sort');
+  var empty = $('archive-empty');
+  var suggest = $('search-suggest');
+  var clearBtn = $('filter-clear');
+
+  function renderSuggest(q) {
+    var ql = q.trim().toLowerCase();
+    var src = window.KW_SUGGESTIONS || [];
+    var matches = ql
+      ? src.filter(function(s) { return s.label.toLowerCase().indexOf(ql) >= 0; })
+      : src.slice(0, 12);
+    matches = matches.slice(0, 10);
+    if (!matches.length) { suggest.hidden = true; suggest.innerHTML = ''; return; }
+    suggest.innerHTML = matches.map(function(m) {
+      return '<li data-kind="' + m.kind + '" data-slug="' + m.slug + '" tabindex="-1">' +
+        '<span class="suggest-kind">' + m.kind + '</span>' +
+        '<span class="suggest-label">' + m.label + '</span>' +
+        '<span class="suggest-count">' + m.count + '</span></li>';
+    }).join('');
+    suggest.hidden = false;
+  }
+
+  function apply() {
+    var q = search.value.trim().toLowerCase();
+    var qWords = q.split(/\\s+/).filter(Boolean);
+    var topic = topicSel.value;
+    var tag = tagSel.value;
+    var visible = 0;
+    items.forEach(function(el) {
+      var hay = el.dataset.search;
+      var titleOk = qWords.every(function(w) { return hay.indexOf(w) >= 0; });
+      var topicOk = !topic || el.dataset.topics.indexOf(' ' + topic + ' ') >= 0;
+      var tagOk = !tag || el.dataset.tags.indexOf(' ' + tag + ' ') >= 0;
+      var ok = titleOk && topicOk && tagOk;
+      el.hidden = !ok;
+      if (ok) visible++;
+    });
+    empty.hidden = visible > 0;
+
+    var sortBy = sortSel.value;
+    var sorted = items.slice().sort(function(a, b) {
+      if (sortBy === 'score') {
+        return (parseInt(b.dataset.score) || 0) - (parseInt(a.dataset.score) || 0);
+      }
+      return b.dataset.date.localeCompare(a.dataset.date);
+    });
+    sorted.forEach(function(el) { resultsEl.appendChild(el); });
+  }
+
+  search.addEventListener('focus', function() { renderSuggest(search.value); });
+  search.addEventListener('input', function() { renderSuggest(search.value); apply(); });
+  search.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { search.blur(); suggest.hidden = true; }
+  });
+  document.addEventListener('click', function(e) {
+    if (!suggest.contains(e.target) && e.target !== search) {
+      suggest.hidden = true;
+    }
+  });
+
+  suggest.addEventListener('mousedown', function(e) {
+    var li = e.target.closest('li');
+    if (!li) return;
+    var kind = li.dataset.kind;
+    var slug = li.dataset.slug;
+    if (kind === 'topic') { topicSel.value = slug; }
+    else if (kind === 'tag') { tagSel.value = slug; }
+    search.value = '';
+    suggest.hidden = true;
+    apply();
+  });
+
+  topicSel.addEventListener('change', apply);
+  tagSel.addEventListener('change', apply);
+  sortSel.addEventListener('change', apply);
+  clearBtn.addEventListener('click', function() {
+    search.value = '';
+    topicSel.value = '';
+    tagSel.value = '';
+    sortSel.value = 'date';
+    suggest.hidden = true;
+    apply();
+  });
+
+  // Reuse the title-rewrite toggle on archive titles too
+  var rewriteOn;
+  try { rewriteOn = localStorage.getItem('kw-rewrite-titles') === 'on'; } catch (e) { rewriteOn = false; }
+  if (rewriteOn) {
+    document.querySelectorAll('h3.archive-title[data-rewritten]').forEach(function(el) {
+      var a = el.querySelector('a');
+      if (a) a.textContent = el.dataset.rewritten;
+    });
+  }
+
+  apply();
+})();
+</script>'''
 
 
 def render_settings_page() -> str:
@@ -687,6 +923,12 @@ def main():
     # --- settings page ---
     (DOCS / "settings").mkdir(parents=True, exist_ok=True)
     (DOCS / "settings" / "index.html").write_text(render_settings_page())
+
+    # --- archive page ---
+    (DOCS / "archive").mkdir(parents=True, exist_ok=True)
+    (DOCS / "archive" / "index.html").write_text(
+        render_archive_page(corpus, topics_reg, tags_reg)
+    )
 
     n_days = len(corpus["days"])
     n_items = sum(len(d.get("items", [])) for d in corpus["days"])

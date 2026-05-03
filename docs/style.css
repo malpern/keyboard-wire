@@ -248,9 +248,9 @@ h1.site-title a:hover {
 
 .item:last-child { border-bottom: none; }
 
-/* Stretched-link pattern: the title anchor's ::before spans the entire
-   .item so the whole row is clickable. Other anchors (topic, tag,
-   discuss) bump their z-index so they remain independently clickable. */
+/* Title is the click target. Inherit color, but underline on hover so it's
+   clearly a link on touch (where there's no hover state but tap-highlight
+   handles feedback). */
 .item-link {
   color: inherit;
   text-decoration: none;
@@ -258,28 +258,14 @@ h1.site-title a:hover {
   transition: color 0.15s ease;
 }
 
-.item-link::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-
-.item-body > *,
-.item-thumb {
-  position: relative;
-}
-
-.item-topmeta a,
-.item-meta a {
-  position: relative;
-  z-index: 1;
-}
-
-.item:hover .item-link,
+.item-link:hover,
 .item-link:focus-visible {
   color: var(--accent);
   outline: none;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
 }
 
 /* Top meta: source · topic — leads the eye to the title */
@@ -431,6 +417,224 @@ h1.site-title a:hover {
   color: var(--ink-faint);
   font-style: italic;
   font-size: 0.9375rem;
+}
+
+/* ── Archive page ────────────────────── */
+
+.archive-page { margin-top: 0.5rem; }
+
+.archive-header {
+  margin-bottom: 1.25rem;
+}
+
+.archive-title-page {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.875rem;
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.01em;
+}
+
+.archive-stats {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.archive-controls {
+  margin-bottom: 1.5rem;
+}
+
+.search-wrap {
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+
+#archive-search {
+  width: 100%;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+  padding: 0.625rem 0.875rem;
+  font: inherit;
+  font-size: 1rem;
+}
+
+#archive-search:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.search-suggest {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.search-suggest li {
+  display: grid;
+  grid-template-columns: max-content 1fr max-content;
+  gap: 0.625rem;
+  align-items: baseline;
+  padding: 0.4rem 0.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9375rem;
+}
+
+.search-suggest li:hover {
+  background: var(--rule);
+}
+
+.suggest-kind {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  background: var(--rule);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.suggest-label { color: var(--ink); }
+.suggest-count { color: var(--ink-faint); font-variant-numeric: tabular-nums; font-size: 0.8125rem; }
+
+.filter-row {
+  display: flex;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  font-weight: 500;
+}
+
+.filter-field select {
+  font: inherit;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  text-transform: none;
+  letter-spacing: 0;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  color: var(--ink);
+  border-radius: 5px;
+  font-weight: 400;
+}
+
+.filter-clear {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  padding: 0.4rem 0.625rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8125rem;
+}
+
+.filter-clear:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.archive-item {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.archive-item[hidden] { display: none; }
+
+.archive-meta {
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  margin-bottom: 0.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: baseline;
+  line-height: 1.35;
+}
+
+.archive-meta time {
+  color: var(--ink-soft);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.archive-meta .source {
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.6875rem;
+  font-weight: 500;
+}
+
+.archive-meta .sep { opacity: 0.4; }
+
+.archive-meta a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.archive-meta a:hover {
+  color: var(--accent);
+}
+
+.archive-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 1.125rem;
+  line-height: 1.25;
+  margin: 0 0 0.25rem;
+}
+
+.archive-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.archive-title a:hover,
+.archive-title a:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 2px;
+}
+
+.archive-takeaway {
+  margin: 0.25rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+  line-height: 1.4;
 }
 
 /* ── Settings page ──────────────────── */
