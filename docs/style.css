@@ -375,6 +375,141 @@ h1.site-title a:hover {
   font-weight: 500;
 }
 
+/* ── Email landing page ──────────────────────────────────── */
+
+.email-page {
+  margin-top: 0.5rem;
+}
+
+.email-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.email-meta {
+  font-size: 0.8125rem;
+  color: var(--ink-faint);
+  margin-bottom: 0.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: baseline;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.email-from {
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.email-subject {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.625rem;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.email-rewrite-note {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.email-body {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ink);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.email-body p {
+  margin: 0 0 0.875rem;
+}
+
+.email-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+}
+
+.email-body a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+  word-break: break-word;
+}
+
+.email-body a:hover { background: rgba(192, 57, 43, 0.06); }
+
+.email-body table {
+  max-width: 100%;
+  border-collapse: collapse;
+  margin: 0.75rem 0;
+}
+
+.email-body table img { width: auto; max-width: 100%; }
+
+.email-body h1, .email-body h2, .email-body h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  margin: 1.25rem 0 0.5rem;
+  line-height: 1.25;
+}
+
+.email-body h1 { font-size: 1.375rem; }
+.email-body h2 { font-size: 1.25rem; }
+.email-body h3 { font-size: 1.125rem; }
+
+.email-body ul, .email-body ol {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0 0.875rem;
+}
+
+.email-body blockquote {
+  border-left: 2px solid var(--rule);
+  padding-left: 0.875rem;
+  margin: 0.875rem 0;
+  color: var(--ink-soft);
+}
+
+.email-body div { max-width: 100% !important; }
+
+.email-body * {
+  /* sanitized HTML can't carry inline styles, so neutralize any sneaky widths */
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+.email-footer {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.8125rem;
+  color: var(--ink-faint);
+}
+
+.email-footer p { margin: 0 0 0.4rem; }
+
+.email-redaction-note {
+  font-style: italic;
+}
+
+.email-original-link a {
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.email-original-link a:hover { color: var(--accent); }
+
 /* ── Long-press popover ──────────────────────────────────── */
 
 #kw-popover {
