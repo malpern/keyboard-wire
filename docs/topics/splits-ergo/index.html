@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Splits &amp; Ergo · malpern&#x27;s keyboard wire</title>
 <meta name="description" content="All keyboard wire entries tagged Splits &amp; Ergo.">
-<link rel="stylesheet" href="../../style.css?v=1777831330">
+<link rel="stylesheet" href="../../style.css?v=1777831970">
 <link rel="alternate" type="application/rss+xml" title="Splits &amp; Ergo · malpern&#x27;s keyboard wire" href="feed.xml">
 <link rel="canonical" href="https://malpern.github.io/keyboard-wire/topics/splits-ergo/">
 <meta property="og:title" content="Splits &amp; Ergo · malpern&#x27;s keyboard wire">
@@ -205,7 +205,135 @@
     });
     syncToggles();
     refreshNavCount();
+
+    // Web Speech API — per-day playback
+    initSpeech();
   });
+
+  function initSpeech() {
+    if (!('speechSynthesis' in window)) {
+      // No support → hide play buttons
+      document.querySelectorAll('.play-day').forEach(function(b){ b.hidden = true; });
+      return;
+    }
+    var synth = window.speechSynthesis;
+    var queue = [];          // remaining utterances for current playback
+    var currentBtn = null;
+    var voicesReady = false;
+
+    function preferredVoice() {
+      var voices = synth.getVoices();
+      if (!voices.length) return null;
+      // Prefer Apple/Google premium English voices, then any en-US, then any English
+      var pickers = [
+        function(v) { return /en[-_]US/i.test(v.lang) && /(premium|enhanced|neural|samantha|nova)/i.test(v.name); },
+        function(v) { return /en[-_]US/i.test(v.lang); },
+        function(v) { return /^en/i.test(v.lang); },
+      ];
+      for (var i = 0; i < pickers.length; i++) {
+        var v = voices.find(pickers[i]);
+        if (v) return v;
+      }
+      return voices[0];
+    }
+    if (synth.onvoiceschanged !== undefined) {
+      synth.onvoiceschanged = function() { voicesReady = true; };
+    }
+
+    function clean(s) {
+      return (s || '').replace(/\s+/g, ' ').trim();
+    }
+    function buildChunks(dayEl) {
+      var num = dayEl.querySelector('.day-number');
+      var monthYear = dayEl.querySelector('.day-month-year');
+      var dateStr = clean((num ? num.textContent : '') + ' ' + (monthYear ? monthYear.textContent : ''));
+      var items = Array.from(dayEl.querySelectorAll('.item'));
+      var n = items.length;
+      var chunks = [];
+      chunks.push('Keyboard wire for ' + dateStr + '. ' + n + (n === 1 ? ' story.' : ' stories.'));
+      items.forEach(function(it, i) {
+        var src = clean((it.querySelector('.item-topmeta .source') || {}).textContent);
+        // Read whichever title is currently displayed (respects rewrite toggle)
+        var titleEl = it.querySelector('.item-title');
+        var title = clean(titleEl ? titleEl.textContent : '');
+        var take = clean((it.querySelector('.item-takeaway') || {}).textContent);
+        var line = (src ? src + '. ' : '') + title + (title.endsWith('.') ? '' : '.');
+        if (take) line += ' ' + take + (take.endsWith('.') ? '' : '.');
+        chunks.push(line);
+      });
+      return chunks;
+    }
+
+    function setBtnState(btn, state) {
+      if (!btn) return;
+      btn.classList.toggle('playing', state === 'playing');
+      btn.classList.toggle('paused', state === 'paused');
+      btn.setAttribute('aria-label',
+        state === 'playing' ? 'Pause' : (state === 'paused' ? 'Resume' : "Play this day's stories")
+      );
+    }
+
+    function stopAll() {
+      queue = [];
+      synth.cancel();
+      setBtnState(currentBtn, 'idle');
+      currentBtn = null;
+    }
+
+    function speakNext(btn) {
+      if (queue.length === 0) {
+        setBtnState(btn, 'idle');
+        currentBtn = null;
+        return;
+      }
+      var text = queue.shift();
+      var u = new SpeechSynthesisUtterance(text);
+      var v = preferredVoice();
+      if (v) u.voice = v;
+      u.rate = 1.0;
+      u.pitch = 1.0;
+      u.onend = function() { speakNext(btn); };
+      u.onerror = function() { speakNext(btn); };
+      synth.speak(u);
+    }
+
+    document.addEventListener('click', function(e) {
+      var btn = e.target.closest('.play-day');
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Same button → toggle pause/resume or stop
+      if (btn === currentBtn) {
+        if (synth.paused) {
+          synth.resume();
+          setBtnState(btn, 'playing');
+        } else if (synth.speaking) {
+          synth.pause();
+          setBtnState(btn, 'paused');
+        } else {
+          stopAll();
+        }
+        return;
+      }
+
+      // Different day → stop current, start new
+      stopAll();
+      var dayEl = btn.closest('.day');
+      if (!dayEl) return;
+      queue = buildChunks(dayEl);
+      currentBtn = btn;
+      setBtnState(btn, 'playing');
+      speakNext(btn);
+    });
+
+    // Best-effort warm-up: trigger getVoices() on first user interaction so iOS
+    // populates the voice list before play.
+    document.addEventListener('touchstart', function once() {
+      synth.getVoices();
+      document.removeEventListener('touchstart', once);
+    }, { once: true, passive: true });
+  }
 })();
 </script>
 </body>

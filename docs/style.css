@@ -168,9 +168,58 @@ h1.site-title a:hover {
 
 .day-header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.625rem;
   margin-bottom: 0.625rem;
+}
+
+.day-header .day-number,
+.day-header .day-month-year {
+  align-self: baseline;
+}
+
+/* Per-day play button (Web Speech API) */
+.play-day {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink-faint);
+  width: 1.875rem;
+  height: 1.875rem;
+  min-width: 1.875rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  padding: 0;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.play-day:hover,
+.play-day:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+  outline: none;
+}
+
+.play-day.playing {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.play-day .icon-pause { display: none; }
+.play-day.playing .icon-play { display: none; }
+.play-day.playing .icon-pause { display: inline; }
+.play-day.paused .icon-play { display: inline; }
+.play-day.paused .icon-pause { display: none; }
+
+.play-day.paused {
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .day-number {

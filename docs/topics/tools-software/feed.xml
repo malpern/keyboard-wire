@@ -6,7 +6,7 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/topics/tools-software/feed.xml" rel="self" type="application/rss+xml"/>
   <description>Software utilities relevant to keyboard users: launchers, shortcut managers, dotfile/config tools, productivity tools, programming tooling adjacent to the hobby.</description>
   <language>en-us</language>
-  <lastBuildDate>Sun, 03 May 2026 18:02:10 +0000</lastBuildDate>
+  <lastBuildDate>Sun, 03 May 2026 18:12:50 +0000</lastBuildDate>
   <item>
     <title>Tooling discussion for debugging global shortcut conflicts on macOS</title>
     <link>https://www.reddit.com/r/MacOSApps/comments/1t27dar/macos_utilities_for_identifying_apps_hijacking/</link>
