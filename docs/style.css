@@ -213,9 +213,8 @@ h1.site-title a:hover {
 /* ── Items ───────────────────────────── */
 
 .item {
-  display: block;
+  position: relative;
   padding: 0.625rem 0 0.75rem;
-  text-decoration: none;
   color: inherit;
   border-bottom: 1px solid var(--rule);
 }
@@ -249,8 +248,38 @@ h1.site-title a:hover {
 
 .item:last-child { border-bottom: none; }
 
-.item:hover .item-title {
+/* Stretched-link pattern: the title anchor's ::before spans the entire
+   .item so the whole row is clickable. Other anchors (topic, tag,
+   discuss) bump their z-index so they remain independently clickable. */
+.item-link {
+  color: inherit;
+  text-decoration: none;
+  background: none;
+  transition: color 0.15s ease;
+}
+
+.item-link::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.item-body > *,
+.item-thumb {
+  position: relative;
+}
+
+.item-topmeta a,
+.item-meta a {
+  position: relative;
+  z-index: 1;
+}
+
+.item:hover .item-link,
+.item-link:focus-visible {
   color: var(--accent);
+  outline: none;
 }
 
 /* Top meta: source · topic — leads the eye to the title */

@@ -272,7 +272,6 @@ def render_item(item: dict, topics_reg: dict, tags_reg: dict, *,
 
     image = item.get("image")
     if image:
-        # rel_prefix handles topic/tag pages where /img/ is at root
         img_src = f"{rel_prefix}{image}" if rel_prefix else image
         thumb_html = (
             f'<div class="item-thumb" '
@@ -284,15 +283,19 @@ def render_item(item: dict, topics_reg: dict, tags_reg: dict, *,
         thumb_html = ""
         item_classes = "item"
 
-    return f'''<a class="{item_classes}" href="{url}" rel="noopener" target="_blank">
+    # NB: item is a <div> (not <a>) because nested anchors are invalid HTML.
+    # We use the stretched-link pattern: the title's <a> has ::before that
+    # covers the entire item, while topic/tag/discuss anchors sit on top via
+    # z-index so they remain individually clickable.
+    return f'''<div class="{item_classes}">
   <div class="item-body">
     <div class="item-topmeta">{top_meta}</div>
-    <h3 class="item-title"{rewritten_attr}>{display_title}</h3>
+    <h3 class="item-title"{rewritten_attr}><a class="item-link" href="{url}" rel="noopener" target="_blank">{display_title}</a></h3>
     {takeaway_html}
     <div class="item-meta">{bottom_meta}</div>
   </div>
   {thumb_html}
-</a>'''
+</div>'''
 
 
 def render_section(label: str, items: list[dict], topics_reg: dict, tags_reg: dict, *,
