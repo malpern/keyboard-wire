@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ide · malpern&#x27;s keyboard wire</title>
 <meta name="description" content="All keyboard wire entries tagged Ide.">
-<link rel="stylesheet" href="../../style.css?v=1777828719">
+<link rel="stylesheet" href="../../style.css?v=1777829233">
 <link rel="alternate" type="application/rss+xml" title="Ide · malpern&#x27;s keyboard wire" href="feed.xml">
 <link rel="canonical" href="https://malpern.github.io/keyboard-wire/tags/ide/">
 <meta property="og:title" content="Ide · malpern&#x27;s keyboard wire">
@@ -23,6 +23,8 @@
       <a href="../../feed.xml">RSS</a>
       <span aria-hidden="true">·</span>
       <a href="https://github.com/malpern/keyboard-wire">source</a>
+      <span aria-hidden="true">·</span>
+      <a href="../../settings/">settings</a>
       <span class="font-controls" role="group" aria-label="Text size">
         <button type="button" id="font-down" aria-label="smaller" title="Smaller text">A−</button>
         <button type="button" id="font-up" aria-label="larger" title="Larger text">A+</button>
@@ -71,36 +73,60 @@
 </main>
 <script>
 (function() {
-  var KEY = 'kw-font-scale';
-  var MIN = 0.85, MAX = 1.6, STEP = 0.1;
+  // Font scale (persisted)
+  var FK = 'kw-font-scale', MIN = 0.85, MAX = 1.6, STEP = 0.1;
   var root = document.documentElement;
-  function clamp(v) { return Math.max(MIN, Math.min(MAX, Math.round(v * 100) / 100)); }
-  function read() {
-    try {
-      var v = parseFloat(localStorage.getItem(KEY));
-      return isNaN(v) ? 1 : clamp(v);
-    } catch (e) { return 1; }
+  function clampScale(v) { return Math.max(MIN, Math.min(MAX, Math.round(v * 100) / 100)); }
+  function readScale() {
+    try { var v = parseFloat(localStorage.getItem(FK)); return isNaN(v) ? 1 : clampScale(v); }
+    catch (e) { return 1; }
   }
-  function write(v) { try { localStorage.setItem(KEY, String(v)); } catch (e) {} }
-  function apply(v) {
+  function writeScale(v) { try { localStorage.setItem(FK, String(v)); } catch (e) {} }
+  function applyScale(v) {
     root.style.setProperty('--font-scale', String(v));
     var down = document.getElementById('font-down');
     var up = document.getElementById('font-up');
     if (down) down.disabled = v <= MIN + 0.001;
     if (up) up.disabled = v >= MAX - 0.001;
   }
-  var current = read();
-  apply(current);
+  var scale = readScale();
+  applyScale(scale);
+
+  // Title rewriting toggle (persisted, default off — show originals)
+  var RK = 'kw-rewrite-titles';
+  function readRewrite() {
+    try { return localStorage.getItem(RK) === 'on'; } catch (e) { return false; }
+  }
+  function writeRewrite(on) {
+    try { localStorage.setItem(RK, on ? 'on' : 'off'); } catch (e) {}
+  }
+  function applyRewrite(on) {
+    document.querySelectorAll('h3.item-title[data-rewritten]').forEach(function(el) {
+      if (!el.dataset.original) el.dataset.original = el.textContent;
+      el.textContent = on ? el.dataset.rewritten : el.dataset.original;
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
-    apply(current);
+    applyScale(scale);
     var down = document.getElementById('font-down');
     var up = document.getElementById('font-up');
     if (down) down.addEventListener('click', function() {
-      current = clamp(current - STEP); apply(current); write(current);
+      scale = clampScale(scale - STEP); applyScale(scale); writeScale(scale);
     });
     if (up) up.addEventListener('click', function() {
-      current = clamp(current + STEP); apply(current); write(current);
+      scale = clampScale(scale + STEP); applyScale(scale); writeScale(scale);
     });
+
+    applyRewrite(readRewrite());
+    var rewrite = document.getElementById('rewrite-toggle');
+    if (rewrite) {
+      rewrite.checked = readRewrite();
+      rewrite.addEventListener('change', function() {
+        writeRewrite(rewrite.checked);
+        applyRewrite(rewrite.checked);
+      });
+    }
   });
 })();
 </script>

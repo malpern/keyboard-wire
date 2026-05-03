@@ -119,17 +119,21 @@ def font_controls() -> str:
 
 def site_header(canonical: str) -> str:
     is_root = canonical == f"{SITE_URL}/"
-    home = "" if is_root else f'<a href="{relative_to_docs(canonical, "")}">home</a><span aria-hidden="true">·</span>'
+    home_path = relative_to_docs(canonical, "")
+    home = "" if is_root else f'<a href="{home_path}">home</a><span aria-hidden="true">·</span>'
     feed_path = relative_to_docs(canonical, "feed.xml")
+    settings_path = relative_to_docs(canonical, "settings/")
     source_path = "https://github.com/malpern/keyboard-wire"
     return f'''<header>
-    <h1 class="site-title"><a href="{relative_to_docs(canonical, "")}">malpern's keyboard wire</a></h1>
+    <h1 class="site-title"><a href="{home_path}">malpern's keyboard wire</a></h1>
     <p class="tagline">daily mechanical keyboards, firmware &amp; tools</p>
     <p class="subscribe">
       {home}
       <a href="{feed_path}">RSS</a>
       <span aria-hidden="true">·</span>
       <a href="{source_path}">source</a>
+      <span aria-hidden="true">·</span>
+      <a href="{settings_path}">settings</a>
       {font_controls()}
     </p>
   </header>'''
@@ -148,36 +152,60 @@ def site_footer() -> str:
 def font_script() -> str:
     return '''<script>
 (function() {
-  var KEY = 'kw-font-scale';
-  var MIN = 0.85, MAX = 1.6, STEP = 0.1;
+  // Font scale (persisted)
+  var FK = 'kw-font-scale', MIN = 0.85, MAX = 1.6, STEP = 0.1;
   var root = document.documentElement;
-  function clamp(v) { return Math.max(MIN, Math.min(MAX, Math.round(v * 100) / 100)); }
-  function read() {
-    try {
-      var v = parseFloat(localStorage.getItem(KEY));
-      return isNaN(v) ? 1 : clamp(v);
-    } catch (e) { return 1; }
+  function clampScale(v) { return Math.max(MIN, Math.min(MAX, Math.round(v * 100) / 100)); }
+  function readScale() {
+    try { var v = parseFloat(localStorage.getItem(FK)); return isNaN(v) ? 1 : clampScale(v); }
+    catch (e) { return 1; }
   }
-  function write(v) { try { localStorage.setItem(KEY, String(v)); } catch (e) {} }
-  function apply(v) {
+  function writeScale(v) { try { localStorage.setItem(FK, String(v)); } catch (e) {} }
+  function applyScale(v) {
     root.style.setProperty('--font-scale', String(v));
     var down = document.getElementById('font-down');
     var up = document.getElementById('font-up');
     if (down) down.disabled = v <= MIN + 0.001;
     if (up) up.disabled = v >= MAX - 0.001;
   }
-  var current = read();
-  apply(current);
+  var scale = readScale();
+  applyScale(scale);
+
+  // Title rewriting toggle (persisted, default off — show originals)
+  var RK = 'kw-rewrite-titles';
+  function readRewrite() {
+    try { return localStorage.getItem(RK) === 'on'; } catch (e) { return false; }
+  }
+  function writeRewrite(on) {
+    try { localStorage.setItem(RK, on ? 'on' : 'off'); } catch (e) {}
+  }
+  function applyRewrite(on) {
+    document.querySelectorAll('h3.item-title[data-rewritten]').forEach(function(el) {
+      if (!el.dataset.original) el.dataset.original = el.textContent;
+      el.textContent = on ? el.dataset.rewritten : el.dataset.original;
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
-    apply(current);
+    applyScale(scale);
     var down = document.getElementById('font-down');
     var up = document.getElementById('font-up');
     if (down) down.addEventListener('click', function() {
-      current = clamp(current - STEP); apply(current); write(current);
+      scale = clampScale(scale - STEP); applyScale(scale); writeScale(scale);
     });
     if (up) up.addEventListener('click', function() {
-      current = clamp(current + STEP); apply(current); write(current);
+      scale = clampScale(scale + STEP); applyScale(scale); writeScale(scale);
     });
+
+    applyRewrite(readRewrite());
+    var rewrite = document.getElementById('rewrite-toggle');
+    if (rewrite) {
+      rewrite.checked = readRewrite();
+      rewrite.addEventListener('change', function() {
+        writeRewrite(rewrite.checked);
+        applyRewrite(rewrite.checked);
+      });
+    }
   });
 })();
 </script>'''
@@ -191,7 +219,14 @@ def render_item(item: dict, topics_reg: dict, tags_reg: dict, *,
     page = 'day' | 'topic' | 'tag'  — affects which date/meta is shown.
     rel_prefix = path prefix from current page to docs root, e.g., '../../' for /topics/<slug>/.
     """
-    title = html.escape(item["title"])
+    # Default to ORIGINAL title; rewritten value rides in a data attribute,
+    # JS swaps based on the user's settings toggle (default off).
+    if item.get("title_rewritten") and item.get("original_title"):
+        display_title = html.escape(item["original_title"])
+        rewritten_attr = f' data-rewritten="{html.escape(item["title"], quote=True)}"'
+    else:
+        display_title = html.escape(item["title"])
+        rewritten_attr = ""
     url = html.escape(item["url"])
     takeaway = html.escape(item.get("takeaway") or "")
 
@@ -250,7 +285,7 @@ def render_item(item: dict, topics_reg: dict, tags_reg: dict, *,
     return f'''<a class="{item_classes}" href="{url}" rel="noopener" target="_blank">
   <div class="item-body">
     <div class="item-topmeta">{top_meta}</div>
-    <h3 class="item-title">{title}</h3>
+    <h3 class="item-title"{rewritten_attr}>{display_title}</h3>
     {takeaway_html}
     <div class="item-meta">{bottom_meta}</div>
   </div>
@@ -351,6 +386,111 @@ def render_browse_page(label: str, slug: str, items_with_dates: list[tuple],
     <a href="../../tags/">tags</a>
     <a href="feed.xml">RSS</a>
   </footer>
+</main>
+{font_script()}
+</body>
+</html>'''
+
+
+def render_settings_page() -> str:
+    canonical = f"{SITE_URL}/settings/"
+    title = "Settings · malpern's keyboard wire"
+    desc = "Display options and source pipelines for malpern's keyboard wire."
+
+    sources = [
+        {
+            "name": "Hacker News",
+            "schedule": "Daily, 5:02 PT",
+            "model": "Local Qwen3.6 (35B-a3b) on Ollama",
+            "description": (
+                "Searches the Hacker News Algolia API for stories matching a curated "
+                "list of mechanical-keyboard / firmware / tooling terms (mechanical keyboard, "
+                "keyboard, keycap, cherry mx, QMK, ZMK, KMK, split keyboard, Karabiner, "
+                "Raycast, kanata, key remapping, keyboard firmware) over the last 24h. "
+                "Local Qwen3.6 filters out false positives (piano keyboards, generic 'shortcut' "
+                "noise) using a strict prompt with worked examples."
+            ),
+            "endpoints": [
+                "https://hn.algolia.com/api/v1/search",
+            ],
+            "label": "hn",
+        },
+        {
+            "name": "Reddit",
+            "schedule": "Daily, 5:03 PT",
+            "model": "Local Qwen3.6 (35B-a3b) on Ollama",
+            "description": (
+                "Scans r/olkb, r/zmk, r/MechanicalKeyboards, r/ErgoMechKeyboards, r/KeyboardLayouts "
+                "for new posts in the last 24h. Also runs Reddit search for kanata-related queries "
+                "(jtroo kanata, key remapping software). Filters by upvotes and "
+                "comment count to skip low-engagement posts; always includes kanata-tagged items "
+                "regardless of engagement."
+            ),
+            "endpoints": [
+                "https://www.reddit.com/r/<sub>/new/.json",
+                "https://www.reddit.com/search.json?q=<query>",
+            ],
+            "label": "reddit",
+        },
+        {
+            "name": "Gmail (Keyboard label)",
+            "schedule": "Daily, 5:04 PT",
+            "model": "Local Qwen3.6 (35B-a3b) on Ollama",
+            "description": (
+                "Pulls messages from the personal Gmail \"Keyboard\" label (and sublabels like "
+                "Keyboard/Tech) from the last 24h. Reddit notification emails are filtered out "
+                "to avoid duplicating the Reddit pipeline. For each remaining email, Qwen "
+                "extracts the primary article link, a one-line takeaway, and a clean title from "
+                "the body — turning vendor newsletters and indie keyboard blogs into wire items."
+            ),
+            "endpoints": [
+                "gog gmail search -a malpern@gmail.com -j 'label:Keyboard newer_than:1d'",
+            ],
+            "label": "email",
+        },
+    ]
+
+    sources_html = ""
+    for s in sources:
+        endpoints_html = "".join(
+            f'<li><code>{html.escape(e)}</code></li>' for e in s.get("endpoints", [])
+        )
+        sources_html += f'''
+    <article class="source-card">
+      <header class="source-card-header">
+        <span class="source-card-label">{html.escape(s["label"])}</span>
+        <h3 class="source-card-name">{html.escape(s["name"])}</h3>
+      </header>
+      <dl class="source-card-meta">
+        <dt>Schedule</dt><dd>{html.escape(s["schedule"])}</dd>
+        <dt>Model</dt><dd>{html.escape(s["model"])}</dd>
+      </dl>
+      <p class="source-card-desc">{html.escape(s["description"])}</p>
+      <ul class="source-card-endpoints">{endpoints_html}</ul>
+    </article>'''
+
+    return f'''{head(title, desc, canonical)}
+  {site_header(canonical)}
+  <section class="settings">
+    <h2 class="settings-section-label">Display</h2>
+    <div class="setting-row">
+      <label class="toggle">
+        <input type="checkbox" id="rewrite-toggle">
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span class="toggle-label">
+          <strong>Use rewritten titles</strong>
+          <small>When off (default), titles appear as originally posted on HN, Reddit, or in your inbox.
+          When on, sensational or vague titles are rewritten in a Techmeme-style factual form by a local model.
+          Original titles are always preserved and recoverable.</small>
+        </span>
+      </label>
+    </div>
+
+    <h2 class="settings-section-label">Sources</h2>
+    <div class="source-cards">{sources_html}
+    </div>
+  </section>
+  <footer><a href="../">home</a></footer>
 </main>
 {font_script()}
 </body>
@@ -538,6 +678,10 @@ def main():
     )
     (DOCS / "tags").mkdir(parents=True, exist_ok=True)
     (DOCS / "tags" / "index.html").write_text(render_directory("Tags", "tag", tag_dir_entries))
+
+    # --- settings page ---
+    (DOCS / "settings").mkdir(parents=True, exist_ok=True)
+    (DOCS / "settings" / "index.html").write_text(render_settings_page())
 
     n_days = len(corpus["days"])
     n_items = sum(len(d.get("items", [])) for d in corpus["days"])

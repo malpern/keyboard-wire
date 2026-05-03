@@ -400,6 +400,191 @@ h1.site-title a:hover {
   font-size: 0.9375rem;
 }
 
+/* ── Settings page ──────────────────── */
+
+.settings {
+  margin-top: 1rem;
+}
+
+.settings-section-label {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
+  margin: 2.5rem 0 1.25rem;
+  color: var(--ink);
+}
+
+.settings-section-label:first-child {
+  margin-top: 0;
+}
+
+.setting-row {
+  padding: 1rem 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 1rem;
+}
+
+.toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toggle-track {
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 2.75rem;
+  height: 1.625rem;
+  border-radius: 999px;
+  background: var(--rule);
+  position: relative;
+  transition: background 0.18s ease;
+  margin-top: 0.125rem;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  transition: transform 0.18s ease;
+}
+
+.toggle input:checked ~ .toggle-track {
+  background: var(--accent);
+}
+
+.toggle input:checked ~ .toggle-track .toggle-thumb {
+  transform: translateX(1.125rem);
+}
+
+.toggle input:focus-visible ~ .toggle-track {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.toggle-label {
+  flex: 1 1 auto;
+}
+
+.toggle-label strong {
+  display: block;
+  font-weight: 600;
+  font-size: 1.0625rem;
+  margin-bottom: 0.25rem;
+  color: var(--ink);
+}
+
+.toggle-label small {
+  display: block;
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* Source cards */
+
+.source-cards {
+  display: grid;
+  gap: 1rem;
+}
+
+.source-card {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 1.125rem 1.25rem 1.25rem;
+}
+
+.source-card-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.625rem;
+  margin-bottom: 0.625rem;
+}
+
+.source-card-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  background: var(--rule);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.source-card-name {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin: 0;
+  color: var(--ink);
+}
+
+.source-card-meta {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 0.875rem;
+  margin: 0.5rem 0 0.875rem;
+  font-size: 0.875rem;
+}
+
+.source-card-meta dt {
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  align-self: center;
+}
+
+.source-card-meta dd {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.source-card-desc {
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin: 0 0 0.75rem;
+}
+
+.source-card-endpoints {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.8125rem;
+}
+
+.source-card-endpoints li {
+  margin: 0.25rem 0;
+  word-break: break-all;
+}
+
+.source-card-endpoints code {
+  background: var(--rule);
+  color: var(--ink);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Menlo', monospace;
+  font-size: 0.8125rem;
+}
+
 footer {
   margin-top: 6rem;
   padding-top: 2rem;

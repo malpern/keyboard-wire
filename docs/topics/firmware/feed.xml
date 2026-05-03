@@ -6,7 +6,7 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/topics/firmware/feed.xml" rel="self" type="application/rss+xml"/>
   <description>On-board keyboard firmware: QMK, ZMK, KMK, custom firmware development, matrix scanning, encoders, RGB, BLE, controllers.</description>
   <language>en-us</language>
-  <lastBuildDate>Sun, 03 May 2026 17:20:16 +0000</lastBuildDate>
+  <lastBuildDate>Sun, 03 May 2026 17:27:13 +0000</lastBuildDate>
   <item>
     <title>QMK matrix implementation can be used as a custom lite matrix</title>
     <link>https://www.reddit.com/r/olkb/comments/1t25p4v/how_to_use_qmks_matrix_implementation_as_a_custom/</link>
