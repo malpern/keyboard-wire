@@ -7,7 +7,7 @@
       "items": [
         {
           "id": "reddit-1t221l1",
-          "title": "Levels54 is now fully open source!",
+          "title": "Levels54 open-sources split 54-key dual-trackball keyboard files",
           "url": "https://www.reddit.com/r/ErgoMechKeyboards/comments/1t221l1/levels54_is_now_fully_open_source/",
           "discussion_url": "https://www.reddit.com/r/ErgoMechKeyboards/comments/1t221l1/levels54_is_now_fully_open_source/",
           "source": "reddit",
@@ -24,11 +24,15 @@
             "open-source",
             "split-keyboard",
             "pcb-design"
-          ]
+          ],
+          "image": "img/reddit-1t221l1.jpg",
+          "original_title": "Levels54 is now fully open source!",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Exclamation mark and sensational tone"
         },
         {
           "id": "reddit-1t27uj6",
-          "title": "List prices on many websites are borderline false advertising",
+          "title": "Reddit users discuss Shopify configuration issues causing misleading kit pricing",
           "url": "https://www.reddit.com/r/MechanicalKeyboards/comments/1t27uj6/list_prices_on_many_websites_are_borderline_false/",
           "discussion_url": "https://www.reddit.com/r/MechanicalKeyboards/comments/1t27uj6/list_prices_on_many_websites_are_borderline_false/",
           "source": "reddit",
@@ -44,11 +48,15 @@
           "tags": [
             "pricing",
             "vendor-practices"
-          ]
+          ],
+          "image": "img/reddit-1t27uj6.jpg",
+          "original_title": "List prices on many websites are borderline false advertising",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Opinionated phrasing 'borderline false advertising' replaced with factual description of community discussion"
         },
         {
           "id": "reddit-1t25p4v",
-          "title": "How to use QMK's matrix implementation as a custom lite matrix?",
+          "title": "QMK matrix implementation can be used as a custom lite matrix",
           "url": "https://www.reddit.com/r/olkb/comments/1t25p4v/how_to_use_qmks_matrix_implementation_as_a_custom/",
           "discussion_url": "https://www.reddit.com/r/olkb/comments/1t25p4v/how_to_use_qmks_matrix_implementation_as_a_custom/",
           "source": "reddit",
@@ -64,11 +72,15 @@
             "qmk",
             "matrix-scanning",
             "custom-firmware"
-          ]
+          ],
+          "image": "img/reddit-1t25p4v.jpg",
+          "original_title": "How to use QMK's matrix implementation as a custom lite matrix?",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Rewrites instructional title to factual statement about capability"
         },
         {
           "id": "reddit-1t27dar",
-          "title": "macOS Utilities for Identifying Apps Hijacking Global Keyboard Shortcuts?",
+          "title": "Tooling discussion for debugging global shortcut conflicts on macOS",
           "url": "https://www.reddit.com/r/MacOSApps/comments/1t27dar/macos_utilities_for_identifying_apps_hijacking/",
           "discussion_url": "https://www.reddit.com/r/MacOSApps/comments/1t27dar/macos_utilities_for_identifying_apps_hijacking/",
           "source": "reddit",
@@ -83,11 +95,14 @@
           "tags": [
             "shortcut-manager",
             "macos-utilities"
-          ]
+          ],
+          "original_title": "macOS Utilities for Identifying Apps Hijacking Global Keyboard Shortcuts?",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Vague question format missing the subject"
         },
         {
           "id": "hn-47986143",
-          "title": "No Code Reviews by Default",
+          "title": "Raycast ships without mandatory code reviews by default",
           "url": "https://www.raycast.com/blog/no-code-reviews-by-default",
           "discussion_url": "https://news.ycombinator.com/item?id=47986143",
           "source": "hn",
@@ -102,7 +117,10 @@
           "tags": [
             "open-source",
             "macos-utilities"
-          ]
+          ],
+          "original_title": "No Code Reviews by Default",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Vague phrasing and missing subject clarity"
         }
       ]
     },
@@ -125,7 +143,8 @@
           ],
           "tags": [
             "macos-utilities"
-          ]
+          ],
+          "image": "img/hn-47980086.jpg"
         },
         {
           "id": "hn-47986143",
@@ -169,7 +188,8 @@
             "open-source",
             "ide",
             "mobile-development"
-          ]
+          ],
+          "image": "img/hn-47968964.jpg"
         },
         {
           "id": "hn-47962807",
@@ -210,7 +230,8 @@
             "macos-utilities",
             "linux-utilities",
             "windows-utilities"
-          ]
+          ],
+          "image": "img/hn-47964630.jpg"
         },
         {
           "id": "reddit-1t04v38",
@@ -232,7 +253,8 @@
             "qmk",
             "iso-layout",
             "diy-build"
-          ]
+          ],
+          "image": "img/reddit-1t04v38.jpg"
         },
         {
           "id": "reddit-1szvxl1",
@@ -252,11 +274,12 @@
           "tags": [
             "pcb-design",
             "diy-build"
-          ]
+          ],
+          "image": "img/reddit-1szvxl1.jpg"
         },
         {
           "id": "reddit-1t0cw5z",
-          "title": "You may not like it, but THIS is peak split keyboard",
+          "title": "Reddit post showcases split keyboard build",
           "url": "https://www.reddit.com/r/ErgoMechKeyboards/comments/1t0cw5z/you_may_not_like_it_but_this_is_peak_split_keyboard/",
           "discussion_url": "https://www.reddit.com/r/ErgoMechKeyboards/comments/1t0cw5z/you_may_not_like_it_but_this_is_peak_split_keyboard/",
           "source": "reddit",
@@ -272,11 +295,15 @@
           "tags": [
             "split-keyboard",
             "diy-build"
-          ]
+          ],
+          "image": "img/reddit-1t0cw5z.jpg",
+          "original_title": "You may not like it, but THIS is peak split keyboard",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Contains sensational adjectives and subjective opinion"
         },
         {
           "id": "reddit-1szukel",
-          "title": "Built the keyboard — what do you use for a pointing device?",
+          "title": "r/ErgoMechKeyboards discussion on pointing devices for split/ZMK setups",
           "url": "https://www.reddit.com/r/ErgoMechKeyboards/comments/1szukel/built_the_keyboard_what_do_you_use_for_a_pointing/",
           "discussion_url": "https://www.reddit.com/r/ErgoMechKeyboards/comments/1szukel/built_the_keyboard_what_do_you_use_for_a_pointing/",
           "source": "reddit",
@@ -292,7 +319,11 @@
           "tags": [
             "split-keyboard",
             "zmk"
-          ]
+          ],
+          "image": "img/reddit-1szukel.jpg",
+          "original_title": "Built the keyboard — what do you use for a pointing device?",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Vague question format with curiosity gap"
         }
       ]
     },
@@ -316,7 +347,8 @@
           "tags": [
             "split-keyboard",
             "diy-build"
-          ]
+          ],
+          "image": "img/hn-47815377.jpg"
         },
         {
           "id": "hn-47813885",
@@ -356,7 +388,8 @@
             "open-source",
             "qmk",
             "hotswap"
-          ]
+          ],
+          "image": "img/reddit-1sou3ek.jpg"
         },
         {
           "id": "reddit-1sowxuy",
@@ -379,7 +412,7 @@
         },
         {
           "id": "reddit-1cqbc5r",
-          "title": "Connecting Issues",
+          "title": "ZMK users troubleshoot Supermini MCU connectivity issues",
           "url": "https://www.reddit.com/r/zmk/comments/1cqbc5r/connecting_issues/",
           "discussion_url": "https://www.reddit.com/r/zmk/comments/1cqbc5r/connecting_issues/",
           "source": "reddit",
@@ -396,11 +429,14 @@
             "zmk",
             "diy-build",
             "custom-firmware"
-          ]
+          ],
+          "original_title": "Connecting Issues",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Vague headline missing subject"
         },
         {
           "id": "reddit-1sor9cd",
-          "title": "My first split keyboard: Keyball61",
+          "title": "Keyball61 DIY split keyboard build using Remap",
           "url": "https://www.reddit.com/r/ErgoMechKeyboards/comments/1sor9cd",
           "discussion_url": "https://www.reddit.com/r/ErgoMechKeyboards/comments/1sor9cd",
           "source": "reddit",
@@ -417,7 +453,11 @@
             "split-keyboard",
             "diy-build",
             "remap"
-          ]
+          ],
+          "image": "img/reddit-1sor9cd.jpg",
+          "original_title": "My first split keyboard: Keyball61",
+          "title_rewritten": true,
+          "title_rewrite_reason": "First-person framing and vague subject"
         }
       ]
     },
@@ -442,11 +482,12 @@
             "keycap-design",
             "3d-modeling",
             "visualizer"
-          ]
+          ],
+          "image": "img/hn-47805128.jpg"
         },
         {
           "id": "reddit-1sno4yk",
-          "title": "Is it possible to make holding space shift and I want to rebind my ctrl with alt",
+          "title": "User asks how to remap space to shift and ctrl to alt in Kanata",
           "url": "https://www.reddit.com/r/KeyboardLayouts/comments/1sno4yk/is_it_possible_to_make_holding_space_shift_and_i/",
           "discussion_url": "https://www.reddit.com/r/KeyboardLayouts/comments/1sno4yk/is_it_possible_to_make_holding_space_shift_and_i/",
           "source": "reddit",
@@ -462,11 +503,14 @@
             "kanata",
             "home-row-mods",
             "key-remapping"
-          ]
+          ],
+          "original_title": "Is it possible to make holding space shift and I want to rebind my ctrl with alt",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Vague question format rewritten to factual summary of user inquiry"
         },
         {
           "id": "reddit-1sntkxb",
-          "title": "Marshmellow UI goes wireless!",
+          "title": "Marshmellow UI v0.6.4 adds wireless/Bluetooth and mobile support",
           "url": "https://www.reddit.com/r/efogtech/comments/1sntkxb/marshmellow_ui_goes_wireless/",
           "discussion_url": "https://www.reddit.com/r/efogtech/comments/1sntkxb/marshmellow_ui_goes_wireless/",
           "source": "reddit",
@@ -481,7 +525,11 @@
           "tags": [
             "mobile-development",
             "open-source"
-          ]
+          ],
+          "image": "img/reddit-1sntkxb.jpg",
+          "original_title": "Marshmellow UI goes wireless!",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Title uses sensational exclamation and vague 'goes wireless' instead of factual release details"
         }
       ]
     },
@@ -578,7 +626,7 @@
         },
         {
           "id": "reddit-1s8688f",
-          "title": "Open-sourced My Corne Eclipse Design w/Dual Encoder & nice!view",
+          "title": "Corne Eclipse design with dual encoders and nice!view screens open-sourced",
           "url": "https://www.reddit.com/r/crkbd/comments/1s8688f/opensourced_my_corne_eclipse_design_wdual_encoder/",
           "discussion_url": "https://www.reddit.com/r/crkbd/comments/1s8688f/opensourced_my_corne_eclipse_design_wdual_encoder/",
           "source": "reddit",
@@ -596,7 +644,11 @@
             "zmk",
             "pcb-design",
             "diy-build"
-          ]
+          ],
+          "image": "img/reddit-1s8688f.jpg",
+          "original_title": "Open-sourced My Corne Eclipse Design w/Dual Encoder & nice!view",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Rewrites vague first-person phrasing into factual entity-led headline"
         },
         {
           "id": "reddit-1s8pwjg",
@@ -616,7 +668,8 @@
           "tags": [
             "qmk",
             "vendor-practices"
-          ]
+          ],
+          "image": "img/reddit-1s8pwjg.jpg"
         }
       ]
     }

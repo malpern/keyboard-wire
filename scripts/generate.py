@@ -231,14 +231,30 @@ def render_item(item: dict, topics_reg: dict, tags_reg: dict, *,
         bottom_parts.append(f'<span class="tag-list">{tags_html}</span>')
 
     bottom_meta = "".join(bottom_parts) if bottom_parts else ""
-
     takeaway_html = f'<p class="item-takeaway">{takeaway}</p>' if takeaway else ""
 
-    return f'''<a class="item" href="{url}" rel="noopener" target="_blank">
-  <div class="item-topmeta">{top_meta}</div>
-  <h3 class="item-title">{title}</h3>
-  {takeaway_html}
-  <div class="item-meta">{bottom_meta}</div>
+    image = item.get("image")
+    if image:
+        # rel_prefix handles topic/tag pages where /img/ is at root
+        img_src = f"{rel_prefix}{image}" if rel_prefix else image
+        thumb_html = (
+            f'<div class="item-thumb" '
+            f'style="background-image:url({html.escape(img_src)})" '
+            f'role="img" aria-hidden="true"></div>'
+        )
+        item_classes = "item has-thumb"
+    else:
+        thumb_html = ""
+        item_classes = "item"
+
+    return f'''<a class="{item_classes}" href="{url}" rel="noopener" target="_blank">
+  <div class="item-body">
+    <div class="item-topmeta">{top_meta}</div>
+    <h3 class="item-title">{title}</h3>
+    {takeaway_html}
+    <div class="item-meta">{bottom_meta}</div>
+  </div>
+  {thumb_html}
 </a>'''
 
 

@@ -6,9 +6,9 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/feed.xml" rel="self" type="application/rss+xml"/>
   <description>daily mechanical keyboards, firmware &amp; tools</description>
   <language>en-us</language>
-  <lastBuildDate>Sun, 03 May 2026 17:09:20 +0000</lastBuildDate>
+  <lastBuildDate>Sun, 03 May 2026 17:20:16 +0000</lastBuildDate>
   <item>
-    <title>List prices on many websites are borderline false advertising</title>
+    <title>Reddit users discuss Shopify configuration issues causing misleading kit pricing</title>
     <link>https://www.reddit.com/r/MechanicalKeyboards/comments/1t27uj6/list_prices_on_many_websites_are_borderline_false/</link>
     <guid isPermaLink="false">reddit-1t27uj6</guid>
     <pubDate>Sun, 03 May 2026 12:00:00 +0000</pubDate>
@@ -19,7 +19,7 @@
     <description>Community discussion on Shopify configuration issues causing misleading kit pricing. — 153 pts · 47 comments · r/MechanicalKeyboards</description>
   </item>
   <item>
-    <title>Levels54 is now fully open source!</title>
+    <title>Levels54 open-sources split 54-key dual-trackball keyboard files</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1t221l1/levels54_is_now_fully_open_source/</link>
     <guid isPermaLink="false">reddit-1t221l1</guid>
     <pubDate>Sun, 03 May 2026 12:00:00 +0000</pubDate>
@@ -30,7 +30,7 @@
     <description>Creator released all files for the split 54-key dual-trackball board, including PCBs. — 33 pts · 8 comments · r/ErgoMechKeyboards</description>
   </item>
   <item>
-    <title>macOS Utilities for Identifying Apps Hijacking Global Keyboard Shortcuts?</title>
+    <title>Tooling discussion for debugging global shortcut conflicts on macOS</title>
     <link>https://www.reddit.com/r/MacOSApps/comments/1t27dar/macos_utilities_for_identifying_apps_hijacking/</link>
     <guid isPermaLink="false">reddit-1t27dar</guid>
     <pubDate>Sun, 03 May 2026 12:00:00 +0000</pubDate>
@@ -40,7 +40,7 @@
     <description>Tooling discussion for debugging global shortcut conflicts — relevant for remapping software users. — 20 pts · 10 comments · r/macapps</description>
   </item>
   <item>
-    <title>How to use QMK's matrix implementation as a custom lite matrix?</title>
+    <title>QMK matrix implementation can be used as a custom lite matrix</title>
     <link>https://www.reddit.com/r/olkb/comments/1t25p4v/how_to_use_qmks_matrix_implementation_as_a_custom/</link>
     <guid isPermaLink="false">reddit-1t25p4v</guid>
     <pubDate>Sun, 03 May 2026 12:00:00 +0000</pubDate>
@@ -50,7 +50,7 @@
     <description>Technical discussion on leveraging QMK's matrix scanning code for custom firmware. — 1 pts · 2 comments · r/olkb</description>
   </item>
   <item>
-    <title>No Code Reviews by Default</title>
+    <title>Raycast ships without mandatory code reviews by default</title>
     <link>https://www.raycast.com/blog/no-code-reviews-by-default</link>
     <guid isPermaLink="false">hn-47986143</guid>
     <pubDate>Sun, 03 May 2026 12:00:00 +0000</pubDate>
@@ -80,7 +80,7 @@
     <description>1 pts · 0 comments · Hacker News</description>
   </item>
   <item>
-    <title>You may not like it, but THIS is peak split keyboard</title>
+    <title>Reddit post showcases split keyboard build</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1t0cw5z/you_may_not_like_it_but_this_is_peak_split_keyboard/</link>
     <guid isPermaLink="false">reddit-1t0cw5z</guid>
     <pubDate>Thu, 30 Apr 2026 12:00:00 +0000</pubDate>
@@ -91,7 +91,7 @@
     <description>High-engagement photo/post showcasing an eye-catching split build — good visibility in the community. — 67 pts · 0 comments · r/ErgoMechKeyboards</description>
   </item>
   <item>
-    <title>Built the keyboard — what do you use for a pointing device?</title>
+    <title>r/ErgoMechKeyboards discussion on pointing devices for split/ZMK setups</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1szukel/built_the_keyboard_what_do_you_use_for_a_pointing/</link>
     <guid isPermaLink="false">reddit-1szukel</guid>
     <pubDate>Thu, 30 Apr 2026 12:00:00 +0000</pubDate>
@@ -154,7 +154,7 @@
     <description>1 pts · 0 comments · Hacker News</description>
   </item>
   <item>
-    <title>My first split keyboard: Keyball61</title>
+    <title>Keyball61 DIY split keyboard build using Remap</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1sor9cd</link>
     <guid isPermaLink="false">reddit-1sor9cd</guid>
     <pubDate>Sat, 18 Apr 2026 12:00:00 +0000</pubDate>
@@ -206,7 +206,7 @@
     <description>If you'd like, I can expand to broader HN searches (remove the 24h filter) or run this again tomorrow. — 1 pts · 0 comments · Hacker News</description>
   </item>
   <item>
-    <title>Connecting Issues</title>
+    <title>ZMK users troubleshoot Supermini MCU connectivity issues</title>
     <link>https://www.reddit.com/r/zmk/comments/1cqbc5r/connecting_issues/</link>
     <guid isPermaLink="false">reddit-1cqbc5r</guid>
     <pubDate>Sat, 18 Apr 2026 12:00:00 +0000</pubDate>
@@ -217,7 +217,7 @@
     <description>First-build connectivity problems (Supermini MCU + ZMK) — several troubleshooting replies (worthwatch if ZMK USB/bluetooth fixes emerge). — 1 pts · 9 comments · r/zmk</description>
   </item>
   <item>
-    <title>Marshmellow UI goes wireless!</title>
+    <title>Marshmellow UI v0.6.4 adds wireless/Bluetooth and mobile support</title>
     <link>https://www.reddit.com/r/efogtech/comments/1sntkxb/marshmellow_ui_goes_wireless/</link>
     <guid isPermaLink="false">reddit-1sntkxb</guid>
     <pubDate>Fri, 17 Apr 2026 12:00:00 +0000</pubDate>
@@ -227,7 +227,7 @@
     <description>Marshmellow UI adds wireless/Bluetooth support (v0.6.4 required) and mobile support — notable tooling/firmware UI update. — 10 pts · 0 comments · r/efogtech</description>
   </item>
   <item>
-    <title>Is it possible to make holding space shift and I want to rebind my ctrl with alt</title>
+    <title>User asks how to remap space to shift and ctrl to alt in Kanata</title>
     <link>https://www.reddit.com/r/KeyboardLayouts/comments/1sno4yk/is_it_possible_to_make_holding_space_shift_and_i/</link>
     <guid isPermaLink="false">reddit-1sno4yk</guid>
     <pubDate>Fri, 17 Apr 2026 12:00:00 +0000</pubDate>
@@ -278,7 +278,7 @@
     <description>1 pts · 0 comments · Hacker News</description>
   </item>
   <item>
-    <title>Open-sourced My Corne Eclipse Design w/Dual Encoder &amp; nice!view</title>
+    <title>Corne Eclipse design with dual encoders and nice!view screens open-sourced</title>
     <link>https://www.reddit.com/r/crkbd/comments/1s8688f/opensourced_my_corne_eclipse_design_wdual_encoder/</link>
     <guid isPermaLink="false">reddit-1s8688f</guid>
     <pubDate>Tue, 31 Mar 2026 12:00:00 +0000</pubDate>

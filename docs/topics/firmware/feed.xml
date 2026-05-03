@@ -6,9 +6,9 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/topics/firmware/feed.xml" rel="self" type="application/rss+xml"/>
   <description>On-board keyboard firmware: QMK, ZMK, KMK, custom firmware development, matrix scanning, encoders, RGB, BLE, controllers.</description>
   <language>en-us</language>
-  <lastBuildDate>Sun, 03 May 2026 17:09:20 +0000</lastBuildDate>
+  <lastBuildDate>Sun, 03 May 2026 17:20:16 +0000</lastBuildDate>
   <item>
-    <title>How to use QMK's matrix implementation as a custom lite matrix?</title>
+    <title>QMK matrix implementation can be used as a custom lite matrix</title>
     <link>https://www.reddit.com/r/olkb/comments/1t25p4v/how_to_use_qmks_matrix_implementation_as_a_custom/</link>
     <guid isPermaLink="false">reddit-1t25p4v</guid>
     <pubDate>Sun, 03 May 2026 12:00:00 +0000</pubDate>
@@ -40,7 +40,7 @@
     <description>New open-source 61-key unibody using Raspberry Pi Pico and QMK/VIA — notable for Gateron LP 3.0 compatibility and hotswap support. — 51 pts · 4 comments · r/olkb</description>
   </item>
   <item>
-    <title>Connecting Issues</title>
+    <title>ZMK users troubleshoot Supermini MCU connectivity issues</title>
     <link>https://www.reddit.com/r/zmk/comments/1cqbc5r/connecting_issues/</link>
     <guid isPermaLink="false">reddit-1cqbc5r</guid>
     <pubDate>Sat, 18 Apr 2026 12:00:00 +0000</pubDate>

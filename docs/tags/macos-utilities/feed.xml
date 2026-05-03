@@ -6,9 +6,9 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/tags/macos-utilities/feed.xml" rel="self" type="application/rss+xml"/>
   <description>All keyboard wire entries tagged Macos Utilities.</description>
   <language>en-us</language>
-  <lastBuildDate>Sun, 03 May 2026 17:09:20 +0000</lastBuildDate>
+  <lastBuildDate>Sun, 03 May 2026 17:20:16 +0000</lastBuildDate>
   <item>
-    <title>macOS Utilities for Identifying Apps Hijacking Global Keyboard Shortcuts?</title>
+    <title>Tooling discussion for debugging global shortcut conflicts on macOS</title>
     <link>https://www.reddit.com/r/MacOSApps/comments/1t27dar/macos_utilities_for_identifying_apps_hijacking/</link>
     <guid isPermaLink="false">reddit-1t27dar</guid>
     <pubDate>Sun, 03 May 2026 12:00:00 +0000</pubDate>
@@ -18,7 +18,7 @@
     <description>Tooling discussion for debugging global shortcut conflicts — relevant for remapping software users. — 20 pts · 10 comments · r/macapps</description>
   </item>
   <item>
-    <title>No Code Reviews by Default</title>
+    <title>Raycast ships without mandatory code reviews by default</title>
     <link>https://www.raycast.com/blog/no-code-reviews-by-default</link>
     <guid isPermaLink="false">hn-47986143</guid>
     <pubDate>Sun, 03 May 2026 12:00:00 +0000</pubDate>

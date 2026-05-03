@@ -6,9 +6,9 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/tags/zmk/feed.xml" rel="self" type="application/rss+xml"/>
   <description>All keyboard wire entries tagged Zmk.</description>
   <language>en-us</language>
-  <lastBuildDate>Sun, 03 May 2026 17:09:20 +0000</lastBuildDate>
+  <lastBuildDate>Sun, 03 May 2026 17:20:16 +0000</lastBuildDate>
   <item>
-    <title>Built the keyboard — what do you use for a pointing device?</title>
+    <title>r/ErgoMechKeyboards discussion on pointing devices for split/ZMK setups</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1szukel/built_the_keyboard_what_do_you_use_for_a_pointing/</link>
     <guid isPermaLink="false">reddit-1szukel</guid>
     <pubDate>Thu, 30 Apr 2026 12:00:00 +0000</pubDate>
@@ -19,7 +19,7 @@
     <description>Active discussion about pointing devices for split/ZMK setups — practical community input on peripherals and workflow. — 36 pts · 22 comments · r/ErgoMechKeyboards</description>
   </item>
   <item>
-    <title>Connecting Issues</title>
+    <title>ZMK users troubleshoot Supermini MCU connectivity issues</title>
     <link>https://www.reddit.com/r/zmk/comments/1cqbc5r/connecting_issues/</link>
     <guid isPermaLink="false">reddit-1cqbc5r</guid>
     <pubDate>Sat, 18 Apr 2026 12:00:00 +0000</pubDate>
@@ -30,7 +30,7 @@
     <description>First-build connectivity problems (Supermini MCU + ZMK) — several troubleshooting replies (worthwatch if ZMK USB/bluetooth fixes emerge). — 1 pts · 9 comments · r/zmk</description>
   </item>
   <item>
-    <title>Open-sourced My Corne Eclipse Design w/Dual Encoder &amp; nice!view</title>
+    <title>Corne Eclipse design with dual encoders and nice!view screens open-sourced</title>
     <link>https://www.reddit.com/r/crkbd/comments/1s8688f/opensourced_my_corne_eclipse_design_wdual_encoder/</link>
     <guid isPermaLink="false">reddit-1s8688f</guid>
     <pubDate>Tue, 31 Mar 2026 12:00:00 +0000</pubDate>

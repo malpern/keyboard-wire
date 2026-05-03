@@ -6,9 +6,9 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/topics/builds-hardware/feed.xml" rel="self" type="application/rss+xml"/>
   <description>DIY builds and build logs, custom PCBs, hot-swap, switches and switch development, hardware design, 3D-printed cases.</description>
   <language>en-us</language>
-  <lastBuildDate>Sun, 03 May 2026 17:09:20 +0000</lastBuildDate>
+  <lastBuildDate>Sun, 03 May 2026 17:20:16 +0000</lastBuildDate>
   <item>
-    <title>Levels54 is now fully open source!</title>
+    <title>Levels54 open-sources split 54-key dual-trackball keyboard files</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1t221l1/levels54_is_now_fully_open_source/</link>
     <guid isPermaLink="false">reddit-1t221l1</guid>
     <pubDate>Sun, 03 May 2026 12:00:00 +0000</pubDate>
@@ -62,7 +62,7 @@
     <description>Same Krteq board cross-posted to r/MechanicalKeyboards (build pics) — community attention on PCB/switch choice. — 23 pts · 1 comments · r/MechanicalKeyboards</description>
   </item>
   <item>
-    <title>Connecting Issues</title>
+    <title>ZMK users troubleshoot Supermini MCU connectivity issues</title>
     <link>https://www.reddit.com/r/zmk/comments/1cqbc5r/connecting_issues/</link>
     <guid isPermaLink="false">reddit-1cqbc5r</guid>
     <pubDate>Sat, 18 Apr 2026 12:00:00 +0000</pubDate>
@@ -73,7 +73,7 @@
     <description>First-build connectivity problems (Supermini MCU + ZMK) — several troubleshooting replies (worthwatch if ZMK USB/bluetooth fixes emerge). — 1 pts · 9 comments · r/zmk</description>
   </item>
   <item>
-    <title>My first split keyboard: Keyball61</title>
+    <title>Keyball61 DIY split keyboard build using Remap</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1sor9cd</link>
     <guid isPermaLink="false">reddit-1sor9cd</guid>
     <pubDate>Sat, 18 Apr 2026 12:00:00 +0000</pubDate>
@@ -105,7 +105,7 @@
     <description>1 pts · 0 comments · Hacker News</description>
   </item>
   <item>
-    <title>Open-sourced My Corne Eclipse Design w/Dual Encoder &amp; nice!view</title>
+    <title>Corne Eclipse design with dual encoders and nice!view screens open-sourced</title>
     <link>https://www.reddit.com/r/crkbd/comments/1s8688f/opensourced_my_corne_eclipse_design_wdual_encoder/</link>
     <guid isPermaLink="false">reddit-1s8688f</guid>
     <pubDate>Tue, 31 Mar 2026 12:00:00 +0000</pubDate>

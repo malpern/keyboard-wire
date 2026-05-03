@@ -6,7 +6,7 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/tags/diy-build/feed.xml" rel="self" type="application/rss+xml"/>
   <description>All keyboard wire entries tagged Diy Build.</description>
   <language>en-us</language>
-  <lastBuildDate>Sun, 03 May 2026 17:09:20 +0000</lastBuildDate>
+  <lastBuildDate>Sun, 03 May 2026 17:20:16 +0000</lastBuildDate>
   <item>
     <title>Self designed ISO MX PCB to fit Holy80</title>
     <link>https://www.reddit.com/gallery/1t04v38</link>
@@ -30,7 +30,7 @@
     <description>Teaser image for a new Geonix—looks like a PC case variant; sparks discussion about a new revision/production. — 20 pts · 8 comments · r/olkb</description>
   </item>
   <item>
-    <title>You may not like it, but THIS is peak split keyboard</title>
+    <title>Reddit post showcases split keyboard build</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1t0cw5z/you_may_not_like_it_but_this_is_peak_split_keyboard/</link>
     <guid isPermaLink="false">reddit-1t0cw5z</guid>
     <pubDate>Thu, 30 Apr 2026 12:00:00 +0000</pubDate>
@@ -61,7 +61,7 @@
     <description>Same Krteq board cross-posted to r/MechanicalKeyboards (build pics) — community attention on PCB/switch choice. — 23 pts · 1 comments · r/MechanicalKeyboards</description>
   </item>
   <item>
-    <title>Connecting Issues</title>
+    <title>ZMK users troubleshoot Supermini MCU connectivity issues</title>
     <link>https://www.reddit.com/r/zmk/comments/1cqbc5r/connecting_issues/</link>
     <guid isPermaLink="false">reddit-1cqbc5r</guid>
     <pubDate>Sat, 18 Apr 2026 12:00:00 +0000</pubDate>
@@ -72,7 +72,7 @@
     <description>First-build connectivity problems (Supermini MCU + ZMK) — several troubleshooting replies (worthwatch if ZMK USB/bluetooth fixes emerge). — 1 pts · 9 comments · r/zmk</description>
   </item>
   <item>
-    <title>My first split keyboard: Keyball61</title>
+    <title>Keyball61 DIY split keyboard build using Remap</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1sor9cd</link>
     <guid isPermaLink="false">reddit-1sor9cd</guid>
     <pubDate>Sat, 18 Apr 2026 12:00:00 +0000</pubDate>
@@ -104,7 +104,7 @@
     <description>1 pts · 0 comments · Hacker News</description>
   </item>
   <item>
-    <title>Open-sourced My Corne Eclipse Design w/Dual Encoder &amp; nice!view</title>
+    <title>Corne Eclipse design with dual encoders and nice!view screens open-sourced</title>
     <link>https://www.reddit.com/r/crkbd/comments/1s8688f/opensourced_my_corne_eclipse_design_wdual_encoder/</link>
     <guid isPermaLink="false">reddit-1s8688f</guid>
     <pubDate>Tue, 31 Mar 2026 12:00:00 +0000</pubDate>

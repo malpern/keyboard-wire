@@ -6,9 +6,9 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/topics/remapping-layouts/feed.xml" rel="self" type="application/rss+xml"/>
   <description>User-space key remapping (kanata, Karabiner-Elements, kmonad), layout design, alternative layouts (Colemak, Workman, Dvorak), home-row mods, layers.</description>
   <language>en-us</language>
-  <lastBuildDate>Sun, 03 May 2026 17:09:20 +0000</lastBuildDate>
+  <lastBuildDate>Sun, 03 May 2026 17:20:16 +0000</lastBuildDate>
   <item>
-    <title>Is it possible to make holding space shift and I want to rebind my ctrl with alt</title>
+    <title>User asks how to remap space to shift and ctrl to alt in Kanata</title>
     <link>https://www.reddit.com/r/KeyboardLayouts/comments/1sno4yk/is_it_possible_to_make_holding_space_shift_and_i/</link>
     <guid isPermaLink="false">reddit-1sno4yk</guid>
     <pubDate>Fri, 17 Apr 2026 12:00:00 +0000</pubDate>

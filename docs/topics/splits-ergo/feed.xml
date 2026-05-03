@@ -6,9 +6,9 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/topics/splits-ergo/feed.xml" rel="self" type="application/rss+xml"/>
   <description>Split keyboards, ergonomic boards, columnar staggered, ortholinear, thumb clusters, dactyl, corne, ergodox, lily58, sofle, etc.</description>
   <language>en-us</language>
-  <lastBuildDate>Sun, 03 May 2026 17:09:20 +0000</lastBuildDate>
+  <lastBuildDate>Sun, 03 May 2026 17:20:16 +0000</lastBuildDate>
   <item>
-    <title>Levels54 is now fully open source!</title>
+    <title>Levels54 open-sources split 54-key dual-trackball keyboard files</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1t221l1/levels54_is_now_fully_open_source/</link>
     <guid isPermaLink="false">reddit-1t221l1</guid>
     <pubDate>Sun, 03 May 2026 12:00:00 +0000</pubDate>
@@ -19,7 +19,7 @@
     <description>Creator released all files for the split 54-key dual-trackball board, including PCBs. — 33 pts · 8 comments · r/ErgoMechKeyboards</description>
   </item>
   <item>
-    <title>You may not like it, but THIS is peak split keyboard</title>
+    <title>Reddit post showcases split keyboard build</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1t0cw5z/you_may_not_like_it_but_this_is_peak_split_keyboard/</link>
     <guid isPermaLink="false">reddit-1t0cw5z</guid>
     <pubDate>Thu, 30 Apr 2026 12:00:00 +0000</pubDate>
@@ -30,7 +30,7 @@
     <description>High-engagement photo/post showcasing an eye-catching split build — good visibility in the community. — 67 pts · 0 comments · r/ErgoMechKeyboards</description>
   </item>
   <item>
-    <title>Built the keyboard — what do you use for a pointing device?</title>
+    <title>r/ErgoMechKeyboards discussion on pointing devices for split/ZMK setups</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1szukel/built_the_keyboard_what_do_you_use_for_a_pointing/</link>
     <guid isPermaLink="false">reddit-1szukel</guid>
     <pubDate>Thu, 30 Apr 2026 12:00:00 +0000</pubDate>
@@ -51,7 +51,7 @@
     <description>1 pts · 0 comments · Hacker News</description>
   </item>
   <item>
-    <title>My first split keyboard: Keyball61</title>
+    <title>Keyball61 DIY split keyboard build using Remap</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1sor9cd</link>
     <guid isPermaLink="false">reddit-1sor9cd</guid>
     <pubDate>Sat, 18 Apr 2026 12:00:00 +0000</pubDate>
@@ -62,7 +62,7 @@
     <description>High-engagement photo/build post of DIY split board using Remap for keymaps — good signal for ergonomic board interest. — 57 pts · 0 comments · r/ErgoMechKeyboards</description>
   </item>
   <item>
-    <title>Open-sourced My Corne Eclipse Design w/Dual Encoder &amp; nice!view</title>
+    <title>Corne Eclipse design with dual encoders and nice!view screens open-sourced</title>
     <link>https://www.reddit.com/r/crkbd/comments/1s8688f/opensourced_my_corne_eclipse_design_wdual_encoder/</link>
     <guid isPermaLink="false">reddit-1s8688f</guid>
     <pubDate>Tue, 31 Mar 2026 12:00:00 +0000</pubDate>
