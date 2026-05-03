@@ -186,8 +186,8 @@ def site_footer() -> str:
 
 
 def font_script() -> str:
-    # Now wraps font scale, rewrite toggle, buylist toggle, long-press popover,
-    // and Web Speech audio. Single IIFE so all features share state cleanly.
+    # Wraps font scale, rewrite toggle, buylist toggle, long-press popover,
+    # and Web Speech audio. Single IIFE so all features share state cleanly.
     return '''<script>
 (function() {
   // ── Font scale (persisted) ──────────────────────────────
