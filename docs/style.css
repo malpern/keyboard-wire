@@ -35,12 +35,21 @@ html, body {
   font-size: 16px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(192, 57, 43, 0.08);
 }
 
 main {
   max-width: 720px;
   margin: 0 auto;
   padding: 4rem 1.5rem 6rem;
+  padding-bottom: max(6rem, env(safe-area-inset-bottom) + 4rem);
+}
+
+@media (max-width: 480px) {
+  main {
+    padding-top: 2.5rem;
+  }
 }
 
 /* ── Header ──────────────────────────── */
@@ -137,10 +146,14 @@ h1.site-title {
 
 .item {
   display: block;
-  padding: 0.75rem 0;
+  padding: 0.875rem 0;
   text-decoration: none;
   color: inherit;
   border-bottom: 1px solid var(--rule);
+}
+
+@media (max-width: 480px) {
+  .item { padding: 1rem 0; }
 }
 
 .item:last-child { border-bottom: none; }
