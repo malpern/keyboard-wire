@@ -122,7 +122,15 @@ def render_html(corpus):
   <header>
     <h1 class="site-title">{title}</h1>
     <p class="tagline">{tagline}</p>
-    <p class="subscribe"><a href="feed.xml">RSS</a> · <a href="https://github.com/malpern/keyboard-wire">source</a></p>
+    <p class="subscribe">
+      <a href="feed.xml">RSS</a>
+      <span aria-hidden="true">·</span>
+      <a href="https://github.com/malpern/keyboard-wire">source</a>
+      <span class="font-controls" role="group" aria-label="Text size">
+        <button type="button" id="font-down" aria-label="smaller" title="Smaller text">A−</button>
+        <button type="button" id="font-up" aria-label="larger" title="Larger text">A+</button>
+      </span>
+    </p>
   </header>
   {days_html if days_html else '<p class="empty">No entries yet — check back tomorrow.</p>'}
   <footer>
@@ -131,6 +139,46 @@ def render_html(corpus):
     <a href="https://github.com/malpern/keyboard-wire">source</a>
   </footer>
 </main>
+<script>
+(function() {{
+  var KEY = 'kw-font-scale';
+  var MIN = 0.85, MAX = 1.6, STEP = 0.1;
+  var root = document.documentElement;
+
+  function clamp(v) {{ return Math.max(MIN, Math.min(MAX, Math.round(v * 100) / 100)); }}
+  function read() {{
+    try {{
+      var v = parseFloat(localStorage.getItem(KEY));
+      return isNaN(v) ? 1 : clamp(v);
+    }} catch (e) {{ return 1; }}
+  }}
+  function write(v) {{
+    try {{ localStorage.setItem(KEY, String(v)); }} catch (e) {{}}
+  }}
+  function apply(v) {{
+    root.style.setProperty('--font-scale', String(v));
+    var down = document.getElementById('font-down');
+    var up = document.getElementById('font-up');
+    if (down) down.disabled = v <= MIN + 0.001;
+    if (up) up.disabled = v >= MAX - 0.001;
+  }}
+
+  var current = read();
+  apply(current);
+
+  document.addEventListener('DOMContentLoaded', function() {{
+    apply(current); // re-apply after buttons exist (for disabled state)
+    var down = document.getElementById('font-down');
+    var up = document.getElementById('font-up');
+    if (down) down.addEventListener('click', function() {{
+      current = clamp(current - STEP); apply(current); write(current);
+    }});
+    if (up) up.addEventListener('click', function() {{
+      current = clamp(current + STEP); apply(current); write(current);
+    }});
+  }});
+}})();
+</script>
 </body>
 </html>
 '''
