@@ -160,7 +160,7 @@ def site_header(canonical: str) -> str:
     buylist_path = relative_to_docs(canonical, "buylist/")
     source_path = "https://github.com/malpern/keyboard-wire"
     return f'''<header>
-    <h1 class="site-title"><a href="{home_path}">malpern's keyboard wire</a></h1>
+    <h1 class="site-title"><a href="{home_path}">mechanical keyboard news wire</a></h1>
     <p class="tagline">daily mechanical keyboards, firmware &amp; tools</p>
     <p class="subscribe">
       {home}
@@ -171,6 +171,8 @@ def site_header(canonical: str) -> str:
       <a href="{feed_path}">RSS</a>
       <span aria-hidden="true">·</span>
       <a href="{settings_path}">settings</a>
+      <span aria-hidden="true">·</span>
+      <a href="{relative_to_docs(canonical, 'post/')}">about</a>
       {font_controls()}
     </p>
   </header>'''
@@ -178,7 +180,8 @@ def site_header(canonical: str) -> str:
 
 def site_footer() -> str:
     return '''<footer>
-    malpern · keyboard wire · auto-curated
+    mechanical keyboard news wire · auto-curated
+    <a href="post/">about</a>
     <a href="feed.xml">RSS</a>
     <a href="https://github.com/malpern/keyboard-wire">source</a>
     <a href="topics/">topics</a>
@@ -794,7 +797,7 @@ def render_browse_page(label: str, slug: str, items_with_dates: list[tuple],
     items_with_dates = [(date, item), ...] sorted by date desc.
     kind = 'topic' or 'tag'
     """
-    title = f"{label} · malpern's keyboard wire"
+    title = f"{label} · mechanical keyboard news wire"
     desc = f"All keyboard wire entries tagged {label}."
     canonical = f"{SITE_URL}/{kind}s/{slug}/"
 
@@ -829,7 +832,7 @@ def render_browse_page(label: str, slug: str, items_with_dates: list[tuple],
 
 def render_buylist_page() -> str:
     canonical = f"{SITE_URL}/buylist/"
-    title = "Want to buy · malpern's keyboard wire"
+    title = "Want to buy · mechanical keyboard news wire"
     desc = "Saved keyboard wire stories you want to buy or follow up on."
 
     return f'''{head(title, desc, canonical)}
@@ -980,7 +983,7 @@ def buylist_script() -> str:
 
 def render_archive_page(corpus: dict, topics_reg: dict, tags_reg: dict) -> str:
     canonical = f"{SITE_URL}/archive/"
-    title = "Archive · malpern's keyboard wire"
+    title = "Archive · mechanical keyboard news wire"
     desc = "Browse, filter, sort, and search the keyboard wire corpus."
 
     # Flatten items + counts
@@ -1222,8 +1225,8 @@ def archive_script() -> str:
 
 def render_settings_page() -> str:
     canonical = f"{SITE_URL}/settings/"
-    title = "Settings · malpern's keyboard wire"
-    desc = "Display options and source pipelines for malpern's keyboard wire."
+    title = "Settings · mechanical keyboard news wire"
+    desc = "Display options and source pipelines for mechanical keyboard news wire."
 
     sources = [
         {
@@ -1327,7 +1330,7 @@ def render_settings_page() -> str:
 
 def render_directory(label: str, kind: str, entries: list[tuple]) -> str:
     """entries = [(slug, name, count), ...] sorted by count desc."""
-    title = f"{label} · malpern's keyboard wire"
+    title = f"{label} · mechanical keyboard news wire"
     canonical = f"{SITE_URL}/{kind}s/"
     rows = "\n".join(
         f'<a class="item" href="{html.escape(slug)}/"><div class="item-topmeta"><span class="date-prefix">{count}</span><span class="sep">·</span><span class="source">{html.escape(kind)}</span></div><h3 class="item-title">{html.escape(name)}</h3></a>'
