@@ -6,7 +6,7 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/topics/tools-software/feed.xml" rel="self" type="application/rss+xml"/>
   <description>Software utilities relevant to keyboard users: launchers, shortcut managers, dotfile/config tools, productivity tools, programming tooling adjacent to the hobby.</description>
   <language>en-us</language>
-  <lastBuildDate>Mon, 04 May 2026 18:52:33 +0000</lastBuildDate>
+  <lastBuildDate>Mon, 04 May 2026 20:24:02 +0000</lastBuildDate>
   <item>
     <title>Mechvibes: Mechanical-Keyboard Sound Effects</title>
     <link>https://mechvibes.com/</link>
@@ -16,6 +16,27 @@
     <category>Tools &amp; Software</category>
     <source url="https://malpern.github.io/keyboard-wire/feed.xml">Hacker News</source>
     <description>3 pts · 1 comments · Hacker News</description>
+  </item>
+  <item>
+    <title>HoldTap creator releases macOS app to add ZMK/QMK layer and hold-tap features to standard keyboards</title>
+    <link>https://www.reddit.com/r/olkb/comments/1t2viri/holdtap_software_only_to_recreate_zmkqmk_on_mac/</link>
+    <guid isPermaLink="false">reddit-1t2viri</guid>
+    <pubDate>Mon, 04 May 2026 12:00:00 +0000</pubDate>
+    <category>breaking</category>
+    <category>Remapping &amp; Layouts</category>
+    <category>Tools &amp; Software</category>
+    <source url="https://malpern.github.io/keyboard-wire/feed.xml">r/olkb</source>
+    <description>Creator of "HoldTap" announces a new macOS application designed to bring layer/hold-tap functionality to standard keyboards without flashing firmware. Relevant for Mac users who want ZMK-like features. — 37 pts · 18 comments · r/olkb</description>
+  </item>
+  <item>
+    <title>Keytogo, open-source Rust-based macOS daemon for keyboard-driven mouse navigation</title>
+    <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1t3lbsj/keytogo_yet_another_keyboard_navigation_tool_for/</link>
+    <guid isPermaLink="false">reddit-1t3lbsj</guid>
+    <pubDate>Mon, 04 May 2026 12:00:00 +0000</pubDate>
+    <category>evergreen</category>
+    <category>Tools &amp; Software</category>
+    <source url="https://malpern.github.io/keyboard-wire/feed.xml">r/ErgoMechKeyboards</source>
+    <description>New open-source, Rust-based macOS daemon for keyboard-driven mouse navigation. Alternative to Mouseless/Warpd for users who prefer CLI/menu-bar tools. — 9 pts · 2 comments · r/ErgoMechKeyboards</description>
   </item>
   <item>
     <title>Tooling discussion for debugging global shortcut conflicts on macOS</title>

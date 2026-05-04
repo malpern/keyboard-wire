@@ -6,7 +6,61 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/feed.xml" rel="self" type="application/rss+xml"/>
   <description>daily mechanical keyboards, firmware &amp; tools</description>
   <language>en-us</language>
-  <lastBuildDate>Mon, 04 May 2026 18:52:33 +0000</lastBuildDate>
+  <lastBuildDate>Mon, 04 May 2026 20:24:02 +0000</lastBuildDate>
+  <item>
+    <title>Mechanical keyboard builder completes hardware assembly and begins firmware coding</title>
+    <link>https://www.reddit.com/r/MechanicalKeyboards/comments/1t36hdi/its_all_wired_up_now_all_i_have_to_do_is_learn_to/</link>
+    <guid isPermaLink="false">reddit-1t36hdi</guid>
+    <pubDate>Mon, 04 May 2026 12:00:00 +0000</pubDate>
+    <category>breaking</category>
+    <category>Builds &amp; Hardware</category>
+    <category>Firmware</category>
+    <source url="https://malpern.github.io/keyboard-wire/feed.xml">r/MechanicalKeyboards</source>
+    <description>OP is a complete beginner who just finished their first build and is now tackling the firmware coding aspect. High engagement due to the "journey" narrative. — 579 pts · 46 comments · r/MechanicalKeyboards</description>
+  </item>
+  <item>
+    <title>HoldTap creator releases macOS app to add ZMK/QMK layer and hold-tap features to standard keyboards</title>
+    <link>https://www.reddit.com/r/olkb/comments/1t2viri/holdtap_software_only_to_recreate_zmkqmk_on_mac/</link>
+    <guid isPermaLink="false">reddit-1t2viri</guid>
+    <pubDate>Mon, 04 May 2026 12:00:00 +0000</pubDate>
+    <category>breaking</category>
+    <category>Remapping &amp; Layouts</category>
+    <category>Tools &amp; Software</category>
+    <source url="https://malpern.github.io/keyboard-wire/feed.xml">r/olkb</source>
+    <description>Creator of "HoldTap" announces a new macOS application designed to bring layer/hold-tap functionality to standard keyboards without flashing firmware. Relevant for Mac users who want ZMK-like features. — 37 pts · 18 comments · r/olkb</description>
+  </item>
+  <item>
+    <title>Custom RP2040 keyboard using KMK firmware ships with self-designed shell, PCB, and top plate</title>
+    <link>https://www.reddit.com/r/MechanicalKeyboards/comments/1t3efz5/finally_designed_my_own_shell_pcb_and_top_plate/</link>
+    <guid isPermaLink="false">reddit-1t3efz5</guid>
+    <pubDate>Mon, 04 May 2026 12:00:00 +0000</pubDate>
+    <category>evergreen</category>
+    <category>Builds &amp; Hardware</category>
+    <category>Firmware</category>
+    <source url="https://malpern.github.io/keyboard-wire/feed.xml">r/MechanicalKeyboards</source>
+    <description>Custom build running KMK (Kaleidosaurus Microkernel) on an RP2040. Interesting technical discussion on the design process and sound test. — 33 pts · 4 comments · r/MechanicalKeyboards</description>
+  </item>
+  <item>
+    <title>DIY ortholinear keyboard build using Pi Pico and ZMK</title>
+    <link>https://www.reddit.com/r/MechanicalKeyboards/comments/1t3pbo9/free_your_minds_diy_nostabs_build/</link>
+    <guid isPermaLink="false">reddit-1t3pbo9</guid>
+    <pubDate>Mon, 04 May 2026 12:00:00 +0000</pubDate>
+    <category>evergreen</category>
+    <category>Splits &amp; Ergo</category>
+    <category>Builds &amp; Hardware</category>
+    <source url="https://malpern.github.io/keyboard-wire/feed.xml">r/MechanicalKeyboards</source>
+    <description>DIY ortholinear build using a Pi Pico running ZMK. Discusses the challenges of a no-stabilizer layout and the "jank" involved in the build. — 30 pts · 7 comments · r/MechanicalKeyboards</description>
+  </item>
+  <item>
+    <title>Keytogo, open-source Rust-based macOS daemon for keyboard-driven mouse navigation</title>
+    <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1t3lbsj/keytogo_yet_another_keyboard_navigation_tool_for/</link>
+    <guid isPermaLink="false">reddit-1t3lbsj</guid>
+    <pubDate>Mon, 04 May 2026 12:00:00 +0000</pubDate>
+    <category>evergreen</category>
+    <category>Tools &amp; Software</category>
+    <source url="https://malpern.github.io/keyboard-wire/feed.xml">r/ErgoMechKeyboards</source>
+    <description>New open-source, Rust-based macOS daemon for keyboard-driven mouse navigation. Alternative to Mouseless/Warpd for users who prefer CLI/menu-bar tools. — 9 pts · 2 comments · r/ErgoMechKeyboards</description>
+  </item>
   <item>
     <title>Mechvibes: Mechanical-Keyboard Sound Effects</title>
     <link>https://mechvibes.com/</link>

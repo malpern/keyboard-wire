@@ -6,7 +6,18 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/tags/zmk/feed.xml" rel="self" type="application/rss+xml"/>
   <description>All keyboard wire entries tagged Zmk.</description>
   <language>en-us</language>
-  <lastBuildDate>Mon, 04 May 2026 18:52:33 +0000</lastBuildDate>
+  <lastBuildDate>Mon, 04 May 2026 20:24:02 +0000</lastBuildDate>
+  <item>
+    <title>DIY ortholinear keyboard build using Pi Pico and ZMK</title>
+    <link>https://www.reddit.com/r/MechanicalKeyboards/comments/1t3pbo9/free_your_minds_diy_nostabs_build/</link>
+    <guid isPermaLink="false">reddit-1t3pbo9</guid>
+    <pubDate>Mon, 04 May 2026 12:00:00 +0000</pubDate>
+    <category>evergreen</category>
+    <category>Splits &amp; Ergo</category>
+    <category>Builds &amp; Hardware</category>
+    <source url="https://malpern.github.io/keyboard-wire/feed.xml">r/MechanicalKeyboards</source>
+    <description>DIY ortholinear build using a Pi Pico running ZMK. Discusses the challenges of a no-stabilizer layout and the "jank" involved in the build. — 30 pts · 7 comments · r/MechanicalKeyboards</description>
+  </item>
   <item>
     <title>r/ErgoMechKeyboards discussion on pointing devices for split/ZMK setups</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1szukel/built_the_keyboard_what_do_you_use_for_a_pointing/</link>

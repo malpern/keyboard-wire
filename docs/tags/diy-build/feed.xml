@@ -6,7 +6,40 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/tags/diy-build/feed.xml" rel="self" type="application/rss+xml"/>
   <description>All keyboard wire entries tagged Diy Build.</description>
   <language>en-us</language>
-  <lastBuildDate>Mon, 04 May 2026 18:52:33 +0000</lastBuildDate>
+  <lastBuildDate>Mon, 04 May 2026 20:24:02 +0000</lastBuildDate>
+  <item>
+    <title>Mechanical keyboard builder completes hardware assembly and begins firmware coding</title>
+    <link>https://www.reddit.com/r/MechanicalKeyboards/comments/1t36hdi/its_all_wired_up_now_all_i_have_to_do_is_learn_to/</link>
+    <guid isPermaLink="false">reddit-1t36hdi</guid>
+    <pubDate>Mon, 04 May 2026 12:00:00 +0000</pubDate>
+    <category>breaking</category>
+    <category>Builds &amp; Hardware</category>
+    <category>Firmware</category>
+    <source url="https://malpern.github.io/keyboard-wire/feed.xml">r/MechanicalKeyboards</source>
+    <description>OP is a complete beginner who just finished their first build and is now tackling the firmware coding aspect. High engagement due to the "journey" narrative. — 579 pts · 46 comments · r/MechanicalKeyboards</description>
+  </item>
+  <item>
+    <title>Custom RP2040 keyboard using KMK firmware ships with self-designed shell, PCB, and top plate</title>
+    <link>https://www.reddit.com/r/MechanicalKeyboards/comments/1t3efz5/finally_designed_my_own_shell_pcb_and_top_plate/</link>
+    <guid isPermaLink="false">reddit-1t3efz5</guid>
+    <pubDate>Mon, 04 May 2026 12:00:00 +0000</pubDate>
+    <category>evergreen</category>
+    <category>Builds &amp; Hardware</category>
+    <category>Firmware</category>
+    <source url="https://malpern.github.io/keyboard-wire/feed.xml">r/MechanicalKeyboards</source>
+    <description>Custom build running KMK (Kaleidosaurus Microkernel) on an RP2040. Interesting technical discussion on the design process and sound test. — 33 pts · 4 comments · r/MechanicalKeyboards</description>
+  </item>
+  <item>
+    <title>DIY ortholinear keyboard build using Pi Pico and ZMK</title>
+    <link>https://www.reddit.com/r/MechanicalKeyboards/comments/1t3pbo9/free_your_minds_diy_nostabs_build/</link>
+    <guid isPermaLink="false">reddit-1t3pbo9</guid>
+    <pubDate>Mon, 04 May 2026 12:00:00 +0000</pubDate>
+    <category>evergreen</category>
+    <category>Splits &amp; Ergo</category>
+    <category>Builds &amp; Hardware</category>
+    <source url="https://malpern.github.io/keyboard-wire/feed.xml">r/MechanicalKeyboards</source>
+    <description>DIY ortholinear build using a Pi Pico running ZMK. Discusses the challenges of a no-stabilizer layout and the "jank" involved in the build. — 30 pts · 7 comments · r/MechanicalKeyboards</description>
+  </item>
   <item>
     <title>ScottoAcademy enrollment closes May 3rd</title>
     <link>https://malpern.github.io/keyboard-wire/email/19de367d5dcc0962/</link>

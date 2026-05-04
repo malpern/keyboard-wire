@@ -44,6 +44,127 @@
             "macos-utilities"
           ],
           "image": "img/hn-48009722.jpg"
+        },
+        {
+          "id": "reddit-1t36hdi",
+          "title": "Mechanical keyboard builder completes hardware assembly and begins firmware coding",
+          "url": "https://www.reddit.com/r/MechanicalKeyboards/comments/1t36hdi/its_all_wired_up_now_all_i_have_to_do_is_learn_to/",
+          "discussion_url": "https://www.reddit.com/r/MechanicalKeyboards/comments/1t36hdi/its_all_wired_up_now_all_i_have_to_do_is_learn_to/",
+          "source": "reddit",
+          "subreddit": "MechanicalKeyboards",
+          "score": 579,
+          "comments": 46,
+          "category": "breaking",
+          "takeaway": "OP is a complete beginner who just finished their first build and is now tackling the firmware coding aspect. High engagement due to the \"journey\" narrative.",
+          "topics": [
+            "builds-hardware",
+            "firmware"
+          ],
+          "tags": [
+            "diy-build",
+            "qmk"
+          ],
+          "original_title": "It's all wired up. Now all I have to do is learn to code.",
+          "title_rewritten": true,
+          "title_rewrite_reason": "First-person narrative and vague phrasing",
+          "image": "img/reddit-1t36hdi.jpg"
+        },
+        {
+          "id": "reddit-1t3efz5",
+          "title": "Custom RP2040 keyboard using KMK firmware ships with self-designed shell, PCB, and top plate",
+          "url": "https://www.reddit.com/r/MechanicalKeyboards/comments/1t3efz5/finally_designed_my_own_shell_pcb_and_top_plate/",
+          "discussion_url": "https://www.reddit.com/r/MechanicalKeyboards/comments/1t3efz5/finally_designed_my_own_shell_pcb_and_top_plate/",
+          "source": "reddit",
+          "subreddit": "MechanicalKeyboards",
+          "score": 33,
+          "comments": 4,
+          "category": "evergreen",
+          "takeaway": "Custom build running KMK (Kaleidosaurus Microkernel) on an RP2040. Interesting technical discussion on the design process and sound test.",
+          "topics": [
+            "builds-hardware",
+            "firmware"
+          ],
+          "tags": [
+            "pcb-design",
+            "custom-firmware",
+            "diy-build"
+          ],
+          "original_title": "Finally designed my own shell, PCB and top plate!",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Title uses subjective framing and vague pronouns; rewrite adds specific technical details from takeaway",
+          "image": "img/reddit-1t3efz5.jpg"
+        },
+        {
+          "id": "reddit-1t3pbo9",
+          "title": "DIY ortholinear keyboard build using Pi Pico and ZMK",
+          "url": "https://www.reddit.com/r/MechanicalKeyboards/comments/1t3pbo9/free_your_minds_diy_nostabs_build/",
+          "discussion_url": "https://www.reddit.com/r/MechanicalKeyboards/comments/1t3pbo9/free_your_minds_diy_nostabs_build/",
+          "source": "reddit",
+          "subreddit": "MechanicalKeyboards",
+          "score": 30,
+          "comments": 7,
+          "category": "evergreen",
+          "takeaway": "DIY ortholinear build using a Pi Pico running ZMK. Discusses the challenges of a no-stabilizer layout and the \"jank\" involved in the build.",
+          "topics": [
+            "splits-ergo",
+            "builds-hardware"
+          ],
+          "tags": [
+            "zmk",
+            "diy-build",
+            "ortholinear"
+          ],
+          "original_title": "Free your minds! DIY no-stabs build.",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Removes sensational exclamation and vague 'no-stabs' phrasing",
+          "image": "img/reddit-1t3pbo9.jpg"
+        },
+        {
+          "id": "reddit-1t2viri",
+          "title": "HoldTap creator releases macOS app to add ZMK/QMK layer and hold-tap features to standard keyboards",
+          "url": "https://www.reddit.com/r/olkb/comments/1t2viri/holdtap_software_only_to_recreate_zmkqmk_on_mac/",
+          "discussion_url": "https://www.reddit.com/r/olkb/comments/1t2viri/holdtap_software_only_to_recreate_zmkqmk_on_mac/",
+          "source": "reddit",
+          "subreddit": "olkb",
+          "score": 37,
+          "comments": 18,
+          "category": "breaking",
+          "takeaway": "Creator of \"HoldTap\" announces a new macOS application designed to bring layer/hold-tap functionality to standard keyboards without flashing firmware. Relevant for Mac users who want ZMK-like features.",
+          "topics": [
+            "remapping-layouts",
+            "tools-software"
+          ],
+          "tags": [
+            "macos-utilities",
+            "home-row-mods",
+            "key-remapping"
+          ],
+          "original_title": "HoldTap software only to re-create ZMK/QMK on Mac",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Rewrites vague 'software only' and 're-create' into specific factual description of the app's function and platform",
+          "image": "img/reddit-1t2viri.jpg"
+        },
+        {
+          "id": "reddit-1t3lbsj",
+          "title": "Keytogo, open-source Rust-based macOS daemon for keyboard-driven mouse navigation",
+          "url": "https://www.reddit.com/r/ErgoMechKeyboards/comments/1t3lbsj/keytogo_yet_another_keyboard_navigation_tool_for/",
+          "discussion_url": "https://www.reddit.com/r/ErgoMechKeyboards/comments/1t3lbsj/keytogo_yet_another_keyboard_navigation_tool_for/",
+          "source": "reddit",
+          "subreddit": "ErgoMechKeyboards",
+          "score": 9,
+          "comments": 2,
+          "category": "evergreen",
+          "takeaway": "New open-source, Rust-based macOS daemon for keyboard-driven mouse navigation. Alternative to Mouseless/Warpd for users who prefer CLI/menu-bar tools.",
+          "topics": [
+            "tools-software"
+          ],
+          "tags": [
+            "open-source",
+            "macos-utilities"
+          ],
+          "original_title": "Keytogo, yet another keyboard navigation tool for macos (open-source)",
+          "title_rewritten": true,
+          "title_rewrite_reason": "Removes subjective 'yet another' and vague phrasing"
         }
       ]
     },
