@@ -1174,6 +1174,11 @@ MODEL = os.environ.get(
 
   <p>Any script can be run independently, tested in isolation, or replaced. The pipeline is a shell script, not a framework. There's no orchestration layer, no DAG, no scheduler beyond cron. This is intentional &mdash; the system is small enough that adding infrastructure would cost more in complexity than it saves in convenience.</p>
 
+  <figure class="screenshot">
+    <img loading="lazy" src="assets/screenshot-archive.png" alt="The keyboard wire archive page showing 47 items across 8 topics and 29 tags, with search, topic and tag filters, and sorted item cards with source badges and takeaway summaries.">
+    <figcaption>The archive. Every item the pipeline has ever published — searchable, filterable by topic and tag, each with its source and a one-line takeaway.</figcaption>
+  </figure>
+
   <figure class="diagram">
     <svg viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg" aria-label="Pipeline architecture diagram showing three source feeds flowing through classification, enrichment, and publication stages.">
       <defs>
