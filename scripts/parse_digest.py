@@ -18,16 +18,16 @@ import re
 import sys
 from urllib.parse import urlparse, parse_qs
 
-LINK_RE = re.compile(r"\*<([^|>]+)\|([^>]+)>\*")
+LINK_RE = re.compile(r"\*<?([^|>*]+)\|([^>*]+)>?\*")
 HN_LINE_RE = re.compile(
-    r"\*<(?P<url>[^|>]+)\|(?P<title>[^>]+)>\*\s*[·•]\s*"
+    r"\*<?(?P<url>https?[^|>*]+)\|(?P<title>[^>*<]+)>?\*\s*[·•]\s*"
     r"(?P<score>\d+)\s*pts?\s*[·•]\s*(?P<comments>\d+)\s*comments?\s*"
-    r"[·•]\s*<(?P<discuss>https?://news\.ycombinator\.com/item\?id=(?P<id>\d+))\|[^>]+>"
+    r"[·•]\s*<?(?P<discuss>https?://news\.ycombinator\.com/item\?id=(?P<id>\d+))\|[^>*]+>?"
 )
 REDDIT_LINE_RE = re.compile(
     r"^(?P<emoji>[\U0001F300-\U0001FAFF☀-➿⬀-⯿\U0001F900-\U0001F9FF]+|⭐|🔥|📢|🔧)?\s*"
-    r"\*<(?P<url>https?://www\.reddit\.com/r/(?P<subreddit>[^/]+)/comments/(?P<id>[^/]+)/[^|>]*)\|"
-    r"(?P<title>[^>]+)>\*\s*[·•]\s*"
+    r"\*<?(?P<url>https?://www\.reddit\.com/r/(?P<subreddit>[^/]+)/comments/(?P<id>[^/]+)/[^|>*]*)\|"
+    r"(?P<title>[^>*<]+)>?\*\s*[·•]\s*"
     r"⬆️?(?P<score>\d+)\s*[·•]\s*"
     r"💬(?P<comments>\d+)\s*[·•]\s*"
     r"r/(?P<sub2>[^\s]+)",
