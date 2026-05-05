@@ -6,7 +6,7 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/topics/remapping-layouts/feed.xml" rel="self" type="application/rss+xml"/>
   <description>User-space key remapping (kanata, Karabiner-Elements, kmonad), layout design, alternative layouts (Colemak, Workman, Dvorak), home-row mods, layers.</description>
   <language>en-us</language>
-  <lastBuildDate>Tue, 05 May 2026 00:50:34 +0000</lastBuildDate>
+  <lastBuildDate>Tue, 05 May 2026 01:31:13 +0000</lastBuildDate>
   <item>
     <title>Karabiner-Elements 16.0.0</title>
     <link>https://karabiner-elements.pqrs.org/docs/releasenotes/</link>

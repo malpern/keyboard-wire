@@ -82,11 +82,11 @@ h1.site-title a:hover {
 
 .site-icon {
   display: inline-block;
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  vertical-align: -4px;
-  margin-right: 10px;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  vertical-align: -10px;
+  margin-right: 14px;
 }
 
 .tagline {

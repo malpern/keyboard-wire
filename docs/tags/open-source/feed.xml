@@ -6,7 +6,7 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/tags/open-source/feed.xml" rel="self" type="application/rss+xml"/>
   <description>All keyboard wire entries tagged Open Source.</description>
   <language>en-us</language>
-  <lastBuildDate>Tue, 05 May 2026 00:50:34 +0000</lastBuildDate>
+  <lastBuildDate>Tue, 05 May 2026 01:31:13 +0000</lastBuildDate>
   <item>
     <title>Keytogo, open-source Rust-based macOS daemon for keyboard-driven mouse navigation</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1t3lbsj/keytogo_yet_another_keyboard_navigation_tool_for/</link>
