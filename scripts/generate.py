@@ -153,14 +153,16 @@ def font_controls() -> str:
     return ""
 
 
-def subscribe_dialog() -> str:
-    return '''<dialog id="subscribe-dialog" class="subscribe-dialog" aria-labelledby="subscribe-title">
+def subscribe_dialog(canonical: str) -> str:
+    icon_path = relative_to_docs(canonical, "post/assets/icon-final.png")
+    return f'''<dialog id="subscribe-dialog" class="subscribe-dialog" aria-labelledby="subscribe-title">
       <form method="dialog" class="subscribe-close-form">
         <button class="subscribe-close" type="submit" value="cancel" aria-label="Close">×</button>
       </form>
       <div class="subscribe-content">
-        <h2 id="subscribe-title" class="subscribe-title">Daily keyboard wire</h2>
-        <p class="subscribe-pitch">A short morning email — mechanical keyboards, firmware, tools. No spam.</p>
+        <img src="{icon_path}" alt="" class="subscribe-icon" width="40" height="40">
+        <h2 id="subscribe-title" class="subscribe-title">One short email a day.</h2>
+        <p class="subscribe-pitch">All thock, no clack.</p>
         <form id="subscribe-form" class="subscribe-form"
               action="https://buttondown.com/api/emails/embed-subscribe/keyboard-newswire"
               method="post">
@@ -187,11 +189,14 @@ def subscribe_dialog() -> str:
     </dialog>'''
 
 
-def subscribe_card() -> str:
-    return '''<aside id="subscribe-card" class="subscribe-card" hidden aria-label="Subscribe to keyboard wire">
+def subscribe_card(canonical: str) -> str:
+    icon_path = relative_to_docs(canonical, "post/assets/icon-final.png")
+    return f'''<aside id="subscribe-card" class="subscribe-card" hidden aria-label="Subscribe to keyboard wire">
       <button type="button" class="subscribe-card-close" aria-label="Dismiss">×</button>
       <div class="subscribe-card-body">
-        <p class="subscribe-card-pitch"><strong>Daily keyboard wire.</strong> Short morning email — no spam.</p>
+        <img src="{icon_path}" alt="" class="subscribe-card-icon" width="32" height="32">
+        <div class="subscribe-card-text">
+          <p class="subscribe-card-pitch"><strong>One short email a day.</strong> All thock, no clack.</p>
         <form class="subscribe-form subscribe-card-form"
               action="https://buttondown.com/api/emails/embed-subscribe/keyboard-newswire"
               method="post">
@@ -210,7 +215,8 @@ def subscribe_card() -> str:
           </svg>
           <span>Subscribed — check your inbox.</span>
         </div>
-        <p class="subscribe-error subscribe-card-error" hidden role="alert"></p>
+          <p class="subscribe-error subscribe-card-error" hidden role="alert"></p>
+        </div>
       </div>
     </aside>'''
 
@@ -248,8 +254,8 @@ def site_header(canonical: str) -> str:
       <a href="{relative_to_docs(canonical, 'post/')}">about</a>
       {font_controls()}
     </p>
-    {subscribe_dialog()}
-    {subscribe_card()}
+    {subscribe_dialog(canonical)}
+    {subscribe_card(canonical)}
   </header>'''
 
 

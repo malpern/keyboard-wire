@@ -1337,12 +1337,18 @@ footer a:hover {
 
 .subscribe-content {
   padding: 1.5rem 1.5rem 1rem;
+  text-align: center;
+}
+.subscribe-icon {
+  display: block;
+  margin: 0 auto 0.625rem;
+  border-radius: 8px;
 }
 .subscribe-title {
   font-family: 'Fraunces', Georgia, serif;
   font-weight: 600;
   font-size: 1.25rem;
-  margin: 0 0 0.375rem;
+  margin: 0 0 0.25rem;
   letter-spacing: -0.01em;
 }
 .subscribe-pitch {
@@ -1350,6 +1356,10 @@ footer a:hover {
   color: var(--ink-soft);
   font-size: 0.9375rem;
   line-height: 1.45;
+}
+.subscribe-content .subscribe-form,
+.subscribe-content .subscribe-success {
+  text-align: left;
 }
 
 .subscribe-form {
@@ -1427,11 +1437,18 @@ footer a:hover {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--accent);
+  color: var(--ink-soft);
   font-size: 0.9375rem;
   opacity: 0;
   transform: translateY(4px);
   transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.subscribe-check {
+  color: #2f9e44;
+  flex: none;
+}
+@media (prefers-color-scheme: dark) {
+  .subscribe-check { color: #51cf66; }
 }
 .subscribe-success.is-shown {
   opacity: 1;
@@ -1511,7 +1528,19 @@ footer a:hover {
 }
 
 .subscribe-card-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
   padding-right: 1rem; /* leave room for close button */
+}
+.subscribe-card-icon {
+  flex: none;
+  border-radius: 6px;
+  margin-top: 0.125rem;
+}
+.subscribe-card-text {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .subscribe-card-pitch {
