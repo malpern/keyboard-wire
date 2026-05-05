@@ -182,9 +182,6 @@ def subscribe_dialog(canonical: str) -> str:
           <span>Subscribed — check your inbox to confirm.</span>
         </div>
         <p class="subscribe-error" hidden role="alert"></p>
-        <p class="subscribe-fineprint">
-          <a href="https://buttondown.com/refer/keyboard-newswire" target="_blank" rel="noopener">via buttondown</a>
-        </p>
       </div>
     </dialog>'''
 
