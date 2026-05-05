@@ -3,6 +3,56 @@
   "tagline": "daily mechanical keyboards, firmware & tools",
   "days": [
     {
+      "date": "2026-05-05",
+      "items": [
+        {
+          "id": "email-19df4c506722616f",
+          "title": "Omnitype restocks Dualshot Substance Deskpad and GMK Dualshot Accent kit",
+          "url": "https://omnitype.com/products/dualshot-substance-deskpad",
+          "discussion_url": "https://omnitype.com/products/dualshot-substance-deskpad",
+          "source": "email",
+          "subreddit": null,
+          "via": "Omnitype",
+          "score": null,
+          "comments": null,
+          "category": "evergreen",
+          "takeaway": "Omnitype has restocked the Dualshot Substance Deskpad and GMK Dualshot 2 keycap accent kit.",
+          "sender": "Omnitype <help@omnitype.com>",
+          "topics": [
+            "group-buys-vendors",
+            "keycaps-aesthetics"
+          ],
+          "tags": [
+            "restock",
+            "keycap-design"
+          ],
+          "image": "img/email-19df4c506722616f.jpg"
+        },
+        {
+          "id": "email-19df3efe56165735",
+          "title": "NuPhy releases WH80 wireless 8K magnetic gaming keyboard",
+          "url": "https://nuphy.com/products/nuphy-wh80-gaming-keyboard",
+          "discussion_url": "https://nuphy.com/products/nuphy-wh80-gaming-keyboard",
+          "source": "email",
+          "subreddit": null,
+          "via": "Nuphy",
+          "score": null,
+          "comments": null,
+          "category": "evergreen",
+          "takeaway": "NuPhy launched the WH80, a wireless gaming keyboard featuring 8K polling rate and Hall-effect magnetic switches.",
+          "sender": "\"NUPHY®\" <no-reply@nuphy.com>",
+          "topics": [
+            "builds-hardware"
+          ],
+          "tags": [
+            "mechanical-keyboard",
+            "hotswap"
+          ],
+          "image": "img/email-19df3efe56165735.jpg"
+        }
+      ]
+    },
+    {
       "date": "2026-05-04",
       "items": [
         {
