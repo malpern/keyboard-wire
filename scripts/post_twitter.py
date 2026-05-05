@@ -16,6 +16,7 @@ Usage:
   post_twitter.py 2026-05-04      # posts a specific day
   post_twitter.py --dry-run       # preview without posting
 """
+import base64
 import datetime
 import hashlib
 import hmac
@@ -26,9 +27,11 @@ import sys
 import time
 import urllib.parse
 import urllib.request
+import uuid
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DAYS_DIR = ROOT / "data" / "days"
+DOCS_DIR = ROOT / "docs"
 POSTED_FILE = ROOT / "data" / "twitter_posted.json"
 SITE_URL = "https://keyboard-newswire.com"
 
@@ -38,6 +41,7 @@ ACCESS_TOKEN = os.environ.get("X_ACCESS_TOKEN", "")
 ACCESS_TOKEN_SECRET = os.environ.get("X_ACCESS_TOKEN_SECRET", "")
 
 POST_URL = "https://api.x.com/2/tweets"
+MEDIA_UPLOAD_URL = "https://upload.twitter.com/1.1/media/upload.json"
 
 
 def load_posted() -> set:
@@ -64,12 +68,10 @@ def oauth_signature(method: str, url: str, params: dict) -> str:
     sig = hmac.new(
         signing_key.encode(), base_string.encode(), hashlib.sha1
     ).digest()
-    import base64
     return base64.b64encode(sig).decode()
 
 
-def build_oauth_header(method: str, url: str) -> str:
-    import uuid
+def build_oauth_header(method: str, url: str, extra_params: dict | None = None) -> str:
     oauth_params = {
         "oauth_consumer_key": API_KEY,
         "oauth_nonce": uuid.uuid4().hex,
@@ -78,7 +80,8 @@ def build_oauth_header(method: str, url: str) -> str:
         "oauth_token": ACCESS_TOKEN,
         "oauth_version": "1.0",
     }
-    sig = oauth_signature(method, url, oauth_params)
+    sig_params = {**oauth_params, **(extra_params or {})}
+    sig = oauth_signature(method, url, sig_params)
     oauth_params["oauth_signature"] = sig
     header_parts = ", ".join(
         f'{percent_encode(k)}="{percent_encode(v)}"'
@@ -87,8 +90,32 @@ def build_oauth_header(method: str, url: str) -> str:
     return f"OAuth {header_parts}"
 
 
-def post_tweet(text: str) -> dict:
-    body = json.dumps({"text": text}).encode()
+def upload_media(image_path: pathlib.Path) -> str | None:
+    if not image_path.exists():
+        return None
+    media_data = base64.b64encode(image_path.read_bytes()).decode()
+    form_params = {"media_data": media_data}
+    auth = build_oauth_header("POST", MEDIA_UPLOAD_URL, form_params)
+    body = urllib.parse.urlencode(form_params).encode()
+    req = urllib.request.Request(
+        MEDIA_UPLOAD_URL,
+        data=body,
+        headers={
+            "Authorization": auth,
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(req) as resp:
+        result = json.loads(resp.read())
+    return result.get("media_id_string")
+
+
+def post_tweet(text: str, media_id: str | None = None) -> dict:
+    payload = {"text": text}
+    if media_id:
+        payload["media"] = {"media_ids": [media_id]}
+    body = json.dumps(payload).encode()
     auth = build_oauth_header("POST", POST_URL)
     req = urllib.request.Request(
         POST_URL,
@@ -101,6 +128,16 @@ def post_tweet(text: str) -> dict:
     )
     with urllib.request.urlopen(req) as resp:
         return json.loads(resp.read())
+
+
+def find_image(item: dict) -> pathlib.Path | None:
+    img = item.get("image")
+    if not img:
+        return None
+    path = DOCS_DIR / img
+    if path.exists():
+        return path
+    return None
 
 
 def format_tweet(item: dict) -> str:
@@ -160,15 +197,25 @@ def main():
 
     for item in new_items:
         tweet = format_tweet(item)
+        image_path = find_image(item)
 
         if dry_run:
-            print(f"[DRY RUN] {item['id']}:")
+            img_note = f" [image: {image_path.name}]" if image_path else " [no image]"
+            print(f"[DRY RUN] {item['id']}:{img_note}")
             print(tweet)
             print("---")
             continue
 
         try:
-            result = post_tweet(tweet)
+            media_id = None
+            if image_path:
+                try:
+                    media_id = upload_media(image_path)
+                    print(f"  uploaded {image_path.name} -> media {media_id}", file=sys.stderr)
+                except urllib.error.HTTPError as e:
+                    print(f"  image upload failed for {item['id']}: {e.code}, posting without image", file=sys.stderr)
+
+            result = post_tweet(tweet, media_id)
             tweet_id = result.get("data", {}).get("id", "?")
             print(f"posted {item['id']} -> tweet {tweet_id}", file=sys.stderr)
             posted.add(item["id"])
