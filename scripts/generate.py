@@ -246,8 +246,6 @@ def site_header(canonical: str) -> str:
       <span aria-hidden="true">·</span>
       <a href="{archive_path}">archive</a>
       <span aria-hidden="true">·</span>
-      <a href="{buylist_path}" id="nav-buylist">want to buy<span class="buylist-count" hidden></span></a>
-      <span aria-hidden="true">·</span>
       <a href="{feed_path}">RSS</a>
       <span aria-hidden="true">·</span>
       <a href="{settings_path}">settings</a>
@@ -501,8 +499,8 @@ def font_script() -> str:
     var saved = inBL(id);
     showPopover([
       saved
-        ? { act: 'buylist-remove', arg: id, label: 'Remove from want to buy' }
-        : { act: 'buylist-add', arg: id, label: 'Add to want to buy' },
+        ? { act: 'buylist-remove', arg: id, label: '♥ Want to buy' }
+        : { act: 'buylist-add', arg: id, label: '♡ Want to buy' },
     ], x, y);
   }
 
@@ -1561,6 +1559,17 @@ def render_settings_page() -> str:
           Original titles are always preserved and recoverable.</small>
         </span>
       </label>
+    </div>
+
+    <h2 class="settings-section-label">Lists</h2>
+    <div class="setting-row">
+      <a class="settings-list-link" href="../buylist/" id="nav-buylist">
+        <span class="settings-list-icon" aria-hidden="true">♥</span>
+        <span class="settings-list-text">
+          <strong>Want to buy<span class="buylist-count" hidden></span></strong>
+          <small>Saved items you press-and-hold to add. Stored locally in your browser.</small>
+        </span>
+      </a>
     </div>
 
     <h2 class="settings-section-label">Sources</h2>

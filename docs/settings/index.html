@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Settings · mechanical keyboard newswire</title>
 <meta name="description" content="Display options and source pipelines for mechanical keyboard newswire.">
-<link rel="stylesheet" href="../style.css?v=1777991455">
+<link rel="stylesheet" href="../style.css?v=1777993791">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 
 <link rel="canonical" href="https://keyboard-newswire.com/settings/">
@@ -32,8 +32,6 @@
       <a href="#" id="subscribe-trigger" data-subscribe>subscribe</a>
       <span aria-hidden="true">·</span>
       <a href="../archive/">archive</a>
-      <span aria-hidden="true">·</span>
-      <a href="../buylist/" id="nav-buylist">want to buy<span class="buylist-count" hidden></span></a>
       <span aria-hidden="true">·</span>
       <a href="../feed.xml">RSS</a>
       <span aria-hidden="true">·</span>
@@ -113,6 +111,17 @@
           Original titles are always preserved and recoverable.</small>
         </span>
       </label>
+    </div>
+
+    <h2 class="settings-section-label">Lists</h2>
+    <div class="setting-row">
+      <a class="settings-list-link" href="../buylist/" id="nav-buylist">
+        <span class="settings-list-icon" aria-hidden="true">♥</span>
+        <span class="settings-list-text">
+          <strong>Want to buy<span class="buylist-count" hidden></span></strong>
+          <small>Saved items you press-and-hold to add. Stored locally in your browser.</small>
+        </span>
+      </a>
     </div>
 
     <h2 class="settings-section-label">Sources</h2>
@@ -384,8 +393,8 @@
     var saved = inBL(id);
     showPopover([
       saved
-        ? { act: 'buylist-remove', arg: id, label: 'Remove from want to buy' }
-        : { act: 'buylist-add', arg: id, label: 'Add to want to buy' },
+        ? { act: 'buylist-remove', arg: id, label: '♥ Want to buy' }
+        : { act: 'buylist-add', arg: id, label: '♡ Want to buy' },
     ], x, y);
   }
 

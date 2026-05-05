@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Remap · mechanical keyboard newswire</title>
 <meta name="description" content="All keyboard wire entries tagged Remap.">
-<link rel="stylesheet" href="../../style.css?v=1777991455">
+<link rel="stylesheet" href="../../style.css?v=1777993791">
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="alternate" type="application/rss+xml" title="Remap · mechanical keyboard newswire" href="feed.xml">
 <link rel="canonical" href="https://keyboard-newswire.com/tags/remap/">
@@ -32,8 +32,6 @@
       <a href="#" id="subscribe-trigger" data-subscribe>subscribe</a>
       <span aria-hidden="true">·</span>
       <a href="../../archive/">archive</a>
-      <span aria-hidden="true">·</span>
-      <a href="../../buylist/" id="nav-buylist">want to buy<span class="buylist-count" hidden></span></a>
       <span aria-hidden="true">·</span>
       <a href="../../feed.xml">RSS</a>
       <span aria-hidden="true">·</span>
@@ -350,8 +348,8 @@
     var saved = inBL(id);
     showPopover([
       saved
-        ? { act: 'buylist-remove', arg: id, label: 'Remove from want to buy' }
-        : { act: 'buylist-add', arg: id, label: 'Add to want to buy' },
+        ? { act: 'buylist-remove', arg: id, label: '♥ Want to buy' }
+        : { act: 'buylist-add', arg: id, label: '♡ Want to buy' },
     ], x, y);
   }
 

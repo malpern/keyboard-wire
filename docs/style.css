@@ -1146,6 +1146,38 @@ h1.site-title a:hover {
   margin-bottom: 1rem;
 }
 
+.settings-list-link {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  text-decoration: none;
+  color: inherit;
+  border: none;
+}
+.settings-list-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--accent);
+  flex: none;
+  margin-top: 0.125rem;
+}
+.settings-list-text strong {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.125rem;
+  transition: color 0.15s ease;
+}
+.settings-list-text small {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+.settings-list-link:hover .settings-list-text strong,
+.settings-list-link:focus-visible .settings-list-text strong {
+  color: var(--accent);
+}
+
 .toggle {
   display: flex;
   align-items: flex-start;
