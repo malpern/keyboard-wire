@@ -159,8 +159,9 @@ def site_header(canonical: str) -> str:
     archive_path = relative_to_docs(canonical, "archive/")
     buylist_path = relative_to_docs(canonical, "buylist/")
     source_path = "https://github.com/malpern/keyboard-wire"
+    icon_path = relative_to_docs(canonical, "post/assets/icon-final.png")
     return f'''<header>
-    <h1 class="site-title"><a href="{home_path}">mechanical keyboard news wire</a></h1>
+    <h1 class="site-title"><a href="{home_path}"><img src="{icon_path}" alt="" class="site-icon" width="32" height="32">mechanical keyboard news wire</a></h1>
     <p class="tagline">daily mechanical keyboards, firmware &amp; tools</p>
     <p class="subscribe">
       {home}

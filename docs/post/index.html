@@ -13,10 +13,15 @@
 <meta property="og:description" content="A one-person news wire for mechanical keyboards. Local LLM classification, zero API cost, tasteful curation at scale.">
 <meta property="og:url" content="https://malpern.github.io/keyboard-wire/post/">
 <meta property="og:site_name" content="keyboard wire">
+<meta property="og:image" content="https://malpern.github.io/keyboard-wire/post/assets/share-final.png">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="All the News That's Fit to Filter">
 <meta name="twitter:description" content="How we built a one-person news wire for mechanical keyboards.">
+<meta name="twitter:image" content="https://malpern.github.io/keyboard-wire/post/assets/share-final.png">
+
+<link rel="icon" type="image/png" href="assets/icon-final.png">
+<link rel="apple-touch-icon" href="assets/icon-final.png">
 
 <script type="application/ld+json">
 {
@@ -802,6 +807,21 @@
     to { transform: translateX(-50%); }
   }
 
+  /* === HERO KEYCAP === */
+  .hero-keycap {
+    margin: 48px -32px 56px;
+    padding: 0;
+  }
+  .hero-keycap img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+  @media (max-width: 720px) {
+    .hero-keycap { margin-left: -20px; margin-right: -20px; }
+  }
+
   /* === RESPONSIVE === */
   @media (max-width: 720px) {
     .page { padding-left: 20px; padding-right: 20px; }
@@ -885,6 +905,10 @@
 <p><a href="https://malpern.github.io/keyboard-wire/">Keyboard Wire</a> is the answer we built: a personal news wire that ingests from multiple sources every morning, classifies each item with a local LLM, rewrites the headlines in <span class="tt" data-tt="Techmeme rewrites publisher headlines into terse, factual, entity-first abstracts. Lead with the subject, state the action, no superlatives.">Techmeme</span> style, and publishes a static site &mdash; all running on a Mac Mini, no API costs, no third-party services touching the data.</p>
 
 <p>This is the story of how it got here: one source at a time, one architectural decision at a time, from a prototype hitting a frontier model to a pipeline that runs entirely on-device.</p>
+
+<figure class="hero-keycap">
+  <img loading="eager" src="assets/hero-keycap.png" alt="A single cream keycap with a red dot in the corner, floating on a dark surface.">
+</figure>
 
 <!-- TOC -->
 <nav class="toc" aria-label="Table of contents">

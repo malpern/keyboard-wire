@@ -80,6 +80,15 @@ h1.site-title a:hover {
   color: var(--accent);
 }
 
+.site-icon {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  vertical-align: -4px;
+  margin-right: 10px;
+}
+
 .tagline {
   color: var(--ink-soft);
   font-size: 0.9375rem;
