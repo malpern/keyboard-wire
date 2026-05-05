@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Open Source · mechanical keyboard news wire</title>
 <meta name="description" content="All keyboard wire entries tagged Open Source.">
-<link rel="stylesheet" href="../../style.css?v=1777953986">
+<link rel="stylesheet" href="../../style.css?v=1777954301">
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="alternate" type="application/rss+xml" title="Open Source · mechanical keyboard news wire" href="feed.xml">
 <link rel="canonical" href="https://malpern.github.io/keyboard-wire/tags/open-source/">
@@ -73,6 +73,31 @@
         </p>
       </div>
     </dialog>
+    <aside id="subscribe-card" class="subscribe-card" hidden aria-label="Subscribe to keyboard wire">
+      <button type="button" class="subscribe-card-close" aria-label="Dismiss">×</button>
+      <div class="subscribe-card-body">
+        <p class="subscribe-card-pitch"><strong>Daily keyboard wire.</strong> Short morning email — no spam.</p>
+        <form class="subscribe-form subscribe-card-form"
+              action="https://buttondown.com/api/emails/embed-subscribe/keyboard-newswire"
+              method="post">
+          <label for="subscribe-card-email" class="visually-hidden">Email address</label>
+          <input type="email" name="email" id="subscribe-card-email" placeholder="you@example.com"
+                 autocomplete="email" required>
+          <button type="submit" class="subscribe-submit">
+            <span class="subscribe-submit-label">Subscribe</span>
+            <span class="subscribe-submit-spinner" aria-hidden="true"></span>
+          </button>
+        </form>
+        <div class="subscribe-success subscribe-card-success" hidden>
+          <svg class="subscribe-check" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                  d="M5 12.5l4.5 4.5L19 7"/>
+          </svg>
+          <span>Subscribed — check your inbox.</span>
+        </div>
+        <p class="subscribe-error subscribe-card-error" hidden role="alert"></p>
+      </div>
+    </aside>
   </header>
   <section class="topic-page">
     <header class="day-header">
@@ -635,57 +660,124 @@
     }, { once: true, passive: true });
   }
 
-  // ── Subscribe dialog (Buttondown) ───────────────────────
+  // ── Subscribe (Buttondown) ──────────────────────────────
+  var SUB_DISMISS_KEY = 'kw-sub-card-dismissed';
+  var SUB_DONE_KEY = 'kw-sub-done';
+  function subDismissed() {
+    try { return localStorage.getItem(SUB_DISMISS_KEY) === '1'; } catch (e) { return false; }
+  }
+  function subMarkDismissed() {
+    try { localStorage.setItem(SUB_DISMISS_KEY, '1'); } catch (e) {}
+  }
+  function subDone() {
+    try { return localStorage.getItem(SUB_DONE_KEY) === '1'; } catch (e) { return false; }
+  }
+  function subMarkDone() {
+    try { localStorage.setItem(SUB_DONE_KEY, '1'); } catch (e) {}
+  }
+
+  function wireSubscribeForm(form, onSuccess) {
+    if (!form) return;
+    var emailEl = form.querySelector('input[type="email"]');
+    var submitBtn = form.querySelector('.subscribe-submit');
+    var successEl = form.parentElement.querySelector('.subscribe-success');
+    var errorEl = form.parentElement.querySelector('.subscribe-error');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = (emailEl.value || '').trim();
+      if (!email) return;
+      if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; }
+      submitBtn.classList.add('is-loading');
+      submitBtn.disabled = true;
+      var data = new FormData();
+      data.append('email', email);
+      fetch(form.action, { method: 'POST', body: data, mode: 'no-cors' })
+        .then(function() {
+          form.style.display = 'none';
+          if (successEl) {
+            successEl.hidden = false;
+            requestAnimationFrame(function(){ successEl.classList.add('is-shown'); });
+          }
+          subMarkDone();
+          if (onSuccess) onSuccess();
+        })
+        .catch(function() {
+          if (errorEl) {
+            errorEl.textContent = 'Something went wrong — try again?';
+            errorEl.hidden = false;
+          }
+        })
+        .finally(function() {
+          submitBtn.classList.remove('is-loading');
+          submitBtn.disabled = false;
+        });
+    });
+  }
+
+  // Header-nav dialog
   var subTrigger = document.getElementById('subscribe-trigger');
   var subDialog = document.getElementById('subscribe-dialog');
   if (subTrigger && subDialog) {
-    var subForm = subDialog.querySelector('#subscribe-form');
-    var subEmail = subDialog.querySelector('#subscribe-email');
-    var subSubmit = subDialog.querySelector('.subscribe-submit');
-    var subSuccess = subDialog.querySelector('.subscribe-success');
-    var subError = subDialog.querySelector('.subscribe-error');
+    var subDialogForm = subDialog.querySelector('#subscribe-form');
+    var subDialogEmail = subDialog.querySelector('#subscribe-email');
     function openSub() {
-      subError.hidden = true; subError.textContent = '';
-      if (typeof subDialog.showModal === 'function') {
-        subDialog.showModal();
-      } else {
-        subDialog.setAttribute('open', '');
-      }
-      requestAnimationFrame(function(){ subEmail.focus(); });
+      var err = subDialog.querySelector('.subscribe-error');
+      if (err) { err.hidden = true; err.textContent = ''; }
+      if (typeof subDialog.showModal === 'function') subDialog.showModal();
+      else subDialog.setAttribute('open', '');
+      requestAnimationFrame(function(){ subDialogEmail && subDialogEmail.focus(); });
     }
-    subTrigger.addEventListener('click', function(e) {
-      e.preventDefault();
-      openSub();
-    });
+    subTrigger.addEventListener('click', function(e) { e.preventDefault(); openSub(); });
     subDialog.addEventListener('click', function(e) {
-      // backdrop click closes (clicks on the dialog box itself are stopped by content)
       if (e.target === subDialog) subDialog.close();
     });
-    subForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      var email = (subEmail.value || '').trim();
-      if (!email) return;
-      subError.hidden = true;
-      subSubmit.classList.add('is-loading');
-      subSubmit.disabled = true;
-      var data = new FormData();
-      data.append('email', email);
-      fetch(subForm.action, { method: 'POST', body: data, mode: 'no-cors' })
-        .then(function() {
-          // no-cors → opaque response; assume success unless the user retries
-          subForm.style.display = 'none';
-          subSuccess.hidden = false;
-          requestAnimationFrame(function(){ subSuccess.classList.add('is-shown'); });
-        })
-        .catch(function() {
-          subError.textContent = 'Something went wrong — try again?';
-          subError.hidden = false;
-        })
-        .finally(function() {
-          subSubmit.classList.remove('is-loading');
-          subSubmit.disabled = false;
-        });
+    wireSubscribeForm(subDialogForm, function() {
+      // After dialog success, also hide the bottom card if visible
+      var card = document.getElementById('subscribe-card');
+      if (card) hideSubCard(card);
     });
+  }
+
+  // Bottom slide-up card (scroll-triggered, dismissible)
+  var subCard = document.getElementById('subscribe-card');
+  function hideSubCard(card) {
+    card.classList.remove('is-shown');
+    setTimeout(function(){ card.hidden = true; }, 300);
+  }
+  if (subCard && !subDismissed() && !subDone()) {
+    var subCardForm = subCard.querySelector('.subscribe-card-form');
+    wireSubscribeForm(subCardForm);
+    var closeBtn = subCard.querySelector('.subscribe-card-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        subMarkDismissed();
+        hideSubCard(subCard);
+      });
+    }
+    var shown = false;
+    function maybeShowSubCard() {
+      if (shown) return;
+      // Trigger after the user has scrolled past one viewport's worth of content
+      var threshold = window.innerHeight * 0.9;
+      if (window.scrollY > threshold) {
+        shown = true;
+        subCard.hidden = false;
+        // Force reflow before adding the class so the transition runs
+        // eslint-disable-next-line no-unused-expressions
+        subCard.offsetHeight;
+        subCard.classList.add('is-shown');
+        window.removeEventListener('scroll', onScroll);
+      }
+    }
+    var scrollTimer = null;
+    function onScroll() {
+      if (scrollTimer) return;
+      scrollTimer = setTimeout(function() {
+        scrollTimer = null;
+        maybeShowSubCard();
+      }, 80);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
   }
 })();
 </script>

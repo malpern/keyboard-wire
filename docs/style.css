@@ -1463,11 +1463,98 @@ footer a:hover {
   color: var(--ink-soft);
 }
 
+/* ── Bottom slide-up subscribe card ──────────────────── */
+
+.subscribe-card {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translate(-50%, calc(100% + 2rem));
+  width: min(440px, calc(100vw - 2rem));
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  box-shadow: 0 18px 48px -12px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.06);
+  padding: 0.875rem 1rem 0.875rem 1.125rem;
+  opacity: 0;
+  transition: transform 0.36s cubic-bezier(0.22, 0.8, 0.36, 1), opacity 0.32s ease;
+  z-index: 50;
+}
+.subscribe-card.is-shown {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+
+.subscribe-card-close {
+  position: absolute;
+  top: 0.375rem;
+  right: 0.375rem;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  color: var(--ink-faint);
+  font-size: 1.25rem;
+  line-height: 1;
+  width: 1.5rem;
+  height: 1.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.subscribe-card-close:hover,
+.subscribe-card-close:focus-visible {
+  color: var(--accent);
+  background: rgba(192, 57, 43, 0.08);
+  outline: none;
+}
+
+.subscribe-card-body {
+  padding-right: 1rem; /* leave room for close button */
+}
+
+.subscribe-card-pitch {
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+.subscribe-card-pitch strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.subscribe-card-form input[type="email"] {
+  font-size: 0.875rem;
+  padding: 0.4375rem 0.5625rem;
+}
+.subscribe-card-form .subscribe-submit {
+  font-size: 0.875rem;
+  padding: 0.4375rem 0.75rem;
+  min-width: 5.5rem;
+}
+
+.subscribe-card-success {
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 480px) {
+  .subscribe-card {
+    bottom: 0.5rem;
+    border-radius: 10px;
+    padding: 0.75rem 0.875rem 0.75rem 1rem;
+  }
+  .subscribe-card-pitch { font-size: 0.8125rem; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .subscribe-dialog,
   .subscribe-success,
   .subscribe-submit-label,
-  .subscribe-submit-spinner {
+  .subscribe-submit-spinner,
+  .subscribe-card {
     transition: none !important;
     animation-duration: 0s !important;
   }

@@ -6,7 +6,7 @@
   <atom:link href="https://malpern.github.io/keyboard-wire/tags/shortcut-manager/feed.xml" rel="self" type="application/rss+xml"/>
   <description>All keyboard wire entries tagged Shortcut Manager.</description>
   <language>en-us</language>
-  <lastBuildDate>Tue, 05 May 2026 04:06:33 +0000</lastBuildDate>
+  <lastBuildDate>Tue, 05 May 2026 04:11:44 +0000</lastBuildDate>
   <item>
     <title>Tooling discussion for debugging global shortcut conflicts on macOS</title>
     <link>https://www.reddit.com/r/MacOSApps/comments/1t27dar/macos_utilities_for_identifying_apps_hijacking/</link>
