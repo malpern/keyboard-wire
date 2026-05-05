@@ -118,6 +118,8 @@ def head(title: str, description: str, canonical: str, feed: str | None = None) 
     # Cache-bust style.css with the file's mtime so deploys force a fresh CSS pull.
     css_path = DOCS / "style.css"
     css_v = int(css_path.stat().st_mtime) if css_path.exists() else 1
+    share_path = DOCS / "post" / "assets" / "share-final.png"
+    share_v = int(share_path.stat().st_mtime) if share_path.exists() else 1
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -133,9 +135,9 @@ def head(title: str, description: str, canonical: str, feed: str | None = None) 
 <meta property="og:description" content="{html.escape(description)}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{html.escape(canonical)}">
-<meta property="og:image" content="{SITE_URL}/post/assets/share-final.png">
+<meta property="og:image" content="{SITE_URL}/post/assets/share-final.png?v={share_v}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="{SITE_URL}/post/assets/share-final.png">
+<meta name="twitter:image" content="{SITE_URL}/post/assets/share-final.png?v={share_v}">
 </head>
 <body>
 <main>'''
