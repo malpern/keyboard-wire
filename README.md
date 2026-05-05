@@ -1,10 +1,16 @@
-# keyboard wire
+<p align="center">
+  <img src="docs/post/assets/icon-final.png" alt="Keyboard Newswire" width="128" height="128" style="border-radius: 24px;">
+</p>
 
-A daily, auto-curated digest of mechanical-keyboard hardware, firmware, and tooling — pulled from Hacker News, several keyboard subreddits, and a Gmail-labeled inbox of vendor newsletters, then filtered, summarized, tagged, and published as a static site every morning.
+<h1 align="center">keyboard newswire</h1>
 
-[![Live site screenshot](screenshot.png)](https://malpern.github.io/keyboard-wire/)
+<p align="center">
+  A daily, auto-curated digest of mechanical-keyboard hardware, firmware, and tooling — pulled from Hacker News, several keyboard subreddits, and a Gmail-labeled inbox of vendor newsletters, then filtered, summarized, tagged, and published as a static site every morning.
+</p>
 
-### → [Read the live site](https://malpern.github.io/keyboard-wire/) · [RSS feed](https://malpern.github.io/keyboard-wire/feed.xml)
+[![Live site screenshot](screenshot.png)](https://keyboard-newswire.com)
+
+### → [Read the live site](https://keyboard-newswire.com) · [RSS feed](https://keyboard-newswire.com/feed.xml) · [About / blog post](https://keyboard-newswire.com/post/)
 
 ---
 
