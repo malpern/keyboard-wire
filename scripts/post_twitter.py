@@ -16,6 +16,7 @@ Usage:
   post_twitter.py 2026-05-04      # posts a specific day
   post_twitter.py --dry-run       # preview without posting
 """
+import base64
 import datetime
 import hashlib
 import hmac
