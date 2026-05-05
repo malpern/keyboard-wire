@@ -877,13 +877,18 @@ def render_item(item: dict, topics_reg: dict, tags_reg: dict, *,
     top_meta = '<span class="sep">·</span>'.join(top_parts)
 
     # Bottom utility row: score · comments · discuss · #tags
+    # Suppressed entirely on multi-source items: per-source stats already
+    # appear in the "Also discussed at" list above, and aggregating them
+    # on an email-led cluster would surface phantom stats.
+    sources_count = len(item.get("sources") or [])
     bottom_parts = []
-    if item.get("score") is not None:
-        bottom_parts.append(f'<span class="stat">⬆ {item["score"]}</span>')
-    if item.get("comments") is not None:
-        bottom_parts.append(f'<span class="stat">💬 {item["comments"]}</span>')
-    if item.get("discussion_url") and item["discussion_url"] != item["url"]:
-        bottom_parts.append(f'<a href="{html.escape(item["discussion_url"])}" rel="noopener" target="_blank">discuss</a>')
+    if sources_count <= 1:
+        if item.get("score") is not None:
+            bottom_parts.append(f'<span class="stat">⬆ {item["score"]}</span>')
+        if item.get("comments") is not None:
+            bottom_parts.append(f'<span class="stat">💬 {item["comments"]}</span>')
+        if item.get("discussion_url") and item["discussion_url"] != item["url"]:
+            bottom_parts.append(f'<a href="{html.escape(item["discussion_url"])}" rel="noopener" target="_blank">discuss</a>')
 
     # Tags hidden from item cards for now (still drive /tags/<slug>/ pages
     # and feed the archive search index). Re-enable here later if desired.
