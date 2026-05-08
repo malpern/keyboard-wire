@@ -1,0 +1,31 @@
+{
+  "date": "2026-05-08",
+  "items": [
+    {
+      "id": "email-19e02f8b6949cc11",
+      "title": "Omnitype offers 50% discount on Symbiote keycap set",
+      "url": "https://omnitype.com",
+      "discussion_url": "https://omnitype.com",
+      "source": "email",
+      "subreddit": null,
+      "via": "Omnitype",
+      "score": null,
+      "comments": null,
+      "category": "evergreen",
+      "takeaway": "Omnitype is offering a 50% discount on the Symbiote keycap set via their Firsty Thursdays collection.",
+      "sender": "Omnitype <help@omnitype.com>",
+      "topics": [
+        "group-buys-vendors",
+        "keycaps-aesthetics"
+      ],
+      "tags": [
+        "pricing",
+        "keycap-design"
+      ],
+      "original_title": "Omnitype Firsty Thursdays Symbiote",
+      "title_rewritten": true,
+      "title_rewrite_reason": "Vague title replaced with specific offer details",
+      "image": "img/email-19e02f8b6949cc11.jpg"
+    }
+  ]
+}
