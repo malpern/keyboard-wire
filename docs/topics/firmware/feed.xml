@@ -6,7 +6,7 @@
   <atom:link href="https://keyboard-newswire.com/topics/firmware/feed.xml" rel="self" type="application/rss+xml"/>
   <description>On-board keyboard firmware: QMK, ZMK, KMK, custom firmware development, matrix scanning, encoders, RGB, BLE, controllers.</description>
   <language>en-us</language>
-  <lastBuildDate>Mon, 11 May 2026 12:04:27 +0000</lastBuildDate>
+  <lastBuildDate>Mon, 11 May 2026 12:04:31 +0000</lastBuildDate>
   <item>
     <title>Updated TOTEM dongle zmk module</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1t8pdb5/updated_totem_dongle_zmk_module/</link>
