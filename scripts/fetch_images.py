@@ -224,7 +224,11 @@ def download_and_save(image_url: str, dest: pathlib.Path, *,
     Pillow `thumbnail`-shrinks to fit while preserving aspect ratio.
     CSS does the final 4:3 framing via `object-fit: cover`, so the
     source image stays sharp on retina displays.
+
+    Per-host throttle ensures we don't hammer Imgur / postimg / etc;
+    we got 429'd by Imgur during step-1b backfill testing without it.
     """
+    _HOST_THROTTLE.wait(image_url)
     raw = http_get_full(image_url)
     if not raw or len(raw) < 1000:
         return False
@@ -264,6 +268,15 @@ def slug_for_item(item: dict) -> str:
     s = item.get("id") or ""
     s = re.sub(r"[^A-Za-z0-9_-]+", "-", s).strip("-")
     return s or "item"
+
+
+# Per-host throttle shared across every download_and_save call in a
+# pipeline run. 1.0s between same-host requests stays well under
+# Imgur's documented unauthenticated rate (~21 req/min) and is
+# comfortable for postimg.cc, bord.design, geekhack.org dlattach.
+# See docs/GB_IC_FEED.md "Step 1c".
+import http_polite  # noqa: E402
+_HOST_THROTTLE = http_polite.HostThrottle(min_interval=1.0)
 
 
 MAX_GB_IMAGES = 6  # cap per-item to keep carousel tidy + bandwidth bounded

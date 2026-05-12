@@ -34,6 +34,10 @@ import xml.etree.ElementTree as ET
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 STATE_FILE = ROOT / "data" / "geekhack_seen.json"
+# Per-URL ETag / Last-Modified cache; persists between cron runs so
+# quiet days return 304 Not Modified instead of re-downloading the
+# full RSS XML. See docs/GB_IC_FEED.md "Step 1c".
+HTTP_CACHE_FILE = ROOT / "data" / "geekhack_http_cache.json"
 
 USER_AGENT = "keyboard-wire/1.0 (+https://keyboard-newswire.com)"
 
@@ -47,12 +51,31 @@ def feed_url(board: int) -> str:
     return f"https://geekhack.org/index.php?action=.xml;type=rss;board={board}"
 
 
-def fetch_feed(url: str) -> bytes:
-    """Return raw bytes so ET.fromstring can honor the XML encoding decl
-    (Geekhack serves ISO-8859-1, not UTF-8)."""
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=20) as resp:
-        return resp.read()
+def fetch_feed(url: str) -> bytes | None:
+    """Return raw bytes from the RSS feed using conditional GET. On
+    `304 Not Modified` returns None — caller should treat as "no new
+    items, exit quietly" (since RSS unchanged ⇒ no new threads).
+
+    Geekhack serves ISO-8859-1; the caller passes the bytes straight
+    to ET.fromstring which honors the XML encoding decl.
+
+    Note (2026-05-12): Geekhack currently sends a constant
+    Last-Modified of 2018-09-06 for every RSS response and no ETag.
+    Their server doesn't actually do conditional-response logic, so
+    the 304 path won't trigger in practice — but we still send the
+    correct headers (signals politeness, costs nothing) and the cache
+    plumbing is ready for any upstream that does honor it (kbd.news
+    being the obvious next candidate)."""
+    import http_polite
+    status, body = http_polite.conditional_get(
+        url, HTTP_CACHE_FILE, timeout=20, user_agent=USER_AGENT,
+    )
+    if status == 304:
+        return None
+    if status != 200 or body is None:
+        # Raise so the existing fail path (sys.exit(1) in main) triggers.
+        raise RuntimeError(f"feed HTTP {status} for {url}")
+    return body
 
 
 def thread_id_from_url(url: str) -> str | None:
@@ -435,12 +458,31 @@ def main():
         for path, board in zip(args.feed_file, args.board):
             feeds.append((board, pathlib.Path(path).read_bytes()))
     else:
+        all_unchanged = True
         for board in BOARDS:
             try:
-                feeds.append((board, fetch_feed(feed_url(board))))
+                body = fetch_feed(feed_url(board))
             except Exception as e:
                 sys.stderr.write(f"feed fetch failed (board {board}): {e}\n")
                 sys.exit(1)
+            if body is None:
+                sys.stderr.write(
+                    f"  board {board}: 304 Not Modified — skipping\n"
+                )
+                continue
+            all_unchanged = False
+            feeds.append((board, body))
+        # If every board returned 304, there's nothing to do. Emit an
+        # empty array on stdout so the driver's "0 items, exit silently"
+        # path triggers without alerting.
+        if all_unchanged and not feeds:
+            if args.dry_run:
+                print("geekhack: all boards unchanged (304) — no work")
+            else:
+                json.dump([], sys.stdout)
+                sys.stdout.write("\n")
+                sys.stderr.write("geekhack: all boards unchanged (304)\n")
+            return
 
     items = collect(feeds, seen)
 
