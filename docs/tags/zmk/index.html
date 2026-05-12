@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Zmk · mechanical keyboard newswire</title>
 <meta name="description" content="All keyboard wire entries tagged Zmk.">
-<link rel="stylesheet" href="../../style.css?v=1778624000">
+<link rel="stylesheet" href="../../style.css?v=1778624671">
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="alternate" type="application/rss+xml" title="Zmk · mechanical keyboard newswire" href="feed.xml">
 <link rel="canonical" href="https://keyboard-newswire.com/tags/zmk/">
@@ -1024,6 +1024,103 @@
     });
   }
   initGbLightbox();
+
+  // ── GB vendor pills: client-side geo prioritization ──
+  // Detect user's region from browser timezone (or manual override
+  // saved in localStorage). Pills whose data-region matches stay
+  // expanded; the rest collapse behind a "+N more vendors" toggle.
+  // SSR keeps showing every pill so crawlers / feed readers see
+  // everyone; JS just narrows the visible set post-load.
+  function detectGbRegion() {
+    try {
+      var override = localStorage.getItem('kw-region');
+      if (override) return override;
+    } catch (_) {}
+    var tz = '';
+    try {
+      tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    } catch (_) {}
+    if (!tz) return null;
+    if (tz === 'Europe/London' || tz === 'Europe/Dublin'
+        || tz === 'Europe/Belfast') return 'UK';
+    if (tz.indexOf('Europe/') === 0) return 'EU';
+    if (tz === 'Asia/Tokyo') return 'JP';
+    if (tz === 'Asia/Seoul') return 'KR';
+    if (/^Asia\/(Shanghai|Hong_Kong|Chongqing|Urumqi|Taipei|Macau)$/.test(tz))
+      return 'CN';
+    if (tz === 'Asia/Singapore') return 'SG';
+    if (tz.indexOf('Australia/') === 0) return 'AU';
+    if (tz === 'Pacific/Auckland') return 'NZ';
+    if (/^America\/(Toronto|Vancouver|Edmonton|Winnipeg|Halifax|Montreal|Regina|Moncton|St_Johns|Whitehorse)$/.test(tz))
+      return 'CA';
+    if (tz.indexOf('America/') === 0) return 'US';
+    return null;
+  }
+
+  // Region equivalences: an "AU" user is at home with "OC" (Oceania)
+  // pills; "EU" pills with subregions like "DE" / "FR" / "ES" also
+  // count as near for EU users.
+  var NEAR_REGION = {
+    AU: ['AU', 'OC', 'NZ'],
+    NZ: ['NZ', 'AU', 'OC'],
+    OC: ['OC', 'AU', 'NZ'],
+    EU: ['EU', 'DE', 'FR', 'NL', 'ES', 'IT', 'PL', 'SE', 'FI', 'DK', 'NO'],
+    UK: ['UK'],
+    US: ['US'],
+    CA: ['CA', 'US'],  // Canadians often buy from US vendors too
+    JP: ['JP'],
+    KR: ['KR'],
+    CN: ['CN'],
+    SG: ['SG', 'SEA'],
+  };
+
+  function isPillNear(pillRegion, userRegion) {
+    if (!userRegion || !pillRegion) return false;
+    var nearList = NEAR_REGION[userRegion] || [userRegion];
+    return nearList.indexOf(pillRegion) !== -1;
+  }
+
+  function initGbVendorGeo() {
+    var userRegion = detectGbRegion();
+    if (!userRegion) return;  // Unknown timezone — show everyone.
+    var containers = document.querySelectorAll('[data-gb-vendors]');
+    Array.prototype.forEach.call(containers, function(container) {
+      var pills = container.querySelectorAll('.gb-vendor-pill');
+      if (pills.length < 3) return;  // Don't bother collapsing tiny lists.
+      var near = [], far = [];
+      for (var i = 0; i < pills.length; i++) {
+        var r = pills[i].getAttribute('data-region') || '';
+        if (isPillNear(r, userRegion)) near.push(pills[i]);
+        else far.push(pills[i]);
+      }
+      // If 0 or 1 near pills, show everyone — users with few-or-no
+      // local vendors shouldn't see "+ 7 more" hiding the only
+      // options they have.
+      if (near.length < 2 || far.length === 0) return;
+      // Mark far pills + hide them; build a toggle.
+      Array.prototype.forEach.call(far, function(p) {
+        p.classList.add('gb-vendor-pill-far');
+        p.hidden = true;
+      });
+      var toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'gb-vendor-toggle';
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.textContent = '+ ' + far.length + ' more worldwide';
+      toggle.addEventListener('click', function() {
+        var expanded = toggle.getAttribute('aria-expanded') === 'true';
+        Array.prototype.forEach.call(far, function(p) {
+          p.hidden = expanded;
+        });
+        toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        toggle.textContent = expanded
+          ? ('+ ' + far.length + ' more worldwide')
+          : 'show local only';
+      });
+      container.appendChild(toggle);
+    });
+  }
+  initGbVendorGeo();
 })();
 </script>
 </body>

@@ -293,30 +293,36 @@ class RenderGbItem(unittest.TestCase):
                 {"vendor": "Proto[Typist]",
                  "url": "https://prototypist.net/products/x",
                  "host": "prototypist.net"},
-                # No URL for Oblotzky — that pill stays inert.
+                # No URL for Oblotzky — that pill stays as a span.
             ],
         })
         out = gen.render_gb_item(item, {}, {})
+        self.assertIn('href="https://novelkeys.com/products/x"', out)
+        self.assertIn('href="https://prototypist.net/products/x"', out)
+        # Oblotzky pill has no URL → span, not anchor.
         self.assertIn(
-            'href="https://novelkeys.com/products/x"', out,
+            '<span class="gb-vendor-pill" data-region="EU">'
+            '<span class="gb-vendor-region">EU</span>Oblotzky</span>',
+            out,
         )
-        self.assertIn(
-            'href="https://prototypist.net/products/x"', out,
-        )
-        self.assertIn('class="gb-vendor-pill gb-vendor-pill-link"', out)
-        # Oblotzky pill stays as a span — verify it's wrapped in span
-        # and not <a>.
-        self.assertIn('<span class="gb-vendor-pill"><span class="gb-vendor-region">EU</span>Oblotzky</span>', out)
 
-    def test_vendor_pill_unmatched_stays_inert(self):
-        # vendor_links present but no name match → pills stay as spans.
+    def test_vendor_pill_orphan_link_renders_with_inferred_region(self):
+        # vendor_links carries a vendor that isn't in vendor_regions —
+        # we still render it (post-unified-pill behavior). Region is
+        # inferred from the host, here Yushakobo's .jp domain.
         item = make_gb_item(gb={
-            "vendor_regions": [{"region": "JP", "name": "Yushakobo"}],
-            "vendor_links": [{"vendor": "NovelKeys", "url": "https://nk/x"}],
+            "vendor_regions": [{"region": "JP", "name": "Existing"}],
+            "vendor_links": [{
+                "vendor": "Yushakobo",
+                "url": "https://shop.yushakobo.jp/products/x",
+                "host": "shop.yushakobo.jp",
+            }],
         })
         out = gen.render_gb_item(item, {}, {})
-        self.assertNotIn("gb-vendor-pill-link", out)
         self.assertIn("Yushakobo", out)
+        self.assertIn('data-region="JP"', out)
+        # And it does link out since we have a URL.
+        self.assertIn('href="https://shop.yushakobo.jp/products/x"', out)
 
     def test_vendor_pill_shows_price_chip_when_metadata_present(self):
         item = make_gb_item(gb={
@@ -407,6 +413,116 @@ class RenderGbItem(unittest.TestCase):
         })
         out = gen.render_gb_item(item, {}, {})
         self.assertNotIn("gb-vendor-price", out)
+
+
+class InferVendorRegion(unittest.TestCase):
+    def test_known_hosts(self):
+        self.assertEqual(gen.infer_vendor_region("novelkeys.com"), "US")
+        self.assertEqual(gen.infer_vendor_region("prototypist.net"), "UK")
+        self.assertEqual(gen.infer_vendor_region("kbdfans.com"), "CN")
+        self.assertEqual(gen.infer_vendor_region("oblotzky.industries"), "EU")
+        self.assertEqual(gen.infer_vendor_region("shop.yushakobo.jp"), "JP")
+        self.assertEqual(gen.infer_vendor_region("ilumkb.com"), "SG")
+
+    def test_tld_jp(self):
+        self.assertEqual(gen.infer_vendor_region("vendor-unknown.jp"), "JP")
+
+    def test_tld_au(self):
+        self.assertEqual(gen.infer_vendor_region("foo.com.au"), "AU")
+
+    def test_tld_co_uk(self):
+        self.assertEqual(gen.infer_vendor_region("foo.co.uk"), "UK")
+
+    def test_tld_de_eu(self):
+        self.assertEqual(gen.infer_vendor_region("vendor.de"), "EU")
+
+    def test_unknown_com_returns_none(self):
+        # Ambiguous .com without an explicit map entry → don't guess.
+        self.assertIsNone(gen.infer_vendor_region("randomvendor.com"))
+
+    def test_empty(self):
+        self.assertIsNone(gen.infer_vendor_region(""))
+        self.assertIsNone(gen.infer_vendor_region(None))
+
+
+class UnifiedVendorPills(unittest.TestCase):
+    def test_regions_with_matching_links(self):
+        gb = {
+            "vendor_regions": [
+                {"region": "US", "name": "NovelKeys"},
+            ],
+            "vendor_links": [
+                {"vendor": "NovelKeys",
+                 "url": "https://novelkeys.com/products/x",
+                 "host": "novelkeys.com",
+                 "price_low": 13500, "currency": "USD"},
+            ],
+        }
+        out = gen.unified_vendor_pills(gb)
+        self.assertEqual(len(out), 1)
+        self.assertEqual(out[0]["region"], "US")
+        self.assertEqual(out[0]["name"], "NovelKeys")
+        self.assertEqual(out[0]["url"],
+                         "https://novelkeys.com/products/x")
+        self.assertEqual(out[0]["price_low"], 13500)
+
+    def test_orphan_link_inherits_inferred_region(self):
+        # Vendor in vendor_links but not in vendor_regions.
+        gb = {
+            "vendor_regions": [],
+            "vendor_links": [{
+                "vendor": "Yushakobo",
+                "url": "https://shop.yushakobo.jp/products/x",
+                "host": "shop.yushakobo.jp",
+                "available": False,
+            }],
+        }
+        out = gen.unified_vendor_pills(gb)
+        self.assertEqual(len(out), 1)
+        self.assertEqual(out[0]["region"], "JP")
+        self.assertEqual(out[0]["available"], False)
+
+    def test_orphan_link_no_region_when_unknown_host(self):
+        gb = {
+            "vendor_links": [{
+                "vendor": "Mystery Vendor",
+                "url": "https://mystery.com/products/x",
+                "host": "mystery.com",
+            }],
+        }
+        out = gen.unified_vendor_pills(gb)
+        self.assertEqual(out[0]["name"], "Mystery Vendor")
+        self.assertIsNone(out[0]["region"])
+
+    def test_preserves_vendor_regions_order(self):
+        gb = {
+            "vendor_regions": [
+                {"region": "US", "name": "NovelKeys"},
+                {"region": "EU", "name": "Oblotzky"},
+                {"region": "JP", "name": "Yushakobo"},
+            ],
+            "vendor_links": [],
+        }
+        out = gen.unified_vendor_pills(gb)
+        self.assertEqual([e["name"] for e in out],
+                         ["NovelKeys", "Oblotzky", "Yushakobo"])
+
+    def test_dedup_when_link_and_region_overlap(self):
+        gb = {
+            "vendor_regions": [{"region": "US", "name": "NovelKeys"}],
+            "vendor_links": [{
+                "vendor": "NovelKeys",
+                "url": "https://novelkeys.com/products/x",
+                "host": "novelkeys.com",
+            }],
+        }
+        out = gen.unified_vendor_pills(gb)
+        self.assertEqual(len(out), 1)
+        # Should pick up the URL from the link
+        self.assertIn("url", out[0])
+
+    def test_empty_gb_returns_empty(self):
+        self.assertEqual(gen.unified_vendor_pills({}), [])
 
 
 class FormatVendorPrice(unittest.TestCase):

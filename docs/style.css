@@ -2232,3 +2232,28 @@ a.gb-vendor-pill-link:hover .gb-vendor-region {
     background: rgba(255, 255, 255, 0.08);
   }
 }
+
+/* Geo-collapse: "+ N more worldwide" toggle button. */
+.gb-vendor-toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 1px dashed var(--rule);
+  color: var(--ink-faint);
+  padding: 0.1875rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.gb-vendor-toggle:hover,
+.gb-vendor-toggle:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+  outline: none;
+}
+.gb-vendor-pill-far {
+  /* slightly muted when revealed via the toggle */
+  opacity: 0.85;
+}

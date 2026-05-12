@@ -1117,6 +1117,103 @@ def font_script() -> str:
     });
   }
   initGbLightbox();
+
+  // ── GB vendor pills: client-side geo prioritization ──
+  // Detect user's region from browser timezone (or manual override
+  // saved in localStorage). Pills whose data-region matches stay
+  // expanded; the rest collapse behind a "+N more vendors" toggle.
+  // SSR keeps showing every pill so crawlers / feed readers see
+  // everyone; JS just narrows the visible set post-load.
+  function detectGbRegion() {
+    try {
+      var override = localStorage.getItem('kw-region');
+      if (override) return override;
+    } catch (_) {}
+    var tz = '';
+    try {
+      tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    } catch (_) {}
+    if (!tz) return null;
+    if (tz === 'Europe/London' || tz === 'Europe/Dublin'
+        || tz === 'Europe/Belfast') return 'UK';
+    if (tz.indexOf('Europe/') === 0) return 'EU';
+    if (tz === 'Asia/Tokyo') return 'JP';
+    if (tz === 'Asia/Seoul') return 'KR';
+    if (/^Asia\/(Shanghai|Hong_Kong|Chongqing|Urumqi|Taipei|Macau)$/.test(tz))
+      return 'CN';
+    if (tz === 'Asia/Singapore') return 'SG';
+    if (tz.indexOf('Australia/') === 0) return 'AU';
+    if (tz === 'Pacific/Auckland') return 'NZ';
+    if (/^America\/(Toronto|Vancouver|Edmonton|Winnipeg|Halifax|Montreal|Regina|Moncton|St_Johns|Whitehorse)$/.test(tz))
+      return 'CA';
+    if (tz.indexOf('America/') === 0) return 'US';
+    return null;
+  }
+
+  // Region equivalences: an "AU" user is at home with "OC" (Oceania)
+  // pills; "EU" pills with subregions like "DE" / "FR" / "ES" also
+  // count as near for EU users.
+  var NEAR_REGION = {
+    AU: ['AU', 'OC', 'NZ'],
+    NZ: ['NZ', 'AU', 'OC'],
+    OC: ['OC', 'AU', 'NZ'],
+    EU: ['EU', 'DE', 'FR', 'NL', 'ES', 'IT', 'PL', 'SE', 'FI', 'DK', 'NO'],
+    UK: ['UK'],
+    US: ['US'],
+    CA: ['CA', 'US'],  // Canadians often buy from US vendors too
+    JP: ['JP'],
+    KR: ['KR'],
+    CN: ['CN'],
+    SG: ['SG', 'SEA'],
+  };
+
+  function isPillNear(pillRegion, userRegion) {
+    if (!userRegion || !pillRegion) return false;
+    var nearList = NEAR_REGION[userRegion] || [userRegion];
+    return nearList.indexOf(pillRegion) !== -1;
+  }
+
+  function initGbVendorGeo() {
+    var userRegion = detectGbRegion();
+    if (!userRegion) return;  // Unknown timezone — show everyone.
+    var containers = document.querySelectorAll('[data-gb-vendors]');
+    Array.prototype.forEach.call(containers, function(container) {
+      var pills = container.querySelectorAll('.gb-vendor-pill');
+      if (pills.length < 3) return;  // Don't bother collapsing tiny lists.
+      var near = [], far = [];
+      for (var i = 0; i < pills.length; i++) {
+        var r = pills[i].getAttribute('data-region') || '';
+        if (isPillNear(r, userRegion)) near.push(pills[i]);
+        else far.push(pills[i]);
+      }
+      // If 0 or 1 near pills, show everyone — users with few-or-no
+      // local vendors shouldn't see "+ 7 more" hiding the only
+      // options they have.
+      if (near.length < 2 || far.length === 0) return;
+      // Mark far pills + hide them; build a toggle.
+      Array.prototype.forEach.call(far, function(p) {
+        p.classList.add('gb-vendor-pill-far');
+        p.hidden = true;
+      });
+      var toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'gb-vendor-toggle';
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.textContent = '+ ' + far.length + ' more worldwide';
+      toggle.addEventListener('click', function() {
+        var expanded = toggle.getAttribute('aria-expanded') === 'true';
+        Array.prototype.forEach.call(far, function(p) {
+          p.hidden = expanded;
+        });
+        toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        toggle.textContent = expanded
+          ? ('+ ' + far.length + ' more worldwide')
+          : 'show local only';
+      });
+      container.appendChild(toggle);
+    });
+  }
+  initGbVendorGeo();
 })();
 </script>'''
 
@@ -1176,6 +1273,79 @@ def fmt_price_chip(gb: dict) -> str | None:
     return f"{sym}{val // 100}+"
 
 
+# Known-vendor → region map. Used to label vendor_link pills that
+# don't appear in the OP's structured "Vendors US: X" list (the
+# vendor was hyperlinked inline). Hand-curated as new vendors show
+# up in the corpus; default behavior when host is unknown is to
+# omit the region badge entirely (rather than guess wrong).
+_KNOWN_VENDOR_REGIONS = {
+    # US
+    "novelkeys.com":       "US",
+    "cannonkeys.com":      "US",
+    "bowlkeyboards.com":   "US",
+    "saberkeebs.com":      "US",
+    "mechsandco.com":      "US",
+    "minokeys.com":        "US",
+    # CA
+    "deskhero.ca":         "CA",
+    "www.deskhero.ca":     "CA",
+    # UK
+    "prototypist.net":     "UK",
+    "proto-typist.com":    "UK",
+    # EU
+    "oblotzky.industries": "EU",
+    "mykeyboard.eu":       "EU",
+    "keeb.supply":         "EU",
+    "coffeekeys.de":       "EU",
+    "torokeeb.store":      "EU",
+    "www.torokeeb.store":  "EU",
+    "delta-key.co":        "EU",
+    # KR
+    "geon.works":          "KR",
+    "geonworks.com":       "KR",
+    # CN
+    "kbdfans.com":         "CN",
+    "typist.club":         "CN",
+    "zfrontier.com":       "CN",
+    # JP
+    "shop.yushakobo.jp":   "JP",
+    "yushakobo.jp":        "JP",
+    # SG / SEA
+    "ilumkb.com":          "SG",
+    "monokei.co":          "SG",
+    "ktechs.store":        "SG",
+    # AU / OC
+    "keebzncables.com":     "AU",
+    "www.keebzncables.com": "AU",
+    "dailyclack.com":      "AU",
+}
+
+
+def infer_vendor_region(host: str | None) -> str | None:
+    """Best-effort region inference from a vendor's host. Returns
+    None when we'd rather omit the region badge than guess. Prefers
+    the explicit known-vendor map; falls back to country-code TLDs."""
+    if not host:
+        return None
+    h = host.lower().lstrip(".")
+    if h in _KNOWN_VENDOR_REGIONS:
+        return _KNOWN_VENDOR_REGIONS[h]
+    # Country-code TLD fallback. Lowercase only.
+    tld_map = {
+        ".jp": "JP", ".kr": "KR", ".cn": "CN", ".sg": "SG",
+        ".au": "AU", ".nz": "NZ", ".ca": "CA",
+        ".de": "EU", ".fr": "EU", ".nl": "EU", ".es": "EU",
+        ".it": "EU", ".eu": "EU", ".pl": "EU", ".se": "EU",
+        ".fi": "EU", ".dk": "EU", ".no": "EU", ".at": "EU",
+        ".be": "EU", ".pt": "EU", ".ie": "UK",
+        ".uk": "UK", ".co.uk": "UK",
+    }
+    for tld, region in tld_map.items():
+        if h.endswith(tld):
+            return region
+    return None
+
+
 _CURRENCY_SYMBOL = {
     "USD": "$", "CAD": "$", "AUD": "$", "NZD": "$",
     "GBP": "£", "EUR": "€", "JPY": "¥", "CNY": "¥",
@@ -1214,6 +1384,67 @@ def fmt_date_chip(iso: str | None, *, prefix: str) -> str | None:
         return f"{prefix} {MONTHS[int(m)]} {int(d)}"
     except Exception:
         return None
+
+
+def unified_vendor_pills(gb: dict) -> list[dict]:
+    """Combine `gb.vendor_regions` (parsed from the OP's structured
+    "Vendors US: X" list) with `gb.vendor_links` (hyperlinks in the
+    OP body) into a single ordered list of pills the render layer
+    iterates.
+
+    Output entries: `{region, name, url, price_low, price_high,
+    currency, available}`. Region comes from vendor_regions when the
+    vendor's name matches; otherwise inferred from the link host
+    (infer_vendor_region). Both fields are optional.
+
+    Iteration order: vendor_regions first (preserves OP order), then
+    any vendor_links that didn't match a region. Dedup by lowercased
+    vendor name + host to avoid double-emit when a vendor appears in
+    both lists.
+    """
+    regions = gb.get("vendor_regions") or []
+    links = gb.get("vendor_links") or []
+    link_by_name = {}
+    for vl in links:
+        n = str(vl.get("vendor") or "").strip().lower()
+        if n and n not in link_by_name:
+            link_by_name[n] = vl
+
+    out: list[dict] = []
+    seen_keys: set = set()
+
+    def _emit(region, name, vl):
+        if not name:
+            return
+        key = (name.strip().lower(), (vl.get("host") or "") if vl else "")
+        if key in seen_keys:
+            return
+        seen_keys.add(key)
+        entry = {"region": region or None, "name": name.strip()}
+        if vl:
+            for k in ("url", "host", "price_low", "price_high",
+                      "currency", "available"):
+                if k in vl:
+                    entry[k] = vl[k]
+        out.append(entry)
+
+    for r in regions:
+        name = str(r.get("name") or "").strip()
+        if not name:
+            continue
+        vl = link_by_name.get(name.lower())
+        _emit(r.get("region") or "", name, vl)
+
+    # Orphan vendor_links — not in vendor_regions but still real.
+    used_names = {e["name"].lower() for e in out}
+    for vl in links:
+        name = str(vl.get("vendor") or "").strip()
+        if not name or name.lower() in used_names:
+            continue
+        inferred = infer_vendor_region(vl.get("host"))
+        _emit(inferred or "", name, vl)
+
+    return out
 
 
 def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
@@ -1368,31 +1599,17 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
 
     # ── vendors by region ──
     vendor_html = ""
-    vendors = gb.get("vendor_regions") or []
-    if vendors:
-        # Build name→link map from vendor_links (extracted from the
-        # OP body's hyperlinks). When the vendor pill's name matches,
-        # the pill renders as a clickable buy-here URL, and price
-        # metadata (from vendor_metadata.py) appears beside it.
-        vendor_links = gb.get("vendor_links") or []
-        link_by_name = {}
-        for vl in vendor_links:
-            n = str(vl.get("vendor") or "").strip().lower()
-            if n and n not in link_by_name:
-                link_by_name[n] = vl
+    unified = unified_vendor_pills(gb)
+    if unified:
         pills = []
-        for v in vendors:
-            region = html.escape(str(v.get("region") or ""))
-            raw_name = str(v.get("name") or "").strip()
-            name = html.escape(raw_name)
-            if not region or not name:
-                continue
-            vl = link_by_name.get(raw_name.lower()) or {}
-            link_url = vl.get("url") or ""
-            available = vl.get("available")  # True / False / None (unknown)
-            # Price chip + availability — both populated by vendor_metadata.
+        for entry in unified:
+            region_raw = entry.get("region") or ""
+            region = html.escape(region_raw)
+            name = html.escape(entry.get("name") or "")
+            link_url = entry.get("url") or ""
+            available = entry.get("available")  # True / False / None
+            price_low = entry.get("price_low")
             chips_inline = ""
-            price_low = vl.get("price_low")
             if available is False:
                 chips_inline = (
                     '<span class="gb-vendor-status gb-vendor-status-out">'
@@ -1400,34 +1617,44 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
                 )
             elif price_low is not None:
                 price = format_vendor_price(
-                    price_low, vl.get("price_high"), vl.get("currency"),
+                    price_low,
+                    entry.get("price_high"),
+                    entry.get("currency"),
                 )
                 chips_inline = (
                     f'<span class="gb-vendor-price">'
                     f'{html.escape(price)}</span>'
                 )
+            region_html = (
+                f'<span class="gb-vendor-region">{region}</span>'
+                if region else ""
+            )
+            inner = f'{region_html}{name}{chips_inline}'
             pill_classes = "gb-vendor-pill"
             if available is False:
                 pill_classes += " gb-vendor-pill-out"
-            inner = (
-                f'<span class="gb-vendor-region">{region}</span>'
-                f'{name}{chips_inline}'
+            # data-region powers the client-side geo-filter (see
+            # initGbVendorGeo() in font_script). Empty string when
+            # we couldn't confidently infer.
+            data_region = (
+                f' data-region="{html.escape(region_raw, quote=True)}"'
+                if region_raw else ' data-region=""'
             )
             if link_url:
                 pills.append(
                     f'<a class="{pill_classes} gb-vendor-pill-link" '
                     f'href="{html.escape(link_url)}" '
-                    f'rel="noopener" target="_blank">{inner}</a>'
+                    f'rel="noopener" target="_blank"{data_region}>'
+                    f'{inner}</a>'
                 )
             else:
                 pills.append(
-                    f'<span class="{pill_classes}">{inner}</span>'
+                    f'<span class="{pill_classes}"{data_region}>{inner}</span>'
                 )
-        if pills:
-            vendor_html = (
-                f'<div class="gb-vendors" '
-                f'aria-label="Vendors by region">{"".join(pills)}</div>'
-            )
+        vendor_html = (
+            f'<div class="gb-vendors" data-gb-vendors '
+            f'aria-label="Vendors by region">{"".join(pills)}</div>'
+        )
     elif is_ic:
         # Empty-state copy on IC cards. Frames the absent vendor list
         # as expected ("designer hasn't decided"), not as data we
