@@ -504,7 +504,8 @@
                 "metadata_fetched_at": "2026-05-12T22:51:28.449606+00:00",
                 "currency": "AUD"
               }
-            ]
+            ],
+            "photo_credit": "Geon"
           },
           "images": [
             "img/geekhack-126526-0.jpg",
@@ -642,7 +643,8 @@
                 "host": "cannonkeys.com",
                 "metadata_fetched_at": "2026-05-12T22:51:28.907875+00:00"
               }
-            ]
+            ],
+            "photo_credit": "keima"
           },
           "images": [
             "img/geekhack-126598-0.jpg",

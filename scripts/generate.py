@@ -1801,6 +1801,13 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
                 f'</div>'
             )
 
+    # ── photo / render credit (immediately under carousel) ──
+    photo_credit = (item.get("gb") or {}).get("photo_credit")
+    photo_credit_html = (
+        f'<p class="gb-photo-credit">Photo · {html.escape(photo_credit)}</p>'
+        if photo_credit else ""
+    )
+
     # ── status + MOQ + price + end-date chips ──
     gb = item.get("gb") or {}
     chips = []
@@ -1980,6 +1987,7 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
   {vendor_line}
   {ic_subtitle}
   {carousel_html}
+  {photo_credit_html}
   {chips_row}
   {facets}
   {vendor_html}
@@ -2828,6 +2836,33 @@ _CATEGORY_DAY_ORDER = (
 )
 
 
+def is_historic_gb_item(item: dict,
+                        today: datetime.date | None = None) -> bool:
+    """True when a GB/IC item belongs in the historic archive rather
+    than the active /groupbuys/ page.
+
+    Signals (any one triggers historic):
+      1. Explicit status: "ended" or "postponed"
+      2. gb.ends_at is in the past
+      3. Auto-graduated IC: parent thread has effectively ended
+         (deferred — only a few real cases yet, not yet detected)
+    """
+    gb = item.get("gb") or {}
+    status = gb.get("status") or ""
+    if status in ("ended", "postponed"):
+        return True
+    today = today or datetime.date.today()
+    ends_at = gb.get("ends_at")
+    if ends_at:
+        try:
+            end = datetime.date.fromisoformat(ends_at)
+        except ValueError:
+            return False
+        if end < today:
+            return True
+    return False
+
+
 def render_gb_day_block(day: dict, topics_reg: dict, tags_reg: dict,
                         *, rel_prefix: str = "") -> str:
     """Day block specialized for /groupbuys/. Within a day, items are
@@ -2902,31 +2937,49 @@ def render_gb_day_block(day: dict, topics_reg: dict, tags_reg: dict,
 </section>'''
 
 
-def render_groupbuys_page(corpus: dict, topics_reg: dict, tags_reg: dict) -> str:
-    """Render /groupbuys/index.html — dedicated page for GB/IC sources,
-    split into two sections (active group buys, then interest checks)
-    so the two distinct stages don't visually compete. See
-    docs/IC_DIFFERENTIATION.md."""
-    title = "Group buys & ICs · keyboard newswire"
-    tagline = "Live group buys and interest checks from Geekhack and partner vendors."
-    canonical = f"{SITE_URL}/groupbuys/"
+def _gb_effective_type(it: dict) -> str:
+    """Auto-graduate rule: an IC with vendor_links renders as GB."""
+    t = (it.get("type") or "").upper()
+    if t == "IC" and (it.get("gb") or {}).get("vendor_links"):
+        return "GB"
+    return t
 
-    def _effective_type(it):
-        """Mirror render_gb_item's IC→GB auto-graduate rule: an IC
-        with vendor_links lands in the GB section."""
-        t = (it.get("type") or "").upper()
-        if t == "IC" and (it.get("gb") or {}).get("vendor_links"):
-            return "GB"
-        return t
 
-    gb_only = filter_corpus(corpus, lambda it: _effective_type(it) == "GB")
-    ic_only = filter_corpus(corpus, lambda it: _effective_type(it) == "IC")
-    # Untyped items (rare — older Shopify items will land here) fall
-    # back to the GB section since they're closer in cadence.
-    untyped = filter_corpus(corpus, lambda it: _effective_type(it) not in ("GB", "IC"))
-    # Merge untyped into gb_only.
+def render_groupbuys_page(corpus: dict, topics_reg: dict, tags_reg: dict,
+                          *, historic: bool = False) -> str:
+    """Render the /groupbuys/ (or /groupbuys/historic/) page.
+
+    Splits items into GB + IC sections. Active variant (default)
+    excludes items where is_historic_gb_item returns True; historic
+    variant shows only those.
+    """
+    today = datetime.date.today()
+    if historic:
+        title = "Historic group buys & ICs · keyboard newswire"
+        tagline = "Ended, postponed, or past-deadline group buys and interest checks."
+        canonical = f"{SITE_URL}/groupbuys/historic/"
+        page_slug = "historic"
+    else:
+        title = "Group buys & ICs · keyboard newswire"
+        tagline = "Live group buys and interest checks from Geekhack and partner vendors."
+        canonical = f"{SITE_URL}/groupbuys/"
+        page_slug = "active"
+
+    # First filter by historic-ness, then by GB/IC type.
+    def _active_filter(it):
+        return historic == is_historic_gb_item(it, today)
+
+    filtered = filter_corpus(corpus, _active_filter)
+    gb_only = filter_corpus(filtered, lambda it: _gb_effective_type(it) == "GB")
+    ic_only = filter_corpus(filtered, lambda it: _gb_effective_type(it) == "IC")
+    untyped = filter_corpus(filtered, lambda it: _gb_effective_type(it) not in ("GB", "IC"))
     for du, dg in zip(untyped["days"], gb_only["days"]):
         dg["items"].extend(du["items"])
+
+    # rel_prefix to docs/ root depends on page depth.
+    # /groupbuys/index.html             → "../"
+    # /groupbuys/historic/index.html    → "../../"
+    rel_to_root = "../../" if historic else "../"
 
     def _render_section(c, slug, label, blurb):
         days = sorted(
@@ -2935,10 +2988,9 @@ def render_groupbuys_page(corpus: dict, topics_reg: dict, tags_reg: dict) -> str
         )
         if not days:
             return ""
-        # /groupbuys/index.html lives one level below docs/, so all
-        # `img/<slug>.jpg` references in cards need a "../" prefix.
         blocks = "\n".join(
-            render_gb_day_block(d, topics_reg, tags_reg, rel_prefix="../")
+            render_gb_day_block(d, topics_reg, tags_reg,
+                                rel_prefix=rel_to_root)
             for d in days
         )
         return f'''<section class="gb-section gb-section-{slug}">
@@ -2962,9 +3014,30 @@ def render_groupbuys_page(corpus: dict, topics_reg: dict, tags_reg: dict) -> str
     )
     body = gb_html + ic_html
     if not body:
-        body = (
-            '<p class="empty">No group buys tracked yet — '
-            'check back as the ingest catches new threads.</p>'
+        if historic:
+            body = (
+                '<p class="empty">No historic items yet — '
+                'come back as group buys close.</p>'
+            )
+        else:
+            body = (
+                '<p class="empty">No group buys tracked yet — '
+                'check back as the ingest catches new threads.</p>'
+            )
+
+    # Cross-link between active and historic views, subtly at the
+    # bottom of the page.
+    if historic:
+        cross_link = (
+            '<p class="gb-cross-link">'
+            f'<a href="{rel_to_root}groupbuys/">'
+            '← active group buys & ICs</a></p>'
+        )
+    else:
+        cross_link = (
+            '<p class="gb-cross-link">'
+            f'<a href="{rel_to_root}groupbuys/historic/">'
+            'historic group buys & ICs →</a></p>'
         )
 
     return f'''{head(title, tagline, canonical, feed="feed.xml")}
@@ -2974,6 +3047,7 @@ def render_groupbuys_page(corpus: dict, topics_reg: dict, tags_reg: dict) -> str
     while the source pipeline is being debugged. Expect rough edges.
   </p>
   {body}
+  {cross_link}
   {site_footer()}
 </main>
 <div id="gb-lightbox" class="gb-lightbox" hidden role="dialog"
@@ -3093,10 +3167,15 @@ def main():
         f"{SITE_URL}/", f"{SITE_URL}/feed.xml", flat, topics_reg
     ))
 
-    # --- group buys page (GB items only) ---
+    # --- group buys page (active GB/IC items) ---
     (DOCS / "groupbuys").mkdir(parents=True, exist_ok=True)
     (DOCS / "groupbuys" / "index.html").write_text(
         render_groupbuys_page(gb_corpus, topics_reg, tags_reg)
+    )
+    # --- historic (ended / postponed / past-deadline) ---
+    (DOCS / "groupbuys" / "historic").mkdir(parents=True, exist_ok=True)
+    (DOCS / "groupbuys" / "historic" / "index.html").write_text(
+        render_groupbuys_page(gb_corpus, topics_reg, tags_reg, historic=True)
     )
     gb_flat = []
     for day in gb_corpus["days"]:

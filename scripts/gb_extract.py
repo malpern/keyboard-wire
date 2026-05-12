@@ -291,6 +291,57 @@ def extract_dates(body: str, today: datetime.date | None = None
     return None, None
 
 
+# ── Photo / render credits ───────────────────────────────────────
+
+
+# Common shapes (validated against real audit data):
+#   "Photo by: keima"   "Photos by X"   "Render by X"
+#   "Photography: X"    "Shot by X"     "Photos: X"
+# Captures the first name. Multi-render OPs (Distortion 40s lists
+# "Renders F1-40 by Geon, MB-44 by MelonBred…") collapse to the
+# first credit found.
+_PHOTO_CREDIT_RE = re.compile(
+    r"\b(?:Photos?|Photography|Rendered?|Renders|Shot)"
+    # Optional short bridging — kit codes like "F1-40" in
+    # "Renders F1-40 by Geon" — but no punctuation (keeps "by"
+    # adjacent to the keyword phrase).
+    r"[^.\n,;:!?]{0,20}?"
+    r"\bby[:\s]+"
+    # Single-word handle. Both "keima" (lowercase) and "Geon" /
+    # "MelonBred" (camelCase) survive. Two-word credits ("Trash
+    # Man") lose the second word — accepted tradeoff to avoid
+    # capturing "Geon for the kit".
+    r"([A-Za-z][A-Za-z0-9_\-]{0,30})"
+    r"(?=\s|$|[\.,;:!?])",
+    re.IGNORECASE,
+)
+
+
+def extract_photo_credit(body: str) -> str | None:
+    """Return the first photo / render credit name found in the OP
+    body, or None when no clean credit line exists.
+
+    Conservative — designed to avoid false positives. Won't pick up
+    "Renders may not picture actual colors" (no name after) or
+    "Renders F1-40 by Geon" (the prefix is the kit code, the name
+    after is the credit — handled by the lazy name capture)."""
+    if not body:
+        return None
+    m = _PHOTO_CREDIT_RE.search(body)
+    if not m:
+        return None
+    name = m.group(1).strip().rstrip(".,;:!?")
+    # Reject prose-shaped captures.
+    if not name or _DESIGNER_NEG_PREFIX_RE.match(name):
+        return None
+    if re.search(r"\b(?:" + _MONTH_RE + r")\b", name, re.IGNORECASE):
+        return None
+    # Reject very-long captures (likely caught surrounding prose).
+    if len(name) > 35:
+        return None
+    return name
+
+
 # ── MOQ ──────────────────────────────────────────────────────────
 
 
@@ -481,5 +532,9 @@ def extract_gb_facets(item: dict,
     vendors = extract_vendor_regions(body)
     if vendors:
         out["vendor_regions"] = vendors
+
+    photo = extract_photo_credit(body)
+    if photo:
+        out["photo_credit"] = photo
 
     return out

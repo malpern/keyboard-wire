@@ -15,6 +15,7 @@ from gb_extract import (  # noqa: E402
     extract_designer,
     extract_gb_facets,
     extract_moq,
+    extract_photo_credit,
     extract_price_range,
     extract_status,
     extract_vendor_regions,
@@ -342,6 +343,110 @@ class ExtractVendorRegions(unittest.TestCase):
 
 
 # ────────────────── extract_gb_facets (public) ─────────────────
+
+
+class ExtractPhotoCredit(unittest.TestCase):
+    def test_photo_by_colon(self):
+        self.assertEqual(
+            extract_photo_credit("text… Photo by: keima. Kit:"),
+            "keima",
+        )
+
+    def test_photos_by(self):
+        self.assertEqual(
+            extract_photo_credit("description Photos by X. More info."),
+            "X",
+        )
+
+    def test_renders_by(self):
+        self.assertEqual(
+            extract_photo_credit("Renders by Geon for the kit"),
+            "Geon",
+        )
+
+    def test_photography(self):
+        self.assertEqual(
+            extract_photo_credit("Photography by Dan, shot in 2026."),
+            "Dan",
+        )
+
+    def test_multi_render_picks_first(self):
+        # OPs sometimes list per-render credits ("Renders F1-40 by Geon
+        # MB-44 by MelonBred"). First credit wins.
+        # Note: "F1-40" is captured as the kit code prefix in our text,
+        # so the regex starts at "by Geon" — captures "Geon".
+        body = "Renders F1-40 by Geon MB-44 by MelonBred"
+        out = extract_photo_credit(body)
+        self.assertEqual(out, "Geon")
+
+    def test_returns_none_when_no_credit(self):
+        body = "Description with no photo credit line"
+        self.assertIsNone(extract_photo_credit(body))
+
+    def test_rejects_prose_capture(self):
+        # "Renders may not picture actual colors" → no real name, reject.
+        body = "Disclaimer: Renders may not picture actual colors"
+        self.assertIsNone(extract_photo_credit(body))
+
+    def test_empty_body(self):
+        self.assertIsNone(extract_photo_credit(""))
+        self.assertIsNone(extract_photo_credit(None))
+
+
+class IsHistoricGbItem(unittest.TestCase):
+    REF = datetime.date(2026, 5, 12)
+
+    def _it(self, **gb):
+        return {"id": "x", "gb": gb}
+
+    def test_postponed_status_is_historic(self):
+        import generate as gen  # local import
+        self.assertTrue(gen.is_historic_gb_item(
+            self._it(status="postponed"), self.REF,
+        ))
+
+    def test_ended_status_is_historic(self):
+        import generate as gen
+        self.assertTrue(gen.is_historic_gb_item(
+            self._it(status="ended"), self.REF,
+        ))
+
+    def test_ends_at_past_is_historic(self):
+        import generate as gen
+        self.assertTrue(gen.is_historic_gb_item(
+            self._it(ends_at="2026-05-10"), self.REF,
+        ))
+
+    def test_ends_at_today_is_active(self):
+        import generate as gen
+        self.assertFalse(gen.is_historic_gb_item(
+            self._it(ends_at="2026-05-12"), self.REF,
+        ))
+
+    def test_ends_at_future_is_active(self):
+        import generate as gen
+        self.assertFalse(gen.is_historic_gb_item(
+            self._it(ends_at="2026-05-20"), self.REF,
+        ))
+
+    def test_live_status_is_active(self):
+        import generate as gen
+        self.assertFalse(gen.is_historic_gb_item(
+            self._it(status="live", ends_at="2026-05-29"), self.REF,
+        ))
+
+    def test_no_status_no_ends_at_is_active(self):
+        import generate as gen
+        self.assertFalse(gen.is_historic_gb_item(
+            {"id": "x"}, self.REF,
+        ))
+
+    def test_status_overrides_ends_at(self):
+        # Postponed beats a future ends_at — designer pulled it.
+        import generate as gen
+        self.assertTrue(gen.is_historic_gb_item(
+            self._it(status="postponed", ends_at="2026-06-01"), self.REF,
+        ))
 
 
 class ExtractGbFacets(unittest.TestCase):

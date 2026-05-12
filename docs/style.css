@@ -2396,3 +2396,30 @@ a.gb-vendor-pill-link:hover .gb-vendor-region {
   padding-bottom: 0.25rem;
   border-bottom: 1px solid var(--rule);
 }
+
+/* Photo / render credit line below the carousel. */
+.gb-photo-credit {
+  margin: 0.375rem 0 0.625rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+/* Cross-link between active and historic group-buy views. Subtle —
+   sits at the bottom of the page, single line. */
+.gb-cross-link {
+  margin: 3rem 0 1rem;
+  text-align: center;
+  font-size: 0.8125rem;
+}
+.gb-cross-link a {
+  color: var(--ink-faint);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--rule);
+  padding-bottom: 1px;
+}
+.gb-cross-link a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}

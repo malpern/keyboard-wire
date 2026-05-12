@@ -349,6 +349,54 @@ class RenderGroupbuysSectionedPage(unittest.TestCase):
         live_block = html[live_start:interest_start]
         self.assertIn("geekhack-ic-graduated", live_block)
 
+    def test_active_page_excludes_historic_items(self):
+        corpus = {
+            "title": "kw", "tagline": "t",
+            "days": [{"date": "2026-05-12", "items": [
+                {"id": "geekhack-active", "title": "[GB] Live", "type": "GB",
+                 "source": "geekhack", "url": "https://x/",
+                 "via": "Geekhack", "category": "breaking", "takeaway": "",
+                 "gb": {"status": "live", "ends_at": "2027-01-01"}},
+                {"id": "geekhack-postponed", "title": "[GB] Old",
+                 "type": "GB", "source": "geekhack", "url": "https://x/",
+                 "via": "Geekhack", "category": "breaking", "takeaway": "",
+                 "gb": {"status": "postponed"}},
+            ]}],
+        }
+        html_active = gen.render_groupbuys_page(corpus, {}, {})
+        self.assertIn("geekhack-active", html_active)
+        self.assertNotIn("geekhack-postponed", html_active)
+
+    def test_historic_page_shows_only_historic(self):
+        corpus = {
+            "title": "kw", "tagline": "t",
+            "days": [{"date": "2026-05-12", "items": [
+                {"id": "geekhack-active", "title": "[GB] Live", "type": "GB",
+                 "source": "geekhack", "url": "https://x/",
+                 "via": "Geekhack", "category": "breaking", "takeaway": "",
+                 "gb": {"status": "live"}},
+                {"id": "geekhack-postponed", "title": "[GB] Old",
+                 "type": "GB", "source": "geekhack", "url": "https://x/",
+                 "via": "Geekhack", "category": "breaking", "takeaway": "",
+                 "gb": {"status": "postponed"}},
+            ]}],
+        }
+        html_h = gen.render_groupbuys_page(corpus, {}, {}, historic=True)
+        self.assertIn("geekhack-postponed", html_h)
+        self.assertNotIn("geekhack-active", html_h)
+
+    def test_active_page_links_to_historic(self):
+        empty = {"title": "kw", "tagline": "t", "days": []}
+        html_a = gen.render_groupbuys_page(empty, {}, {})
+        self.assertIn('href="../groupbuys/historic/"', html_a)
+        self.assertIn("historic group buys", html_a)
+
+    def test_historic_page_links_back_to_active(self):
+        empty = {"title": "kw", "tagline": "t", "days": []}
+        html_h = gen.render_groupbuys_page(empty, {}, {}, historic=True)
+        self.assertIn('href="../../groupbuys/"', html_h)
+        self.assertIn("active group buys", html_h)
+
     def test_empty_corpus_shows_empty_message(self):
         empty = {"title": "kw", "tagline": "t", "days": []}
         html = gen.render_groupbuys_page(empty, {}, {})
