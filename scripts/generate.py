@@ -1216,6 +1216,34 @@ def font_script() -> str:
   }
   initGbVendorGeo();
 
+  // ── First-slide badge: swap the price to user's regional vendor ──
+  // The server-rendered badge contains the global lowest base-kit
+  // price; data-region-prices carries every region's local price.
+  // We pick the user's region (with NEAR_REGION expansion) and swap
+  // the visible price text. Falls back to the SSR default if nothing
+  // matches.
+  function applyGeoPriceToBadges() {
+    var userRegion = detectGbRegion();
+    if (!userRegion || userRegion === '__all__') return;
+    var nearList = NEAR_REGION[userRegion] || [userRegion];
+    var badges = document.querySelectorAll('.gb-badge[data-region-prices]');
+    Array.prototype.forEach.call(badges, function(b) {
+      var map;
+      try {
+        map = JSON.parse(b.getAttribute('data-region-prices'));
+      } catch (_) { return; }
+      var priceSpan = b.querySelector('.gb-badge-price');
+      if (!priceSpan) return;  // no price chip on this card (e.g. IC)
+      for (var i = 0; i < nearList.length; i++) {
+        if (Object.prototype.hasOwnProperty.call(map, nearList[i])) {
+          priceSpan.textContent = map[nearList[i]];
+          return;
+        }
+      }
+    });
+  }
+  applyGeoPriceToBadges();
+
   // ── Settings: region picker (only present on /settings/) ──
   // Reads current localStorage on load, writes on change. Empty
   // value clears the override and falls back to timezone detection.
@@ -1457,6 +1485,26 @@ def infer_gb_category(item: dict) -> str:
     return "Keyboard"
 
 
+def gb_stock_state(gb: dict) -> str:
+    """High-level stock state for the badge:
+       'in_stock'  — at least one priced vendor has available=True
+       'sold_out'  — no priced in-stock or unknown vendors,
+                     but at least one explicitly sold-out vendor
+       'unknown'   — anything else (no signal worth surfacing)
+    """
+    links = gb.get("vendor_links") or []
+    has_priced_live = any(
+        vl.get("price_low") is not None
+        and (vl.get("available") is True or vl.get("available") is None)
+        for vl in links
+    )
+    if has_priced_live:
+        return "in_stock"
+    if any(vl.get("available") is False for vl in links):
+        return "sold_out"
+    return "unknown"
+
+
 def _effective_base_price(vl: dict) -> int:
     """Best estimate of a vendor's base-kit price (vs the cheap
     add-on variants that the .js endpoint exposes alongside it).
@@ -1466,6 +1514,34 @@ def _effective_base_price(vl: dict) -> int:
     lo = vl.get("price_low") or 0
     hi = vl.get("price_high") or lo
     return hi if hi > 2 * lo else lo
+
+
+def vendor_price_by_region(gb: dict) -> dict:
+    """Return {region: formatted_price} mapping every region that has
+    at least one priced + in-stock vendor. Used by the client-side
+    badge swap so a US user sees "$135" while a UK user sees "£102"
+    on the same Gregory 2 card. Sold-out vendors are excluded.
+
+    When multiple vendors share a region, picks the lowest base-kit
+    price (same _effective_base_price ranking as the global default).
+    """
+    out: dict[str, tuple[str, int]] = {}
+    for vl in (gb.get("vendor_links") or []):
+        if vl.get("price_low") is None:
+            continue
+        if vl.get("available") is False:
+            continue
+        region = infer_vendor_region(vl.get("host"))
+        if not region:
+            continue
+        base = _effective_base_price(vl)
+        formatted = format_vendor_price(
+            vl["price_low"], vl.get("price_high"), vl.get("currency"),
+        )
+        prev = out.get(region)
+        if prev is None or base < prev[1]:
+            out[region] = (formatted, base)
+    return {k: v[0] for k, v in out.items()}
 
 
 def representative_vendor_price(gb: dict) -> tuple[str | None, dict | None]:
@@ -1633,13 +1709,18 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
     # fall through to the local 1280px crop.
     remotes_raw = item.get("images_remote") or []
     remotes = [clean_remote_image_url(u) for u in remotes_raw]
-    # ── first-slide badge: category · stage · price ──
-    # Overlay-rendered on the first slide only (where the user's
-    # eye lands first). Quietly omitted on the rest of the carousel.
+    # ── first-slide badge: category · stage · (price | sold-out) ──
+    # Overlay on the first slide only. Server emits a "default" price
+    # (lowest base-kit globally). data-region-prices carries every
+    # region's price so the client JS swaps the visible value to the
+    # user's local vendor on page load.
     _badge_gb = item.get("gb") or {}
     category = infer_gb_category(item)
     stage = raw_type if raw_type in ("GB", "IC") else ""
     price_str, _picked_vendor = representative_vendor_price(_badge_gb)
+    stock_state = gb_stock_state(_badge_gb)
+    region_prices = vendor_price_by_region(_badge_gb)
+
     badge_parts = [
         f'<span class="gb-badge-cat">{html.escape(category)}</span>'
     ]
@@ -1652,8 +1733,19 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
         badge_parts.append(
             f'<span class="gb-badge-price">{html.escape(price_str)}</span>'
         )
+    elif stock_state == "sold_out":
+        badge_parts.append(
+            '<span class="gb-badge-soldout">sold out</span>'
+        )
+
+    region_prices_attr = ""
+    if region_prices:
+        region_prices_attr = (
+            f' data-region-prices="'
+            f'{html.escape(json.dumps(region_prices), quote=True)}"'
+        )
     badge_html = (
-        f'<div class="gb-badge" aria-hidden="false">'
+        f'<div class="gb-badge" aria-hidden="false"{region_prices_attr}>'
         f'{"".join(badge_parts)}</div>'
     )
 

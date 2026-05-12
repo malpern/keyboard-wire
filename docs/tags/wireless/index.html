@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Wireless · mechanical keyboard newswire</title>
 <meta name="description" content="All keyboard wire entries tagged Wireless.">
-<link rel="stylesheet" href="../../style.css?v=1778626033">
+<link rel="stylesheet" href="../../style.css?v=1778627281">
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="alternate" type="application/rss+xml" title="Wireless · mechanical keyboard newswire" href="feed.xml">
 <link rel="canonical" href="https://keyboard-newswire.com/tags/wireless/">
@@ -1042,6 +1042,34 @@
     });
   }
   initGbVendorGeo();
+
+  // ── First-slide badge: swap the price to user's regional vendor ──
+  // The server-rendered badge contains the global lowest base-kit
+  // price; data-region-prices carries every region's local price.
+  // We pick the user's region (with NEAR_REGION expansion) and swap
+  // the visible price text. Falls back to the SSR default if nothing
+  // matches.
+  function applyGeoPriceToBadges() {
+    var userRegion = detectGbRegion();
+    if (!userRegion || userRegion === '__all__') return;
+    var nearList = NEAR_REGION[userRegion] || [userRegion];
+    var badges = document.querySelectorAll('.gb-badge[data-region-prices]');
+    Array.prototype.forEach.call(badges, function(b) {
+      var map;
+      try {
+        map = JSON.parse(b.getAttribute('data-region-prices'));
+      } catch (_) { return; }
+      var priceSpan = b.querySelector('.gb-badge-price');
+      if (!priceSpan) return;  // no price chip on this card (e.g. IC)
+      for (var i = 0; i < nearList.length; i++) {
+        if (Object.prototype.hasOwnProperty.call(map, nearList[i])) {
+          priceSpan.textContent = map[nearList[i]];
+          return;
+        }
+      }
+    });
+  }
+  applyGeoPriceToBadges();
 
   // ── Settings: region picker (only present on /settings/) ──
   // Reads current localStorage on load, writes on change. Empty

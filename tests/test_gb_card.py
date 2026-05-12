@@ -78,6 +78,73 @@ class InferGbCategory(unittest.TestCase):
         )
 
 
+class GbStockState(unittest.TestCase):
+    def test_in_stock(self):
+        gb = {"vendor_links": [
+            {"price_low": 100, "available": True},
+            {"available": False},
+        ]}
+        self.assertEqual(gen.gb_stock_state(gb), "in_stock")
+
+    def test_sold_out(self):
+        gb = {"vendor_links": [
+            {"price_low": 100, "available": False},
+            {"available": False},
+        ]}
+        self.assertEqual(gen.gb_stock_state(gb), "sold_out")
+
+    def test_unknown(self):
+        gb = {"vendor_links": [{"vendor": "X"}]}  # no price, no avail
+        self.assertEqual(gen.gb_stock_state(gb), "unknown")
+
+    def test_unknown_availability_counts_as_in_stock(self):
+        # We can't prove sold-out for unknowns, so unknown + price → in_stock.
+        gb = {"vendor_links": [{"price_low": 100}]}
+        self.assertEqual(gen.gb_stock_state(gb), "in_stock")
+
+
+class VendorPriceByRegion(unittest.TestCase):
+    def test_picks_lowest_per_region(self):
+        gb = {"vendor_links": [
+            {"vendor": "NK", "host": "novelkeys.com",
+             "price_low": 14000, "currency": "USD", "available": True},
+            {"vendor": "Bowl", "host": "bowlkeyboards.com",
+             "price_low": 12000, "currency": "USD", "available": True},
+            {"vendor": "Proto", "host": "prototypist.net",
+             "price_low": 10000, "currency": "GBP", "available": True},
+        ]}
+        out = gen.vendor_price_by_region(gb)
+        self.assertEqual(out["US"], "$120")   # Bowl < NovelKeys
+        self.assertEqual(out["UK"], "£100")
+
+    def test_skips_sold_out(self):
+        gb = {"vendor_links": [
+            {"vendor": "NK", "host": "novelkeys.com",
+             "price_low": 14000, "currency": "USD", "available": False},
+        ]}
+        self.assertNotIn("US", gen.vendor_price_by_region(gb))
+
+    def test_skips_when_no_inferred_region(self):
+        gb = {"vendor_links": [
+            {"vendor": "Mystery", "host": "unknown-shop.io",
+             "price_low": 10000, "available": True},
+        ]}
+        self.assertEqual(gen.vendor_price_by_region(gb), {})
+
+    def test_ranks_by_base_kit(self):
+        # Vendor A: novelties $20 + base $135. Vendor B: base $130 only.
+        # Same region — A's base ($135) > B's base ($130), so B wins.
+        gb = {"vendor_links": [
+            {"vendor": "A", "host": "novelkeys.com",
+             "price_low": 2000, "price_high": 13500,
+             "currency": "USD", "available": True},
+            {"vendor": "B", "host": "bowlkeyboards.com",
+             "price_low": 13000, "currency": "USD", "available": True},
+        ]}
+        out = gen.vendor_price_by_region(gb)
+        self.assertEqual(out["US"], "$130")
+
+
 class RepresentativeVendorPrice(unittest.TestCase):
     def test_picks_lowest_base_kit_in_stock(self):
         gb = {"vendor_links": [
@@ -165,6 +232,64 @@ class BadgeRender(unittest.TestCase):
         out = gen.render_gb_item(self._item(type="IC"), {}, {})
         self.assertIn("gb-badge-stage-ic", out)
         self.assertIn(">IC<", out)
+
+    def test_badge_shows_sold_out_when_all_vendors_out(self):
+        item = self._item(gb={"vendor_links": [
+            {"vendor": "A", "host": "novelkeys.com",
+             "price_low": 13500, "currency": "USD", "available": False},
+            {"vendor": "B", "host": "kbdfans.com",
+             "price_low": 14500, "currency": "USD", "available": False},
+        ]})
+        out = gen.render_gb_item(item, {}, {})
+        self.assertIn("gb-badge-soldout", out)
+        self.assertIn(">sold out<", out)
+        self.assertNotIn("gb-badge-price", out)
+
+    def test_badge_keeps_price_when_at_least_one_in_stock(self):
+        item = self._item(gb={"vendor_links": [
+            {"vendor": "A", "host": "novelkeys.com",
+             "price_low": 13500, "currency": "USD", "available": True},
+            {"vendor": "B", "host": "kbdfans.com",
+             "price_low": 14500, "currency": "USD", "available": False},
+        ]})
+        out = gen.render_gb_item(item, {}, {})
+        self.assertIn("gb-badge-price", out)
+        self.assertNotIn("gb-badge-soldout", out)
+
+    def test_badge_carries_region_prices_attr(self):
+        item = self._item(gb={"vendor_links": [
+            {"vendor": "NovelKeys", "host": "novelkeys.com",
+             "price_low": 13500, "currency": "USD", "available": True},
+            {"vendor": "Proto[Typist]", "host": "prototypist.net",
+             "price_low": 2000, "price_high": 10250,
+             "currency": "GBP", "available": True},
+            {"vendor": "Oblotzky", "host": "oblotzky.industries",
+             "price_low": 13900, "currency": "EUR", "available": True},
+        ]})
+        out = gen.render_gb_item(item, {}, {})
+        self.assertIn("data-region-prices", out)
+        # Verify the JSON content carries every region.
+        m = __import__("re").search(
+            r'data-region-prices="([^"]+)"', out,
+        )
+        import json as _json
+        m_obj = _json.loads(__import__("html").unescape(m.group(1)))
+        self.assertEqual(m_obj["US"], "$135")
+        self.assertEqual(m_obj["UK"], "£102")
+        self.assertEqual(m_obj["EU"], "€139")
+
+    def test_badge_omits_region_prices_attr_when_no_prices(self):
+        out = gen.render_gb_item(self._item(), {}, {})
+        self.assertNotIn("data-region-prices", out)
+
+    def test_badge_region_prices_skips_sold_out(self):
+        item = self._item(gb={"vendor_links": [
+            {"vendor": "NovelKeys", "host": "novelkeys.com",
+             "price_low": 13500, "currency": "USD", "available": False},
+        ]})
+        out = gen.render_gb_item(item, {}, {})
+        # Sold-out US vendor → no US entry in the region map.
+        self.assertNotIn("data-region-prices", out)
 
     def test_badge_absent_when_no_images(self):
         # No carousel at all → no badge.

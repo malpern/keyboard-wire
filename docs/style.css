@@ -2366,3 +2366,16 @@ a.gb-vendor-pill-link:hover .gb-vendor-region {
   }
   .gb-badge-price { font-size: 0.75rem; }
 }
+
+/* Badge variant: shown when no priced vendor is in stock but at least
+   one is explicitly sold out. Replaces the price chip. */
+.gb-badge-soldout {
+  font-weight: 600;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.125rem 0.375rem;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.85);
+}
