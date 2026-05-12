@@ -279,6 +279,54 @@ class RenderGbItem(unittest.TestCase):
         out_gb = gen.render_gb_item(make_gb_item(type="GB"), {}, {})
         self.assertNotIn("gb-item-ic", out_gb)
 
+    def test_vendor_pill_renders_as_link_when_vendor_links_match(self):
+        item = make_gb_item(gb={
+            "vendor_regions": [
+                {"region": "US", "name": "NovelKeys"},
+                {"region": "UK", "name": "Proto[Typist]"},
+                {"region": "EU", "name": "Oblotzky"},
+            ],
+            "vendor_links": [
+                {"vendor": "NovelKeys",
+                 "url": "https://novelkeys.com/products/x",
+                 "host": "novelkeys.com"},
+                {"vendor": "Proto[Typist]",
+                 "url": "https://prototypist.net/products/x",
+                 "host": "prototypist.net"},
+                # No URL for Oblotzky — that pill stays inert.
+            ],
+        })
+        out = gen.render_gb_item(item, {}, {})
+        self.assertIn(
+            'href="https://novelkeys.com/products/x"', out,
+        )
+        self.assertIn(
+            'href="https://prototypist.net/products/x"', out,
+        )
+        self.assertIn('class="gb-vendor-pill gb-vendor-pill-link"', out)
+        # Oblotzky pill stays as a span — verify it's wrapped in span
+        # and not <a>.
+        self.assertIn('<span class="gb-vendor-pill"><span class="gb-vendor-region">EU</span>Oblotzky</span>', out)
+
+    def test_vendor_pill_unmatched_stays_inert(self):
+        # vendor_links present but no name match → pills stay as spans.
+        item = make_gb_item(gb={
+            "vendor_regions": [{"region": "JP", "name": "Yushakobo"}],
+            "vendor_links": [{"vendor": "NovelKeys", "url": "https://nk/x"}],
+        })
+        out = gen.render_gb_item(item, {}, {})
+        self.assertNotIn("gb-vendor-pill-link", out)
+        self.assertIn("Yushakobo", out)
+
+    def test_vendor_pill_name_match_is_case_insensitive(self):
+        item = make_gb_item(gb={
+            "vendor_regions": [{"region": "US", "name": "novelkeys"}],
+            "vendor_links": [{"vendor": "NovelKeys",
+                              "url": "https://novelkeys.com/x"}],
+        })
+        out = gen.render_gb_item(item, {}, {})
+        self.assertIn("gb-vendor-pill-link", out)
+
     def test_data_full_attribute_emitted_when_remote_present(self):
         item = make_gb_item(
             image=None,

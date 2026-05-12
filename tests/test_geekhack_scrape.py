@@ -123,6 +123,100 @@ class ParseThreadHtml(unittest.TestCase):
         meta = gp.parse_thread_html(text)
         self.assertIn("reinventing—shaping", meta["op_body"])
 
+    def test_vendor_links_extracted(self):
+        page = b"""<html><body>
+        <div class="post"><p>
+          Vendors:
+          <a href="https://novelkeys.com/products/gmk-greg-2">NovelKeys</a>
+          <a href="https://prototypist.net/products/gmk-greg-2">Proto[Typist]</a>
+          <a href="https://kbdfans.com/products/gmk-greg-2">KBDfans</a>
+          Render credits to
+          <a href="https://imgur.com/album/abc">photo album</a>
+          and join the
+          <a href="https://discord.gg/somewhere">Discord</a>.
+          Forum form at
+          <a href="https://forms.gle/aaa">interest form</a>.
+        </p></div>
+        <div class="moderatorbar">x</div>
+        </body></html>"""
+        meta = gp.parse_thread_html(page.decode("cp1252"))
+        links = meta["vendor_links"]
+        urls = [v["url"] for v in links]
+        # Vendor URLs included.
+        self.assertIn("https://novelkeys.com/products/gmk-greg-2", urls)
+        self.assertIn("https://prototypist.net/products/gmk-greg-2", urls)
+        self.assertIn("https://kbdfans.com/products/gmk-greg-2", urls)
+        # Media / admin URLs excluded.
+        for bad in ("imgur.com", "discord.gg", "forms.gle"):
+            for u in urls:
+                self.assertNotIn(bad, u)
+
+    def test_vendor_links_preserve_label_and_host(self):
+        page = b"""<html><body>
+        <div class="post"><p>
+          <a href="https://novelkeys.com/products/x">NovelKeys</a>
+        </p></div><div class="moderatorbar">x</div></body></html>"""
+        meta = gp.parse_thread_html(page.decode("cp1252"))
+        self.assertEqual(len(meta["vendor_links"]), 1)
+        vl = meta["vendor_links"][0]
+        self.assertEqual(vl["vendor"], "NovelKeys")
+        self.assertEqual(vl["url"], "https://novelkeys.com/products/x")
+        self.assertEqual(vl["host"], "novelkeys.com")
+
+    def test_vendor_links_dedup_same_host_and_url(self):
+        page = b"""<html><body>
+        <div class="post"><p>
+          <a href="https://x.com/p/a">First</a>
+          <a href="https://x.com/p/a">Second copy of same link</a>
+        </p></div><div class="moderatorbar">x</div></body></html>"""
+        # x.com is in the blocklist — but use a real vendor host instead.
+        page = page.replace(b"x.com", b"novelkeys.com")
+        meta = gp.parse_thread_html(page.decode("cp1252"))
+        self.assertEqual(len(meta["vendor_links"]), 1)
+
+    def test_vendor_links_cap_at_12(self):
+        links_html = "".join(
+            f'<a href="https://vendor{i}.example/p">V{i}</a>'
+            for i in range(20)
+        )
+        page = ("<html><body><div class=\"post\"><p>" + links_html
+                + "</p></div><div class=\"moderatorbar\">x</div>"
+                + "</body></html>").encode()
+        meta = gp.parse_thread_html(page.decode("cp1252"))
+        self.assertEqual(len(meta["vendor_links"]), 12)
+
+    def test_vendor_links_empty_when_none(self):
+        empty = gp.parse_thread_html(
+            '<div class="post"><p>no links here</p></div>'
+            '<div class="moderatorbar">x</div>'
+        )
+        self.assertEqual(empty["vendor_links"], [])
+
+
+class IsVendorHost(unittest.TestCase):
+    def test_real_vendors(self):
+        self.assertTrue(gp._is_vendor_host("novelkeys.com"))
+        self.assertTrue(gp._is_vendor_host("cannonkeys.com"))
+        self.assertTrue(gp._is_vendor_host("oblotzky.industries"))
+        self.assertTrue(gp._is_vendor_host("prototypist.net"))
+
+    def test_media_hosts_rejected(self):
+        for h in ("imgur.com", "i.imgur.com", "postimg.cc",
+                  "discord.gg", "forms.gle", "github.com",
+                  "youtube.com", "x.com", "twitter.com", "reddit.com",
+                  "geekhack.org"):
+            self.assertFalse(gp._is_vendor_host(h), f"{h} should be rejected")
+
+    def test_subdomains_of_blocked(self):
+        # `cdn.imgur.com` should also be rejected.
+        self.assertFalse(gp._is_vendor_host("cdn.imgur.com"))
+        self.assertFalse(gp._is_vendor_host("video.youtube.com"))
+
+    def test_empty(self):
+        self.assertFalse(gp._is_vendor_host(""))
+        self.assertFalse(gp._is_vendor_host(None))
+
+
     def test_op_body_missing_when_no_post_div(self):
         empty = gp.parse_thread_html("<html><body>no post block</body></html>")
         self.assertIsNone(empty["op_body"])

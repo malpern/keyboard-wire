@@ -202,6 +202,34 @@ _IMG_EXT_RE = re.compile(
     r"\.(jpe?g|png|webp|gif)(?:\?[^\"']*)?$", re.IGNORECASE,
 )
 
+# Hosts that show up as <a href> in OP bodies but are NOT vendors:
+# imgur/postimg link to photos; discord/forms.gle/github point at
+# coordination tools; social hosts are designer profiles. We exclude
+# these so the resulting vendor_links list is dominated by genuine
+# product-page URLs (NovelKeys, Cannonkeys, etc.).
+_NON_VENDOR_HOSTS = (
+    "imgur.com", "i.imgur.com", "postimg.cc", "i.postimg.cc",
+    "discord.com", "discord.gg",
+    "forms.gle", "docs.google.com", "drive.google.com",
+    "github.com", "github.io",
+    "youtube.com", "youtu.be", "youtube-nocookie.com",
+    "twitter.com", "x.com", "reddit.com",
+    "instagram.com", "facebook.com", "fb.com",
+    "tenor.com", "giphy.com",
+    "geekhack.org",
+)
+
+
+def _is_vendor_host(host: str | None) -> bool:
+    """True if `host` looks like a vendor (not a media/admin host)."""
+    if not host:
+        return False
+    h = host.lower().lstrip(".")
+    for blocked in _NON_VENDOR_HOSTS:
+        if h == blocked or h.endswith("." + blocked):
+            return False
+    return True
+
 # Geekhack-native attachment URLs. Designers using the forum's own
 # uploader (instead of imgur / postimg) generate URLs of this shape;
 # they're legitimate OP photos even though the host is geekhack.org.
@@ -253,6 +281,7 @@ def parse_thread_html(html_text: str) -> dict:
         "replies": None,
         "images": [],
         "op_body": None,
+        "vendor_links": [],
     }
 
     # Views — "Topic: ... (Read 9708 times)" appears in <title> and
@@ -299,6 +328,38 @@ def parse_thread_html(html_text: str) -> dict:
             if _is_op_image(u) and u not in seen:
                 seen.add(u)
                 out["images"].append(u)
+
+        # Vendor links: <a href="..."> tags in the OP body where the
+        # host isn't a media/admin host. These are the buy-here URLs
+        # that let the future Shopify pilot cluster items as siblings
+        # under the Geekhack parent — exact URL match, no fuzzy.
+        seen_links: set = set()
+        for m in re.finditer(
+            r'<a[^>]*\bhref=["\'](https?://[^"\']+)["\'][^>]*>'
+            r'([^<]+)</a>',
+            op_html, re.IGNORECASE,
+        ):
+            url = html_lib.unescape(m.group(1)).strip()
+            label = html_lib.unescape(m.group(2)).strip()
+            if not url or not label:
+                continue
+            try:
+                host = (urllib.parse.urlparse(url).hostname or "").lower()
+            except Exception:
+                continue
+            if not _is_vendor_host(host):
+                continue
+            key = (host, url)
+            if key in seen_links:
+                continue
+            seen_links.add(key)
+            out["vendor_links"].append({
+                "vendor": label,
+                "url": url,
+                "host": host,
+            })
+            if len(out["vendor_links"]) >= 12:
+                break
 
         # Strip HTML for the OP body text. Geekhack quotes are wrapped
         # in <div class="quoteheader"> + <blockquote>; we drop those
@@ -368,6 +429,12 @@ def enrich_items(items: list[dict], throttle: float = 1.0) -> None:
             # OP body is the real description — much better signal than
             # the latest-reply text the RSS gave us. Truncate generously.
             it["takeaway"] = meta["op_body"][:600].rstrip()
+        if meta.get("vendor_links"):
+            # Stored on item.gb so render can wire vendor pills to
+            # their buy-here URLs, and future Shopify pilot can match
+            # incoming products to their parent Geekhack thread by
+            # exact URL.
+            it.setdefault("gb", {})["vendor_links"] = meta["vendor_links"]
         if i < len(items) - 1 and throttle > 0:
             time.sleep(throttle)
 

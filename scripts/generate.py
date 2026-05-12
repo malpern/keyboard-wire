@@ -1341,16 +1341,36 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
     vendor_html = ""
     vendors = gb.get("vendor_regions") or []
     if vendors:
+        # Build a name→url map from vendor_links (extracted from the
+        # OP body's hyperlinks). When the vendor pill's name matches
+        # an entry, the pill renders as an external link to the
+        # product page instead of inert text.
+        vendor_links = gb.get("vendor_links") or []
+        link_by_name = {}
+        for vl in vendor_links:
+            n = str(vl.get("vendor") or "").strip().lower()
+            u = str(vl.get("url") or "").strip()
+            if n and u and n not in link_by_name:
+                link_by_name[n] = u
         pills = []
         for v in vendors:
             region = html.escape(str(v.get("region") or ""))
-            name = html.escape(str(v.get("name") or ""))
-            if region and name:
+            raw_name = str(v.get("name") or "").strip()
+            name = html.escape(raw_name)
+            if not region or not name:
+                continue
+            link_url = link_by_name.get(raw_name.lower())
+            inner = (
+                f'<span class="gb-vendor-region">{region}</span>{name}'
+            )
+            if link_url:
                 pills.append(
-                    f'<span class="gb-vendor-pill">'
-                    f'<span class="gb-vendor-region">{region}</span>'
-                    f'{name}</span>'
+                    f'<a class="gb-vendor-pill gb-vendor-pill-link" '
+                    f'href="{html.escape(link_url)}" '
+                    f'rel="noopener" target="_blank">{inner}</a>'
                 )
+            else:
+                pills.append(f'<span class="gb-vendor-pill">{inner}</span>')
         if pills:
             vendor_html = (
                 f'<div class="gb-vendors" '

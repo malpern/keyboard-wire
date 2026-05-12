@@ -168,7 +168,7 @@
           "source": "geekhack",
           "subreddit": null,
           "via": "Geekhack · Group Buys",
-          "score": 97335,
+          "score": 97435,
           "comments": 49,
           "category": "breaking",
           "takeaway": "INSPIRATION The inspiration for the set is the album cover for Floral Shoppe and the Iconography of ancient times that are a cornerstone of Vaporwave Aesthetics. WHERE TO BUY: North America: Mechs & Co Europe: MyKeyboard Australia & Oceania: Dailyclack South East Asia: Monokei Canada: Deskhero China: Zfrontier EN / Zfrontier CN A note on pricing: Following deciding kit pricing in November, the dollar has fallen from .85 to .81 to the euro, which effectively means a loss of 6 euros per basekit on the old pricing versus then. For this reason we were forced to increase US pricing in order to main",
@@ -182,22 +182,59 @@
             "pricing"
           ],
           "images_remote": [
-            "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259204;image",
+            "https://geekhack.org/index.php?PHPSESSID=ltg8ouelvk5msmqfq5bd2c4i28jem266&action=dlattach;topic=110579.0;attach=259204;image",
             "https://i.imgur.com/hv7OKVd.jpg",
-            "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259203;image",
-            "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259409;image",
-            "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259194;image",
-            "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259196;image",
-            "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259198;image",
-            "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259200;image",
-            "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259206;image",
-            "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259208;image",
-            "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259210;image",
-            "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259212;image",
-            "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259192;image"
+            "https://geekhack.org/index.php?PHPSESSID=ltg8ouelvk5msmqfq5bd2c4i28jem266&action=dlattach;topic=110579.0;attach=259203;image",
+            "https://geekhack.org/index.php?PHPSESSID=ltg8ouelvk5msmqfq5bd2c4i28jem266&action=dlattach;topic=110579.0;attach=259409;image",
+            "https://geekhack.org/index.php?PHPSESSID=ltg8ouelvk5msmqfq5bd2c4i28jem266&action=dlattach;topic=110579.0;attach=259194;image",
+            "https://geekhack.org/index.php?PHPSESSID=ltg8ouelvk5msmqfq5bd2c4i28jem266&action=dlattach;topic=110579.0;attach=259196;image",
+            "https://geekhack.org/index.php?PHPSESSID=ltg8ouelvk5msmqfq5bd2c4i28jem266&action=dlattach;topic=110579.0;attach=259198;image",
+            "https://geekhack.org/index.php?PHPSESSID=ltg8ouelvk5msmqfq5bd2c4i28jem266&action=dlattach;topic=110579.0;attach=259200;image",
+            "https://geekhack.org/index.php?PHPSESSID=ltg8ouelvk5msmqfq5bd2c4i28jem266&action=dlattach;topic=110579.0;attach=259206;image",
+            "https://geekhack.org/index.php?PHPSESSID=ltg8ouelvk5msmqfq5bd2c4i28jem266&action=dlattach;topic=110579.0;attach=259208;image",
+            "https://geekhack.org/index.php?PHPSESSID=ltg8ouelvk5msmqfq5bd2c4i28jem266&action=dlattach;topic=110579.0;attach=259210;image",
+            "https://geekhack.org/index.php?PHPSESSID=ltg8ouelvk5msmqfq5bd2c4i28jem266&action=dlattach;topic=110579.0;attach=259212;image",
+            "https://geekhack.org/index.php?PHPSESSID=ltg8ouelvk5msmqfq5bd2c4i28jem266&action=dlattach;topic=110579.0;attach=259192;image"
           ],
           "gb": {
-            "status": "postponed"
+            "status": "postponed",
+            "vendor_links": [
+              {
+                "vendor": "Mechs & Co",
+                "url": "https://mechsandco.com/products/gb-gmk-iconographic",
+                "host": "mechsandco.com"
+              },
+              {
+                "vendor": "MyKeyboard",
+                "url": "https://mykeyboard.eu/catalogue/category/group-buys/gmk-iconographic_394/",
+                "host": "mykeyboard.eu"
+              },
+              {
+                "vendor": "Dailyclack",
+                "url": "https://dailyclack.com/products/gmk-iconographic/",
+                "host": "dailyclack.com"
+              },
+              {
+                "vendor": "Monokei",
+                "url": "https://monokei.co/collections/current/products/gmk-iconographic/",
+                "host": "monokei.co"
+              },
+              {
+                "vendor": "Deskhero",
+                "url": "https://www.deskhero.ca/collections/open-group-buys/products/gmk-iconographic",
+                "host": "www.deskhero.ca"
+              },
+              {
+                "vendor": "Zfrontier EN",
+                "url": "https://en.zfrontier.com/products/gmk-iconographic",
+                "host": "en.zfrontier.com"
+              },
+              {
+                "vendor": "Zfrontier CN",
+                "url": "https://www.zfrontier.com/app/mch/lZ2N9dv5Mr6l",
+                "host": "www.zfrontier.com"
+              }
+            ]
           },
           "images": [
             "img/geekhack-110579-0.jpg",
@@ -214,7 +251,7 @@
           "source": "geekhack",
           "subreddit": null,
           "via": "Geekhack · Interest Checks",
-          "score": 23300,
+          "score": 23542,
           "comments": 30,
           "category": "breaking",
           "takeaway": "Hi everyone! My name is keekeen. I’m a fellow “Topre” / rubber dome enjoyer. For me, the journey began with the HHKB, which I consider my first \"end game\" keyboard. Today, I am thrilled to introduce a passion project that’s been in the works: RF—8X by keyhub.design This is a custom 80% electro-capacitive keyboard housing that merges the classic design of Topre's Realforce R1 with the aesthetic legacy of the XRF by the now-defunct Noxary. The motivation of the project is deeply personal: it started as a way to support friends who were unfortunately victims of the Noxary scam, combined with my o",
@@ -243,7 +280,24 @@
             "https://i.imgur.com/g7OvBMQ.jpeg"
           ],
           "gb": {
-            "designer": "keekeen"
+            "designer": "keekeen",
+            "vendor_links": [
+              {
+                "vendor": "ktechs (lead)",
+                "url": "https://ktechs.store/",
+                "host": "ktechs.store"
+              },
+              {
+                "vendor": "prototypist",
+                "url": "https://prototypist.net/",
+                "host": "prototypist.net"
+              },
+              {
+                "vendor": "toro studios",
+                "url": "https://www.torokeeb.store/",
+                "host": "www.torokeeb.store"
+              }
+            ]
           },
           "images": [
             "img/geekhack-126032-0.jpg",
@@ -263,7 +317,7 @@
           "source": "geekhack",
           "subreddit": null,
           "via": "Geekhack · Interest Checks",
-          "score": 12548,
+          "score": 12593,
           "comments": 20,
           "category": "breaking",
           "takeaway": "GMK CYL Gambit Play Chess! R1 1u Doubleshot ABS chess novelties keycaps — Iconic chess pieces for OG/Timeless GMK sets. Ideal for accents, XT/Macro rows, or simply just play chess with. When TBA - - - Disclaimer - - - Renders may not picture actual colors of the keycaps but if you happen to have GMK stock color in your possession then the colors are the exact match of the said colors. IC Form The Kit 16 doubleshot line-only and fill-only chess pieces, each in WoB, BoW, Beige and Dolch keycaps color and legend colors, as well as 3C and 3B beige accents color. All GMK stock colors (CR, WS1, L9,",
@@ -298,7 +352,7 @@
           "source": "geekhack",
           "subreddit": null,
           "via": "Geekhack · Interest Checks",
-          "score": 8642,
+          "score": 8856,
           "comments": 11,
           "category": "breaking",
           "takeaway": "Hello dino lovers, I'd like to introduce you to the already extinct, GMK CYL Dinokidz. Inspired by Dinokidz keyboard , featuring legends from Extended 2048. The idea was to bring back a bit of that old-school, playful feeling and turn it into a keycap set. Hope you guys like the set! IC Form Vendors US: Bowl Keyboards CA: EU: Delta Key Co. UK: Proto[Typist] KR: CN: KBDFans SG: iLumkb AU: Keebz N Cables Details Material: ABS Legends: Doubleshot & UV print Colors: Matched to original keycaps Kits Renders **Note**: Please refer to kit renders for a better depiction of the keyset. I tried my best",
@@ -344,7 +398,8 @@
                 "region": "SG",
                 "name": "iLumkb"
               }
-            ]
+            ],
+            "vendor_links": []
           },
           "images": [
             "img/geekhack-126450-0.jpg",
@@ -364,7 +419,7 @@
           "source": "geekhack",
           "subreddit": null,
           "via": "Geekhack · Group Buys",
-          "score": 6803,
+          "score": 6817,
           "comments": 10,
           "category": "breaking",
           "takeaway": "Echo by beardgrylls (of the black parade) Description This is the Group buy for the DSS Distortion 40s kit! This set features vibrant pink legends and accents inspired by the aesthetics of early punk rock albums. This set is designed for maximum compatibility with small keyboards, including standard QAZ layouts like the vault. This set will go on sale on April 13th and run until May 15th. MOQ of 50 @ 110 USD Vendors US- SabreKeebs UK- ProtoTypist EU- Keeb.Supply AUS/OCO- Keebz N Cables Renders F1-40 by Geon MB-44 by MelonBred QAZ V4N4GON by Trash Man Designer Discord",
@@ -400,6 +455,28 @@
                 "region": "UK",
                 "name": "ProtoTypist"
               }
+            ],
+            "vendor_links": [
+              {
+                "vendor": "SabreKeebs",
+                "url": "https://saberkeebs.com/products/group-buy-dss-distortion",
+                "host": "saberkeebs.com"
+              },
+              {
+                "vendor": "ProtoTypist",
+                "url": "https://prototypist.net/products/group-buy-dss-distortion",
+                "host": "prototypist.net"
+              },
+              {
+                "vendor": "Keeb.Supply",
+                "url": "https://keeb.supply/products/dss-distortion-40s",
+                "host": "keeb.supply"
+              },
+              {
+                "vendor": "Keebz N Cables",
+                "url": "https://www.keebzncables.com/products/dss-distortion",
+                "host": "www.keebzncables.com"
+              }
             ]
           },
           "images": [
@@ -420,7 +497,7 @@
           "source": "geekhack",
           "subreddit": null,
           "via": "Geekhack · Interest Checks",
-          "score": 12781,
+          "score": 12872,
           "comments": 18,
           "category": "breaking",
           "takeaway": "The sixth design from ORI CLUB ORI 870 — Design Notes This time around, I spent most of the process refining rather than reinventing—shaping the design language that Ori will carry forward. With the 870, I challenged myself to design with more restraint: something more practical, more daily. But minimalism is never the easier path—when there's nothing left to hide behind, every decision has to stand on its own. In the design process, from the very beginning—even when just thinking about form—I had countless shapes come to mind. I spent the majority of my time narrowing them down, searching for",
@@ -473,7 +550,7 @@
           "source": "geekhack",
           "subreddit": null,
           "via": "Geekhack · Group Buys",
-          "score": 5683,
+          "score": 5697,
           "comments": 3,
           "category": "breaking",
           "takeaway": "Sup, it's 2026 and I'm still at it. This time bringing you an officially licensed Touhou set themed after Konpaku Youmu! The set was designed by myself in collaboration with CannonKeys and manufactured by NicePBT. The inspiration is based on the more modern depiction of Youmu (TH17) with a lighter shade of green (and a slightly bluer hue). Big shoutout to my boy OneCreativeMind/ocm as always for helping with the novelty keycap designs. Shoutout to Starbottle for the 1u/deskmat illustration. https://touhou-project.news/news/16738/ Photo by: keima Kit: GB is now live and ends May 10th. ETA is cu",
@@ -487,20 +564,47 @@
             "keycap-design"
           ],
           "images_remote": [
-            "https://geekhack.org/index.php?PHPSESSID=423klbdfaai88mgj514a0m50j1snqn7r&action=dlattach;topic=126598.0;attach=316643;image",
-            "https://geekhack.org/index.php?PHPSESSID=423klbdfaai88mgj514a0m50j1snqn7r&action=dlattach;topic=126598.0;attach=316700;image",
-            "https://geekhack.org/index.php?PHPSESSID=423klbdfaai88mgj514a0m50j1snqn7r&action=dlattach;topic=126598.0;attach=316645;image",
-            "https://geekhack.org/index.php?PHPSESSID=423klbdfaai88mgj514a0m50j1snqn7r&action=dlattach;topic=126598.0;attach=316647;image",
-            "https://geekhack.org/index.php?PHPSESSID=423klbdfaai88mgj514a0m50j1snqn7r&action=dlattach;topic=126598.0;attach=316651;image",
-            "https://geekhack.org/index.php?PHPSESSID=423klbdfaai88mgj514a0m50j1snqn7r&action=dlattach;topic=126598.0;attach=316649;image",
-            "https://geekhack.org/index.php?PHPSESSID=423klbdfaai88mgj514a0m50j1snqn7r&action=dlattach;topic=126598.0;attach=316653;image",
-            "https://geekhack.org/index.php?PHPSESSID=423klbdfaai88mgj514a0m50j1snqn7r&action=dlattach;topic=126598.0;attach=316655;image",
-            "https://geekhack.org/index.php?PHPSESSID=423klbdfaai88mgj514a0m50j1snqn7r&action=dlattach;topic=126598.0;attach=316657;image",
-            "https://geekhack.org/index.php?PHPSESSID=423klbdfaai88mgj514a0m50j1snqn7r&action=dlattach;topic=126598.0;attach=316659;image"
+            "https://geekhack.org/index.php?PHPSESSID=kul4vqohtmmqnan0iumsuco859sh750p&action=dlattach;topic=126598.0;attach=316643;image",
+            "https://geekhack.org/index.php?PHPSESSID=kul4vqohtmmqnan0iumsuco859sh750p&action=dlattach;topic=126598.0;attach=316700;image",
+            "https://geekhack.org/index.php?PHPSESSID=kul4vqohtmmqnan0iumsuco859sh750p&action=dlattach;topic=126598.0;attach=316645;image",
+            "https://geekhack.org/index.php?PHPSESSID=kul4vqohtmmqnan0iumsuco859sh750p&action=dlattach;topic=126598.0;attach=316647;image",
+            "https://geekhack.org/index.php?PHPSESSID=kul4vqohtmmqnan0iumsuco859sh750p&action=dlattach;topic=126598.0;attach=316651;image",
+            "https://geekhack.org/index.php?PHPSESSID=kul4vqohtmmqnan0iumsuco859sh750p&action=dlattach;topic=126598.0;attach=316649;image",
+            "https://geekhack.org/index.php?PHPSESSID=kul4vqohtmmqnan0iumsuco859sh750p&action=dlattach;topic=126598.0;attach=316653;image",
+            "https://geekhack.org/index.php?PHPSESSID=kul4vqohtmmqnan0iumsuco859sh750p&action=dlattach;topic=126598.0;attach=316655;image",
+            "https://geekhack.org/index.php?PHPSESSID=kul4vqohtmmqnan0iumsuco859sh750p&action=dlattach;topic=126598.0;attach=316657;image",
+            "https://geekhack.org/index.php?PHPSESSID=kul4vqohtmmqnan0iumsuco859sh750p&action=dlattach;topic=126598.0;attach=316659;image"
           ],
           "gb": {
             "ends_at": "2026-05-10",
-            "status": "live"
+            "status": "live",
+            "vendor_links": [
+              {
+                "vendor": "https://touhou-project.news/news/16738/",
+                "url": "https://touhou-project.news/news/16738/",
+                "host": "touhou-project.news"
+              },
+              {
+                "vendor": "CannonKeys",
+                "url": "https://cannonkeys.com/products/nicepbt-youmu",
+                "host": "cannonkeys.com"
+              },
+              {
+                "vendor": "Yushakobo",
+                "url": "https://shop.yushakobo.jp/products/12098",
+                "host": "shop.yushakobo.jp"
+              },
+              {
+                "vendor": "zFrontier",
+                "url": "https://www.zfrontier.com/app/mch/BbdPaL80ZW8D",
+                "host": "www.zfrontier.com"
+              },
+              {
+                "vendor": "FAQ",
+                "url": "https://cannonkeys.com/pages/FAQs",
+                "host": "cannonkeys.com"
+              }
+            ]
           },
           "images": [
             "img/geekhack-126598-0.jpg",
@@ -520,8 +624,8 @@
           "source": "geekhack",
           "subreddit": null,
           "via": "Geekhack · Group Buys",
-          "score": 11893,
-          "comments": 13,
+          "score": 11976,
+          "comments": 14,
           "category": "breaking",
           "takeaway": "DCS Grass Valley Keycap set inspired by media / film editing keyboards from the '80s and '90s. Designer Discord Group Buy Info: Date: May 1st - June 1st Delivery Estimate: Q3-Q4 2026 Vendors: US: Bowl CA: Minokeys Korea: Geon CN: Typist Club UK: Proto[Typist] SG: ktechs EU: CoffeeKeys Pricing: Planning to do MOQ-based pricing, similar to more recent DCS sets. Base: $149.00 - 50 MOQ $130.00 - 75 MOQ $121.00 - 100 MOQ $113.00 - 150 MOQ Numpad: $49.00 - 25 MOQ $32.00 - 50 MOQ $26.00 - 75MOQ $24.00 - 100 MOQ Spacebars: $21.00 - 25 MOQ $14.00 - 50 MOQ $11.00 - 75MOQ $10.00 - 100 MOQ BAE: $6.50 - 25",
           "topics": [
@@ -572,6 +676,43 @@
                 "region": "SG",
                 "name": "ktechs"
               }
+            ],
+            "vendor_links": [
+              {
+                "vendor": "Bowl",
+                "url": "https://bowlkeyboards.com/products/gb-dcs-grass-valley-down-payment",
+                "host": "bowlkeyboards.com"
+              },
+              {
+                "vendor": "Minokeys",
+                "url": "https://minokeys.com/products/dcs-grass-valley",
+                "host": "minokeys.com"
+              },
+              {
+                "vendor": "Geon",
+                "url": "https://geon.works/products/group-buy-dcs-grass-valley-keycaps",
+                "host": "geon.works"
+              },
+              {
+                "vendor": "Typist Club",
+                "url": "https://item.taobao.com/item.htm?id=1046621159604&mi_id=0000Hxc0wLncnmKsmYKEpV0uoO23uP8Ch0_5cI9hsPpkfBI&spm=a21xtw.29178619.0.0&xxc=shop",
+                "host": "item.taobao.com"
+              },
+              {
+                "vendor": "Proto[Typist]",
+                "url": "https://prototypist.net/products/group-buy-dcs-grass-valley",
+                "host": "prototypist.net"
+              },
+              {
+                "vendor": "ktechs",
+                "url": "https://ktechs.store/products/dcs-grass-valley",
+                "host": "ktechs.store"
+              },
+              {
+                "vendor": "CoffeeKeys",
+                "url": "https://coffeekeys.eu/en/products/group-buy-dcs-grass-valley-eng",
+                "host": "coffeekeys.eu"
+              }
             ]
           },
           "images": [
@@ -592,7 +733,7 @@
           "source": "geekhack",
           "subreddit": null,
           "via": "Geekhack · Group Buys",
-          "score": 9713,
+          "score": 9929,
           "comments": 11,
           "category": "breaking",
           "takeaway": "GMK Gregory 2 by chamelemon_64 and pancake Greetings Greg Gang. He has returned. Available from May 1st to 29th. Estimated fulfillment date – Q3 2026 Vendors US: NovelKeys UK: Proto[Typist] EU: Oblotzky Industries KR: GEONWORKS CN: KBDfans SG: iLumkb Kits Base – $135, Novelties – $45, Deskpad – $25 Deskpad Dimensions – 836×380mm Renders Photos Special thanks to you, Nephlock, FreshFromTheGrave, and garry.",
@@ -652,6 +793,38 @@
                 "region": "CN",
                 "name": "KBDfans"
               }
+            ],
+            "vendor_links": [
+              {
+                "vendor": "NovelKeys",
+                "url": "https://novelkeys.com/products/gmk-cyl-greg-2-keycaps",
+                "host": "novelkeys.com"
+              },
+              {
+                "vendor": "Proto[Typist]",
+                "url": "https://prototypist.net/products/group-buy-gmk-cyl-greg-r2",
+                "host": "prototypist.net"
+              },
+              {
+                "vendor": "Oblotzky Industries",
+                "url": "https://oblotzky.industries/products/gmk-cyl-greg-r2",
+                "host": "oblotzky.industries"
+              },
+              {
+                "vendor": "GEONWORKS",
+                "url": "https://geon.works/products/group-buy-gmk-cyl-greg-2/",
+                "host": "geon.works"
+              },
+              {
+                "vendor": "KBDfans",
+                "url": "https://kbdfans.com/products/gmk-cyl-greg-2",
+                "host": "kbdfans.com"
+              },
+              {
+                "vendor": "iLumkb",
+                "url": "https://ilumkb.com/products/group-buy-gmk-cyl-greg-2",
+                "host": "ilumkb.com"
+              }
             ]
           },
           "images": [
@@ -672,8 +845,8 @@
           "source": "geekhack",
           "subreddit": null,
           "via": "Geekhack · Interest Checks",
-          "score": 954,
-          "comments": 1,
+          "score": 1057,
+          "comments": 2,
           "category": "breaking",
           "takeaway": "Hello, this is Moyu.studio ﻿ This time, we bring you a lightweight, high-performance magnetic switch - Yurui HE switch Yurui HE switch specification Top Housing: PC Bottom Housing: Nylon Stem: POM Spring: 20mm Total Travel: 3.6±0.2mm Operating Force: 37±2g Bottom-out Force: 42±2g Bottom-out Magnetic Flux: 630±40GS Lubed At the beginning of the design, we aimed to create a high-performance, long-lasting HE switch with a high level of appearance and cost-effectiveness. After trying several springs, we chose to customize this 42g extended spring. The design of the extended spring can make the swi",
           "topics": [
@@ -686,17 +859,24 @@
             "magnetic-switch"
           ],
           "images_remote": [
-            "https://geekhack.org/index.php?PHPSESSID=hqo3majg02cjr2cmvqrqt65ecvgldr99&action=dlattach;topic=126673.0;attach=316994;image",
-            "https://geekhack.org/index.php?PHPSESSID=hqo3majg02cjr2cmvqrqt65ecvgldr99&action=dlattach;topic=126673.0;attach=316996;image",
-            "https://geekhack.org/index.php?PHPSESSID=hqo3majg02cjr2cmvqrqt65ecvgldr99&action=dlattach;topic=126673.0;attach=316998;image",
-            "https://geekhack.org/index.php?PHPSESSID=hqo3majg02cjr2cmvqrqt65ecvgldr99&action=dlattach;topic=126673.0;attach=317000;image",
-            "https://geekhack.org/index.php?PHPSESSID=hqo3majg02cjr2cmvqrqt65ecvgldr99&action=dlattach;topic=126673.0;attach=317002;image",
-            "https://geekhack.org/index.php?PHPSESSID=hqo3majg02cjr2cmvqrqt65ecvgldr99&action=dlattach;topic=126673.0;attach=317004;image",
-            "https://geekhack.org/index.php?PHPSESSID=hqo3majg02cjr2cmvqrqt65ecvgldr99&action=dlattach;topic=126673.0;attach=317006;image",
-            "https://geekhack.org/index.php?PHPSESSID=hqo3majg02cjr2cmvqrqt65ecvgldr99&action=dlattach;topic=126673.0;attach=317008;image"
+            "https://geekhack.org/index.php?PHPSESSID=c3hoe6a5pcs92p8459nbp4rdhhhe8ugk&action=dlattach;topic=126673.0;attach=316994;image",
+            "https://geekhack.org/index.php?PHPSESSID=c3hoe6a5pcs92p8459nbp4rdhhhe8ugk&action=dlattach;topic=126673.0;attach=316996;image",
+            "https://geekhack.org/index.php?PHPSESSID=c3hoe6a5pcs92p8459nbp4rdhhhe8ugk&action=dlattach;topic=126673.0;attach=316998;image",
+            "https://geekhack.org/index.php?PHPSESSID=c3hoe6a5pcs92p8459nbp4rdhhhe8ugk&action=dlattach;topic=126673.0;attach=317000;image",
+            "https://geekhack.org/index.php?PHPSESSID=c3hoe6a5pcs92p8459nbp4rdhhhe8ugk&action=dlattach;topic=126673.0;attach=317002;image",
+            "https://geekhack.org/index.php?PHPSESSID=c3hoe6a5pcs92p8459nbp4rdhhhe8ugk&action=dlattach;topic=126673.0;attach=317004;image",
+            "https://geekhack.org/index.php?PHPSESSID=c3hoe6a5pcs92p8459nbp4rdhhhe8ugk&action=dlattach;topic=126673.0;attach=317006;image",
+            "https://geekhack.org/index.php?PHPSESSID=c3hoe6a5pcs92p8459nbp4rdhhhe8ugk&action=dlattach;topic=126673.0;attach=317008;image"
           ],
           "gb": {
-            "designer": "Moyu.studio"
+            "designer": "Moyu.studio",
+            "vendor_links": [
+              {
+                "vendor": "Moyu.studio",
+                "url": "https://moyustudio.world/",
+                "host": "moyustudio.world"
+              }
+            ]
           },
           "images": [
             "img/geekhack-126673-0.jpg",

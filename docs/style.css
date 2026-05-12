@@ -2172,3 +2172,18 @@ footer a:hover {
 .gb-item-ic .gb-title {
   font-weight: 500;
 }
+
+/* Vendor pill as a real link when the OP linked the buy-here URL. */
+a.gb-vendor-pill-link {
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid transparent;
+  transition: border-bottom-color 0.15s ease, color 0.15s ease;
+}
+a.gb-vendor-pill-link:hover {
+  color: var(--accent);
+}
+a.gb-vendor-pill-link:hover .gb-vendor-region {
+  border-color: var(--accent);
+  color: var(--accent);
+}
