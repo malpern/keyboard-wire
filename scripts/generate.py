@@ -925,6 +925,13 @@ def font_script() -> str:
   initGbCarousels();
 
   // ── GB image lightbox (click carousel slide to expand) ──
+  // Two display modes per loaded image:
+  //   FIT:    object-fit:contain, sized to viewport (default on open)
+  //   ACTUAL: shown at natural pixel dimensions, click/drag pans.
+  //           If data-full points at a larger remote source, load it
+  //           on entry so users see full-quality original.
+  // Click image toggles modes; click-without-move during drag stays
+  // in ACTUAL (a real click toggles, a drag does not).
   function initGbLightbox() {
     var lb = document.getElementById('gb-lightbox');
     if (!lb) return;
@@ -934,16 +941,63 @@ def font_script() -> str:
     var lbNext = lb.querySelector('.gb-lightbox-next');
     var lbCount = lb.querySelector('.gb-lightbox-counter');
 
-    var currentImages = [];  // array of src strings for current carousel
+    var currentSrcs = [];    // array of {fit, full} per slide
     var currentIdx = 0;
-    var lastTrigger = null;  // element to restore focus to on close
+    var lastTrigger = null;
+    var mode = 'fit';        // 'fit' | 'actual'
+    var panX = 0, panY = 0;
+    var dragging = false, didDrag = false;
+    var dragStartX = 0, dragStartY = 0;
+    var pointerDownX = 0, pointerDownY = 0;
+
+    function clampPan() {
+      // Center the image; bound pan so its edges can't leave viewport
+      // entirely (cap at half-image-overflow).
+      var iw = lbImg.naturalWidth || lbImg.width;
+      var ih = lbImg.naturalHeight || lbImg.height;
+      var vw = window.innerWidth;
+      var vh = window.innerHeight;
+      var maxX = Math.max(0, (iw - vw) / 2);
+      var maxY = Math.max(0, (ih - vh) / 2);
+      if (panX >  maxX) panX =  maxX;
+      if (panX < -maxX) panX = -maxX;
+      if (panY >  maxY) panY =  maxY;
+      if (panY < -maxY) panY = -maxY;
+    }
+
+    function applyPan() {
+      lbImg.style.transform = 'translate(' + panX + 'px,' + panY + 'px)';
+    }
+
+    function setFit() {
+      mode = 'fit';
+      panX = 0; panY = 0;
+      lb.classList.remove('gb-lightbox-actual');
+      lbImg.style.transform = '';
+    }
+
+    function setActual() {
+      mode = 'actual';
+      panX = 0; panY = 0;
+      lb.classList.add('gb-lightbox-actual');
+      lbImg.style.transform = '';
+      // If the slide carries a data-full URL different from the
+      // currently-loaded fit-resolution src, swap to it now. We use
+      // the local 1280px crop as the loading-state placeholder until
+      // the bigger source arrives.
+      var slide = currentSrcs[currentIdx];
+      if (slide.full && slide.full !== lbImg.src) {
+        lbImg.src = slide.full;
+      }
+    }
 
     function show(idx) {
-      if (!currentImages.length) return;
-      currentIdx = (idx + currentImages.length) % currentImages.length;
-      lbImg.src = currentImages[currentIdx];
-      if (currentImages.length > 1) {
-        lbCount.textContent = (currentIdx + 1) + ' / ' + currentImages.length;
+      if (!currentSrcs.length) return;
+      currentIdx = (idx + currentSrcs.length) % currentSrcs.length;
+      setFit();
+      lbImg.src = currentSrcs[currentIdx].fit;
+      if (currentSrcs.length > 1) {
+        lbCount.textContent = (currentIdx + 1) + ' / ' + currentSrcs.length;
         lbPrev.style.display = '';
         lbNext.style.display = '';
       } else {
@@ -953,8 +1007,8 @@ def font_script() -> str:
       }
     }
 
-    function open(images, startIdx, trigger) {
-      currentImages = images.slice();
+    function open(srcs, startIdx, trigger) {
+      currentSrcs = srcs.slice();
       lastTrigger = trigger || null;
       show(startIdx || 0);
       lb.hidden = false;
@@ -965,17 +1019,17 @@ def font_script() -> str:
     function close() {
       lb.hidden = true;
       lbImg.src = '';
+      setFit();
       document.body.style.overflow = '';
-      currentImages = [];
+      currentSrcs = [];
       if (lastTrigger && typeof lastTrigger.focus === 'function') {
         lastTrigger.focus();
         lastTrigger = null;
       }
     }
 
-    // Delegate: any click on a slide img opens the lightbox with that
-    // carousel's full image list. Works for both single-image and
-    // multi-image carousels.
+    // Delegate: clicking any slide img opens the lightbox with the
+    // full carousel's image list (and data-full sources where set).
     document.addEventListener('click', function(e) {
       var img = e.target;
       if (img.tagName !== 'IMG') return;
@@ -983,28 +1037,77 @@ def font_script() -> str:
       if (!slide) return;
       var carousel = slide.closest('.gb-carousel, .gb-carousel-single');
       if (!carousel) return;
-      // Collect all images in this carousel in DOM order.
       var imgs = carousel.querySelectorAll('img');
       var srcs = [];
       var startIdx = 0;
       for (var i = 0; i < imgs.length; i++) {
-        srcs.push(imgs[i].src);
+        srcs.push({
+          fit: imgs[i].src,
+          full: imgs[i].getAttribute('data-full') || null,
+        });
         if (imgs[i] === img) startIdx = i;
       }
       open(srcs, startIdx, img);
       e.preventDefault();
     });
 
-    // Click-outside-image closes (the backdrop has cursor: zoom-out).
+    // Click on backdrop (but not image / controls) closes.
     lb.addEventListener('click', function(e) {
-      if (e.target === lbImg) return;  // image itself: don't close
+      if (e.target === lbImg) return;
       if (e.target === lbPrev || e.target === lbNext) return;
+      if (e.target === lbClose) return;
       close();
     });
 
     lbClose.addEventListener('click', close);
     lbPrev.addEventListener('click', function() { show(currentIdx - 1); });
     lbNext.addEventListener('click', function() { show(currentIdx + 1); });
+
+    // Image click + drag — pointer events handle both mouse + touch.
+    lbImg.addEventListener('pointerdown', function(e) {
+      // In fit mode, the click handler below toggles to actual.
+      if (mode !== 'actual') return;
+      dragging = true;
+      didDrag = false;
+      pointerDownX = e.clientX;
+      pointerDownY = e.clientY;
+      dragStartX = e.clientX - panX;
+      dragStartY = e.clientY - panY;
+      try { lbImg.setPointerCapture(e.pointerId); } catch (_) {}
+      e.preventDefault();
+    });
+
+    lbImg.addEventListener('pointermove', function(e) {
+      if (!dragging) return;
+      panX = e.clientX - dragStartX;
+      panY = e.clientY - dragStartY;
+      clampPan();
+      applyPan();
+      if (Math.abs(e.clientX - pointerDownX) > 4 ||
+          Math.abs(e.clientY - pointerDownY) > 4) {
+        didDrag = true;
+      }
+    });
+
+    function endDrag(e) {
+      if (!dragging) return;
+      dragging = false;
+      try { lbImg.releasePointerCapture(e.pointerId); } catch (_) {}
+    }
+    lbImg.addEventListener('pointerup', endDrag);
+    lbImg.addEventListener('pointercancel', endDrag);
+
+    // Click toggles mode — but only if it was a real click (no drag).
+    // In actual mode + a drag happened, swallow the click so we don't
+    // accidentally exit zoom.
+    lbImg.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (mode === 'actual' && didDrag) {
+        didDrag = false;
+        return;
+      }
+      if (mode === 'fit') setActual(); else setFit();
+    });
 
     document.addEventListener('keydown', function(e) {
       if (lb.hidden) return;
@@ -1016,6 +1119,33 @@ def font_script() -> str:
   initGbLightbox();
 })();
 </script>'''
+
+
+def clean_remote_image_url(url: str) -> str:
+    """Strip session-bound parameters from a remote image URL so the
+    cleaned form stays valid past the session that scraped it.
+
+    Geekhack's native `action=dlattach` URLs include a PHPSESSID
+    parameter which expires. The bare attach=NNN URL still resolves
+    correctly. Other hosts (imgur, postimg, etc.) are returned as-is.
+    """
+    if not url:
+        return ""
+    if "PHPSESSID=" not in url:
+        return url
+    # Drop PHPSESSID=… with its adjacent separator. Geekhack uses both
+    # `&` and `;` as query separators, sometimes in the same URL, so
+    # match each leading-or-trailing position explicitly.
+    cleaned = url
+    # First-param forms — keep the leading `?`, drop the param + its
+    # trailing separator.
+    cleaned = re.sub(r"\?PHPSESSID=[^&;]+&", "?", cleaned)
+    cleaned = re.sub(r"\?PHPSESSID=[^&;]+;", "?", cleaned)
+    cleaned = re.sub(r"\?PHPSESSID=[^&;]+$", "", cleaned)
+    # Mid- or last-param forms — drop the param including the leading
+    # separator.
+    cleaned = re.sub(r"[&;]PHPSESSID=[^&;]+", "", cleaned)
+    return cleaned
 
 
 def gb_images(item: dict) -> list[str]:
@@ -1115,18 +1245,30 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
 
     # ── image carousel ──
     images = gb_images(item)
+    # Map local image index → original remote URL (cleaned of session
+    # tokens) so the lightbox can load the full-resolution source on
+    # "expand to actual size". May be shorter than `images` if the
+    # pilot didn't capture remotes for some slides; missing entries
+    # fall through to the local 1280px crop.
+    remotes_raw = item.get("images_remote") or []
+    remotes = [clean_remote_image_url(u) for u in remotes_raw]
     carousel_html = ""
     if images:
         slides = []
         for idx, img in enumerate(images):
             src = f"{rel_prefix}{img}" if rel_prefix and not img.startswith(("http://", "https://", "/")) else img
             loading = "eager" if idx == 0 else "lazy"
+            data_full = ""
+            if idx < len(remotes) and remotes[idx]:
+                data_full = (
+                    f' data-full="{html.escape(remotes[idx], quote=True)}"'
+                )
             slides.append(
                 f'<div class="gb-slide" role="group" '
                 f'aria-label="Image {idx + 1} of {len(images)}" '
                 f'aria-roledescription="slide">'
                 f'<img src="{html.escape(src)}" alt="" '
-                f'loading="{loading}" decoding="async">'
+                f'loading="{loading}" decoding="async"{data_full}>'
                 f'</div>'
             )
         if len(images) == 1:

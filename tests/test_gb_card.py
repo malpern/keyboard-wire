@@ -16,6 +16,35 @@ import fetch_images as fi  # noqa: E402
 # ─────────────────────────── helpers ───────────────────────────
 
 
+class CleanRemoteImageUrl(unittest.TestCase):
+    def test_strips_geekhack_phpsessid_first_param(self):
+        url = ("https://geekhack.org/index.php?PHPSESSID=abc123"
+               "&action=dlattach;topic=126649.0;attach=259204;image")
+        self.assertEqual(
+            gen.clean_remote_image_url(url),
+            "https://geekhack.org/index.php?action=dlattach;topic=126649.0;attach=259204;image",
+        )
+
+    def test_strips_phpsessid_mid_query(self):
+        url = ("https://geekhack.org/index.php?action=x&PHPSESSID=abc"
+               "&topic=1")
+        self.assertEqual(
+            gen.clean_remote_image_url(url),
+            "https://geekhack.org/index.php?action=x&topic=1",
+        )
+
+    def test_imgur_passthrough(self):
+        url = "https://i.imgur.com/hv7OKVd.jpg"
+        self.assertEqual(gen.clean_remote_image_url(url), url)
+
+    def test_postimg_passthrough(self):
+        url = "https://i.postimg.cc/7L0Xb5s5/GMK-CYL-Greg-Desk-CTKL-Wide.png"
+        self.assertEqual(gen.clean_remote_image_url(url), url)
+
+    def test_empty(self):
+        self.assertEqual(gen.clean_remote_image_url(""), "")
+
+
 class GbImages(unittest.TestCase):
     def test_images_array_preferred(self):
         item = {"images": ["a.jpg", "b.jpg"], "image": "old.jpg"}
@@ -249,6 +278,36 @@ class RenderGbItem(unittest.TestCase):
         self.assertIn("gb-item-ic", out)
         out_gb = gen.render_gb_item(make_gb_item(type="GB"), {}, {})
         self.assertNotIn("gb-item-ic", out_gb)
+
+    def test_data_full_attribute_emitted_when_remote_present(self):
+        item = make_gb_item(
+            image=None,
+            images=["img/geekhack-1-0.jpg", "img/geekhack-1-1.jpg"],
+            images_remote=[
+                "https://i.imgur.com/A.jpg",
+                "https://geekhack.org/index.php?PHPSESSID=x&action=dlattach;attach=99;image",
+            ],
+        )
+        out = gen.render_gb_item(item, {}, {})
+        self.assertIn('data-full="https://i.imgur.com/A.jpg"', out)
+        # PHPSESSID stripped
+        self.assertIn('data-full="https://geekhack.org/index.php?action=dlattach;attach=99;image"', out)
+        self.assertNotIn("PHPSESSID", out)
+
+    def test_data_full_omitted_when_no_remote(self):
+        item = make_gb_item(image="img/x.jpg")
+        out = gen.render_gb_item(item, {}, {})
+        self.assertNotIn("data-full=", out)
+
+    def test_data_full_skipped_for_missing_index(self):
+        # 3 local images, 1 remote — only first slide gets data-full.
+        item = make_gb_item(
+            image=None,
+            images=["img/a.jpg", "img/b.jpg", "img/c.jpg"],
+            images_remote=["https://x/0.jpg"],
+        )
+        out = gen.render_gb_item(item, {}, {})
+        self.assertEqual(out.count("data-full="), 1)
 
     def test_rel_prefix_skips_absolute_urls(self):
         out = gen.render_gb_item(

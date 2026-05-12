@@ -2123,3 +2123,31 @@ footer a:hover {
 @media (prefers-reduced-motion: reduce) {
   .gb-lightbox { animation: none; }
 }
+
+/* Lightbox actual-size mode: image at natural pixel dimensions,
+   click-drag to pan. Flex container still centers the image at
+   pan=(0,0); JS translate shifts from there; overflow:hidden clips. */
+.gb-lightbox.gb-lightbox-actual {
+  cursor: default;
+  overflow: hidden;
+  padding: 0;
+}
+.gb-lightbox.gb-lightbox-actual .gb-lightbox-img {
+  max-width: none;
+  max-height: none;
+  width: auto;
+  height: auto;
+  object-fit: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-drag: none;
+  touch-action: none;
+}
+.gb-lightbox.gb-lightbox-actual .gb-lightbox-img:active {
+  cursor: grabbing;
+}
+/* Fit mode: image cursor hints at zoom-in (overrides the
+   parent backdrop's zoom-out). */
+.gb-lightbox:not(.gb-lightbox-actual) .gb-lightbox-img {
+  cursor: zoom-in;
+}
