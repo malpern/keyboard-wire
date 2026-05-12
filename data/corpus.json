@@ -181,7 +181,6 @@
             "group-buy",
             "pricing"
           ],
-          "image": "img/geekhack-110579-1.jpg",
           "images_remote": [
             "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259204;image",
             "https://i.imgur.com/hv7OKVd.jpg",
@@ -197,15 +196,16 @@
             "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259212;image",
             "https://geekhack.org/index.php?PHPSESSID=gconbvnjouqvjcenjpe16m1q8si6dr03&action=dlattach;topic=110579.0;attach=259192;image"
           ],
+          "gb": {
+            "status": "postponed"
+          },
           "images": [
             "img/geekhack-110579-1.jpg",
             "img/geekhack-110579-2.jpg",
             "img/geekhack-110579-4.jpg",
             "img/geekhack-110579-5.jpg"
           ],
-          "gb": {
-            "status": "postponed"
-          }
+          "image": "img/geekhack-110579-1.jpg"
         },
         {
           "id": "geekhack-126032",
@@ -228,7 +228,6 @@
             "diy-build",
             "group-buy"
           ],
-          "image": "img/geekhack-126032.jpg",
           "images_remote": [
             "https://i.imgur.com/1PYvjME.jpeg",
             "https://i.imgur.com/wwMNmWj.jpeg",
@@ -244,6 +243,9 @@
             "https://i.imgur.com/uuSP9ux.jpeg",
             "https://i.imgur.com/g7OvBMQ.jpeg"
           ],
+          "gb": {
+            "designer": "keekeen"
+          },
           "images": [
             "img/geekhack-126032-0.jpg",
             "img/geekhack-126032-1.jpg",
@@ -252,9 +254,7 @@
             "img/geekhack-126032-4.jpg",
             "img/geekhack-126032-5.jpg"
           ],
-          "gb": {
-            "designer": "keekeen"
-          }
+          "image": "img/geekhack-126032-0.jpg"
         },
         {
           "id": "geekhack-126424",
@@ -277,7 +277,6 @@
             "keycap-design",
             "group-buy"
           ],
-          "image": "img/geekhack-126424.jpg",
           "images_remote": [
             "https://i.imgur.com/UkhM1uR.jpeg",
             "https://i.imgur.com/Bcy6vag.jpeg",
@@ -289,7 +288,8 @@
             "img/geekhack-126424-1.jpg",
             "img/geekhack-126424-2.jpg",
             "img/geekhack-126424-3.jpg"
-          ]
+          ],
+          "image": "img/geekhack-126424-0.jpg"
         },
         {
           "id": "geekhack-126450",
@@ -312,7 +312,6 @@
             "keycap-design",
             "group-buy"
           ],
-          "image": "img/geekhack-126450.jpg",
           "images_remote": [
             "https://i.postimg.cc/2krP2jqT/K-01.png",
             "https://i.postimg.cc/ZbHXgkpn/K-02.png",
@@ -323,14 +322,6 @@
             "https://i.postimg.cc/0kPLc56j/1800-A-v2.png",
             "https://i.postimg.cc/qk8Ps678/TKL-B.png",
             "https://i.postimg.cc/QXp2QKMX/TKL-A.png"
-          ],
-          "images": [
-            "img/geekhack-126450-0.jpg",
-            "img/geekhack-126450-1.jpg",
-            "img/geekhack-126450-2.jpg",
-            "img/geekhack-126450-3.jpg",
-            "img/geekhack-126450-4.jpg",
-            "img/geekhack-126450-5.jpg"
           ],
           "gb": {
             "vendor_regions": [
@@ -355,7 +346,16 @@
                 "name": "iLumkb"
               }
             ]
-          }
+          },
+          "images": [
+            "img/geekhack-126450-0.jpg",
+            "img/geekhack-126450-1.jpg",
+            "img/geekhack-126450-2.jpg",
+            "img/geekhack-126450-3.jpg",
+            "img/geekhack-126450-4.jpg",
+            "img/geekhack-126450-5.jpg"
+          ],
+          "image": "img/geekhack-126450-0.jpg"
         },
         {
           "id": "geekhack-126526",
@@ -378,7 +378,6 @@
             "group-buy",
             "keycap-design"
           ],
-          "image": "img/geekhack-126526.jpg",
           "images_remote": [
             "https://i.postimg.cc/vHWP3LqY/Echo.png",
             "https://i.postimg.cc/8CCtk81j/Final_40s.png",
@@ -386,14 +385,6 @@
             "https://i.postimg.cc/TYrkCq7Y/MB44.png",
             "https://i.postimg.cc/65dHYLj3/QAZ.png",
             "https://i.postimg.cc/SNWZD7Tn/V4N.png"
-          ],
-          "images": [
-            "img/geekhack-126526-0.jpg",
-            "img/geekhack-126526-1.jpg",
-            "img/geekhack-126526-2.jpg",
-            "img/geekhack-126526-3.jpg",
-            "img/geekhack-126526-4.jpg",
-            "img/geekhack-126526-5.jpg"
           ],
           "gb": {
             "designer": "beardgrylls",
@@ -411,7 +402,16 @@
                 "name": "ProtoTypist"
               }
             ]
-          }
+          },
+          "images": [
+            "img/geekhack-126526-0.jpg",
+            "img/geekhack-126526-1.jpg",
+            "img/geekhack-126526-2.jpg",
+            "img/geekhack-126526-3.jpg",
+            "img/geekhack-126526-4.jpg",
+            "img/geekhack-126526-5.jpg"
+          ],
+          "image": "img/geekhack-126526-0.jpg"
         },
         {
           "id": "geekhack-126530",
@@ -434,7 +434,6 @@
             "pcb-design",
             "diy-build"
           ],
-          "image": "img/geekhack-126530.jpg",
           "images_remote": [
             "https://i.imgur.com/5AyJZSs.png",
             "https://i.imgur.com/x4kiyRm.jpeg",
@@ -454,6 +453,9 @@
             "https://i.imgur.com/vLjkOIq.jpeg",
             "https://i.imgur.com/8ZQjmrs.jpeg"
           ],
+          "gb": {
+            "designer": "ORI CLUB"
+          },
           "images": [
             "img/geekhack-126530-0.jpg",
             "img/geekhack-126530-1.jpg",
@@ -462,9 +464,7 @@
             "img/geekhack-126530-4.jpg",
             "img/geekhack-126530-5.jpg"
           ],
-          "gb": {
-            "designer": "ORI CLUB"
-          }
+          "image": "img/geekhack-126530-0.jpg"
         },
         {
           "id": "geekhack-126598",
@@ -499,6 +499,10 @@
             "https://geekhack.org/index.php?PHPSESSID=423klbdfaai88mgj514a0m50j1snqn7r&action=dlattach;topic=126598.0;attach=316657;image",
             "https://geekhack.org/index.php?PHPSESSID=423klbdfaai88mgj514a0m50j1snqn7r&action=dlattach;topic=126598.0;attach=316659;image"
           ],
+          "gb": {
+            "ends_at": "2026-05-10",
+            "status": "live"
+          },
           "images": [
             "img/geekhack-126598-0.jpg",
             "img/geekhack-126598-1.jpg",
@@ -507,11 +511,7 @@
             "img/geekhack-126598-4.jpg",
             "img/geekhack-126598-5.jpg"
           ],
-          "image": "img/geekhack-126598-0.jpg",
-          "gb": {
-            "ends_at": "2026-05-10",
-            "status": "live"
-          }
+          "image": "img/geekhack-126598-0.jpg"
         },
         {
           "id": "geekhack-126645",
@@ -535,7 +535,6 @@
             "group-buy",
             "pricing"
           ],
-          "image": "img/geekhack-126645.jpg",
           "images_remote": [
             "https://bord.design/grassvalley/stand-2.jpg",
             "https://bord.design/grassvalley/base.jpg",
@@ -549,14 +548,6 @@
             "https://bord.design/grassvalley/smurve80.jpg",
             "https://bord.design/grassvalley/HX40.jpg",
             "https://bord.design/grassvalley/manta.jpg"
-          ],
-          "images": [
-            "img/geekhack-126645-0.jpg",
-            "img/geekhack-126645-1.jpg",
-            "img/geekhack-126645-2.jpg",
-            "img/geekhack-126645-3.jpg",
-            "img/geekhack-126645-4.jpg",
-            "img/geekhack-126645-5.jpg"
           ],
           "gb": {
             "starts_at": "2026-05-01",
@@ -583,7 +574,16 @@
                 "name": "ktechs"
               }
             ]
-          }
+          },
+          "images": [
+            "img/geekhack-126645-0.jpg",
+            "img/geekhack-126645-1.jpg",
+            "img/geekhack-126645-2.jpg",
+            "img/geekhack-126645-3.jpg",
+            "img/geekhack-126645-4.jpg",
+            "img/geekhack-126645-5.jpg"
+          ],
+          "image": "img/geekhack-126645-0.jpg"
         },
         {
           "id": "geekhack-126649",
@@ -606,7 +606,6 @@
             "group-buy",
             "keycap-design"
           ],
-          "image": "img/geekhack-126649.jpg",
           "images_remote": [
             "https://i.postimg.cc/7L0Xb5s5/GMK-CYL-Greg-Desk-CTKL-Wide.png",
             "https://i.postimg.cc/gjQrKmqv/Base.png",
@@ -626,14 +625,6 @@
             "https://i.postimg.cc/rw6h16dW/DSCF6849.jpg",
             "https://i.postimg.cc/cLqDRqKH/DSCF6851.jpg",
             "https://i.postimg.cc/1zBJ1fvD/DSCF6855.jpg"
-          ],
-          "images": [
-            "img/geekhack-126649-0.jpg",
-            "img/geekhack-126649-1.jpg",
-            "img/geekhack-126649-2.jpg",
-            "img/geekhack-126649-3.jpg",
-            "img/geekhack-126649-4.jpg",
-            "img/geekhack-126649-5.jpg"
           ],
           "gb": {
             "designer": "chamelemon_64 and pancake",
@@ -663,7 +654,16 @@
                 "name": "KBDfans"
               }
             ]
-          }
+          },
+          "images": [
+            "img/geekhack-126649-0.jpg",
+            "img/geekhack-126649-1.jpg",
+            "img/geekhack-126649-2.jpg",
+            "img/geekhack-126649-3.jpg",
+            "img/geekhack-126649-4.jpg",
+            "img/geekhack-126649-5.jpg"
+          ],
+          "image": "img/geekhack-126649-0.jpg"
         },
         {
           "id": "geekhack-126673",
@@ -686,7 +686,6 @@
             "switch-development",
             "magnetic-switch"
           ],
-          "image": "img/geekhack-126673.jpg",
           "images_remote": [
             "https://geekhack.org/index.php?PHPSESSID=hqo3majg02cjr2cmvqrqt65ecvgldr99&action=dlattach;topic=126673.0;attach=316994;image",
             "https://geekhack.org/index.php?PHPSESSID=hqo3majg02cjr2cmvqrqt65ecvgldr99&action=dlattach;topic=126673.0;attach=316996;image",
@@ -697,6 +696,9 @@
             "https://geekhack.org/index.php?PHPSESSID=hqo3majg02cjr2cmvqrqt65ecvgldr99&action=dlattach;topic=126673.0;attach=317006;image",
             "https://geekhack.org/index.php?PHPSESSID=hqo3majg02cjr2cmvqrqt65ecvgldr99&action=dlattach;topic=126673.0;attach=317008;image"
           ],
+          "gb": {
+            "designer": "Moyu.studio"
+          },
           "images": [
             "img/geekhack-126673-0.jpg",
             "img/geekhack-126673-1.jpg",
@@ -705,9 +707,7 @@
             "img/geekhack-126673-4.jpg",
             "img/geekhack-126673-5.jpg"
           ],
-          "gb": {
-            "designer": "Moyu.studio"
-          }
+          "image": "img/geekhack-126673-0.jpg"
         }
       ]
     },

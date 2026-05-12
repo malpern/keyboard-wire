@@ -211,8 +211,19 @@ def discover_image_url(item: dict) -> str | None:
     return None
 
 
-def download_and_save(image_url: str, dest: pathlib.Path) -> bool:
-    """Download, validate, crop to 320×320, save JPEG. Returns True on success."""
+def download_and_save(image_url: str, dest: pathlib.Path, *,
+                      target_size: tuple[int, int] = (320, 320),
+                      square_crop: bool = True,
+                      quality: int = 82) -> bool:
+    """Download, validate, optionally crop, save JPEG.
+
+    News items keep the default 320×320 square crop (thumb in the
+    item card's right margin — CSS sizes it explicitly). GB carousel
+    items pass `square_crop=False` with a larger `target_size` so
+    Pillow `thumbnail`-shrinks to fit while preserving aspect ratio.
+    CSS does the final 4:3 framing via `object-fit: cover`, so the
+    source image stays sharp on retina displays.
+    """
     raw = http_get_full(image_url)
     if not raw or len(raw) < 1000:
         return False
@@ -221,11 +232,11 @@ def download_and_save(image_url: str, dest: pathlib.Path) -> bool:
         img.load()
     except Exception:
         return False
-    # Reject too-small or non-image content
+    # Reject too-small or non-image content.
     w, h = img.size
     if min(w, h) < 200:
         return False
-    # Convert to RGB (handle RGBA / palette)
+    # Convert to RGB (handle RGBA / palette).
     if img.mode != "RGB":
         bg = Image.new("RGB", img.size, (253, 252, 249))  # site bg
         if img.mode in ("RGBA", "LA"):
@@ -233,10 +244,15 @@ def download_and_save(image_url: str, dest: pathlib.Path) -> bool:
             img = bg
         else:
             img = img.convert("RGB")
-    # ImageOps.fit gives us a center-cropped square
-    img = ImageOps.fit(img, (320, 320), method=Image.LANCZOS)
+    if square_crop:
+        # Center-crop to a square thumb (news cards).
+        img = ImageOps.fit(img, target_size, method=Image.LANCZOS)
+    else:
+        # Preserve aspect ratio; shrink to fit within target_size.
+        img.thumbnail(target_size, Image.LANCZOS)
     dest.parent.mkdir(parents=True, exist_ok=True)
-    img.save(dest, format="JPEG", quality=82, optimize=True, progressive=True)
+    img.save(dest, format="JPEG", quality=quality,
+             optimize=True, progressive=True)
     return True
 
 
@@ -247,6 +263,14 @@ def slug_for_item(item: dict) -> str:
 
 
 MAX_GB_IMAGES = 6  # cap per-item to keep carousel tidy + bandwidth bounded
+
+# GB carousel images: keep aspect ratio, cap longest side at 1280px,
+# higher JPEG quality. Display size on /groupbuys/ is at most ~720px
+# wide, but on retina screens (devicePixelRatio 2-3) the browser wants
+# 1440-2160px of source. 1280 is the pragmatic cap — sharp on most
+# devices, ~100KB per image, 6 images per item = ~600KB total.
+GB_TARGET_SIZE = (1280, 1280)
+GB_QUALITY = 88
 
 
 def fetch_for(item: dict) -> dict:
@@ -280,7 +304,10 @@ def fetch_for(item: dict) -> dict:
             local_paths: list[str] = []
             for idx, url in enumerate(remotes[:MAX_GB_IMAGES]):
                 dest = IMG_DIR / f"{slug}-{idx}.jpg"
-                if download_and_save(url, dest):
+                if download_and_save(url, dest,
+                                     target_size=GB_TARGET_SIZE,
+                                     square_crop=False,
+                                     quality=GB_QUALITY):
                     local_paths.append(f"img/{dest.name}")
             if local_paths:
                 item = dict(item)

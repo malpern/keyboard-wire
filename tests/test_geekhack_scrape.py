@@ -261,7 +261,7 @@ class FetchForMultiImage(unittest.TestCase):
         called = []
         orig = fi.download_and_save
         fi.download_and_save = (
-            lambda url, dest: called.append((url, str(dest))) or True
+            lambda url, dest, **kw: called.append((url, str(dest))) or True
         )
         try:
             item = {"id": "geekhack-99", "images_remote": [
@@ -281,7 +281,7 @@ class FetchForMultiImage(unittest.TestCase):
         called = []
         orig = fi.download_and_save
         fi.download_and_save = (
-            lambda url, dest: called.append(url) or True
+            lambda url, dest, **kw: called.append(url) or True
         )
         try:
             item = {"id": "geekhack-99",
@@ -303,7 +303,7 @@ class FetchForMultiImage(unittest.TestCase):
         called = []
         orig = fi.download_and_save
         fi.download_and_save = (
-            lambda url, dest: called.append(str(dest)) or True
+            lambda url, dest, **kw: called.append(str(dest)) or True
         )
         try:
             item = {
@@ -326,7 +326,7 @@ class FetchForMultiImage(unittest.TestCase):
         called = []
         orig = fi.download_and_save
         fi.download_and_save = (
-            lambda url, dest: called.append(url) or True
+            lambda url, dest, **kw: called.append(url) or True
         )
         try:
             item = {"id": "geekhack-99",
@@ -346,7 +346,7 @@ class FetchForMultiImage(unittest.TestCase):
         called = []
         orig = fi.download_and_save
         fi.download_and_save = (
-            lambda url, dest: called.append(url) or True
+            lambda url, dest, **kw: called.append(url) or True
         )
         try:
             urls = [f"https://x/{i}.png" for i in range(20)]
@@ -359,7 +359,7 @@ class FetchForMultiImage(unittest.TestCase):
     def test_partial_download_failure_keeps_successes(self):
         # Even indexes succeed, odd fail.
         orig = fi.download_and_save
-        fi.download_and_save = lambda url, dest: ("0.png" in url or "2.png" in url)
+        fi.download_and_save = lambda url, dest, **kw: ("0.png" in url or "2.png" in url)
         try:
             item = {"id": "geekhack-1", "images_remote": [
                 "https://x/0.png", "https://x/1.png", "https://x/2.png",
@@ -375,7 +375,7 @@ class FetchForMultiImage(unittest.TestCase):
 
     def test_all_downloads_fail_no_images_field(self):
         orig = fi.download_and_save
-        fi.download_and_save = lambda url, dest: False
+        fi.download_and_save = lambda url, dest, **kw: False
         try:
             item = {"id": "geekhack-1",
                     "images_remote": ["https://x/0.png"]}
