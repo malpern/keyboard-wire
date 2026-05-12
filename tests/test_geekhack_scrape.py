@@ -185,6 +185,41 @@ class ParseThreadHtml(unittest.TestCase):
         meta = gp.parse_thread_html(page.decode("cp1252"))
         self.assertEqual(len(meta["vendor_links"]), 12)
 
+    def test_related_threads_extracted(self):
+        page = b"""<html><body>
+        <div class="post"><p>
+          GMK Sample 2 by X. Greetings,
+          <a href="https://geekhack.org/index.php?topic=99999.0">the original</a>
+          has returned. See also our
+          <a href="https://geekhack.org/index.php?topic=88888.0">IC thread</a>.
+          And buy at <a href="https://novelkeys.com/p/x">NovelKeys</a>.
+        </p></div>
+        <div class="moderatorbar">x</div>
+        </body></html>"""
+        meta = gp.parse_thread_html(page.decode("cp1252"))
+        topic_ids = sorted(r["topic_id"] for r in meta["related_threads"])
+        self.assertEqual(topic_ids, ["88888", "99999"])
+
+    def test_related_threads_dedup_by_topic_id(self):
+        page = b"""<html><body>
+        <div class="post"><p>
+          <a href="https://geekhack.org/index.php?topic=42.msg1#msg1">First link</a>
+          <a href="https://geekhack.org/index.php?topic=42.0">Same thread again</a>
+        </p></div>
+        <div class="moderatorbar">x</div>
+        </body></html>"""
+        meta = gp.parse_thread_html(page.decode("cp1252"))
+        self.assertEqual(len(meta["related_threads"]), 1)
+        self.assertEqual(meta["related_threads"][0]["topic_id"], "42")
+
+    def test_related_threads_empty_when_no_geekhack_links(self):
+        page = (
+            '<div class="post"><p><a href="https://imgur.com/x">image</a>'
+            '</p></div><div class="moderatorbar">x</div>'
+        )
+        meta = gp.parse_thread_html(page)
+        self.assertEqual(meta["related_threads"], [])
+
     def test_vendor_links_empty_when_none(self):
         empty = gp.parse_thread_html(
             '<div class="post"><p>no links here</p></div>'
@@ -280,6 +315,107 @@ class IsOpImage(unittest.TestCase):
 
 
 # ── enrich_items: integration with monkeypatched fetch ──────────
+
+
+class CleanPhpsessid(unittest.TestCase):
+    def test_strips_first_param(self):
+        self.assertEqual(
+            gp._clean_phpsessid(
+                "https://geekhack.org/index.php?PHPSESSID=abc&topic=1.0"
+            ),
+            "https://geekhack.org/index.php?topic=1.0",
+        )
+
+    def test_strips_mid_query(self):
+        self.assertEqual(
+            gp._clean_phpsessid(
+                "https://geekhack.org/?a=1&PHPSESSID=abc&topic=1.0"
+            ),
+            "https://geekhack.org/?a=1&topic=1.0",
+        )
+
+    def test_no_change_when_absent(self):
+        url = "https://geekhack.org/index.php?topic=1.0"
+        self.assertEqual(gp._clean_phpsessid(url), url)
+
+
+class FetchRelatedThreadLabel(unittest.TestCase):
+    """fetch_related_thread_label parses the <title> tag of a related
+    Geekhack thread to classify it as GB / IC / other. We monkeypatch
+    urllib to avoid live network in tests."""
+
+    class _FakeResp:
+        def __init__(self, body):
+            self._body = body
+        def read(self): return self._body
+        def close(self): pass
+        def __enter__(self): return self
+        def __exit__(self, *a): self.close()
+
+    def _patch(self, body_bytes):
+        import urllib.request
+        self._orig = urllib.request.urlopen
+        urllib.request.urlopen = lambda *a, **kw: self._FakeResp(body_bytes)
+
+    def _unpatch(self):
+        import urllib.request
+        urllib.request.urlopen = self._orig
+
+    def test_classifies_gb_title(self):
+        self._patch(
+            b"<html><head><title>[GB] GMK Gregory (Read 41,000 times)"
+            b"</title></head></html>"
+        )
+        try:
+            out = gp.fetch_related_thread_label(
+                "https://geekhack.org/index.php?topic=110101.0"
+            )
+        finally:
+            self._unpatch()
+        self.assertEqual(out["type"], "GB")
+        self.assertEqual(out["title"], "GMK Gregory")
+
+    def test_classifies_ic_title(self):
+        self._patch(
+            b"<html><head><title>[IC] Some Project</title></head></html>"
+        )
+        try:
+            out = gp.fetch_related_thread_label("https://geekhack.org/?topic=1")
+        finally:
+            self._unpatch()
+        self.assertEqual(out["type"], "IC")
+        self.assertEqual(out["title"], "Some Project")
+
+    def test_other_when_no_prefix(self):
+        self._patch(
+            b"<html><head><title>Random thread</title></head></html>"
+        )
+        try:
+            out = gp.fetch_related_thread_label("https://geekhack.org/?topic=1")
+        finally:
+            self._unpatch()
+        self.assertEqual(out["type"], "")
+        self.assertEqual(out["title"], "Random thread")
+
+    def test_returns_none_on_no_title(self):
+        self._patch(b"<html><body>no title</body></html>")
+        try:
+            out = gp.fetch_related_thread_label("https://geekhack.org/?topic=1")
+        finally:
+            self._unpatch()
+        self.assertIsNone(out)
+
+    def test_strips_phpsessid_from_returned_url(self):
+        self._patch(
+            b"<html><head><title>[GB] Foo</title></head></html>"
+        )
+        try:
+            out = gp.fetch_related_thread_label(
+                "https://geekhack.org/index.php?PHPSESSID=abc&topic=1.0"
+            )
+        finally:
+            self._unpatch()
+        self.assertNotIn("PHPSESSID", out["url"])
 
 
 class EnrichItems(unittest.TestCase):

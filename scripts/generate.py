@@ -1705,6 +1705,30 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
         engage_bits.append(
             f'<span class="gb-stat">💬 {int(item["comments"]):,} replies</span>'
         )
+    # Related Geekhack thread (predecessor IC or earlier GB). Picks
+    # the most relevant: prefer an IC for a GB card; prefer a GB for
+    # an IC card (rare); otherwise pick the first.
+    related = ((item.get("gb") or {}).get("related_threads") or [])
+    chosen_related = None
+    if related:
+        priority = "IC" if not is_ic else "GB"
+        chosen_related = next(
+            (r for r in related if (r.get("type") or "") == priority),
+            related[0],
+        )
+    if chosen_related and chosen_related.get("url"):
+        rtype = chosen_related.get("type") or ""
+        rlabel = {
+            "IC": "Original Interest Check",
+            "GB": "Earlier Group Buy",
+        }.get(rtype, "Related Geekhack thread")
+        engage_bits.append(
+            f'<a class="gb-related" '
+            f'href="{html.escape(chosen_related["url"])}" '
+            f'rel="noopener" target="_blank" '
+            f'title="{html.escape(chosen_related.get("title") or rlabel)}">'
+            f'🔗 {html.escape(rlabel)}</a>'
+        )
     if item.get("source") == "geekhack":
         cta_label = "join the discussion" if is_ic else "open on Geekhack"
     else:

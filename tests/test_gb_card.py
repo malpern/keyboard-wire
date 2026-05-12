@@ -295,6 +295,55 @@ class RenderGbItem(unittest.TestCase):
         self.assertIn("open on Geekhack", out)
         self.assertNotIn("join the discussion", out)
 
+    def test_related_thread_ic_link_renders_for_gb(self):
+        item = make_gb_item(type="GB", gb={
+            "related_threads": [{
+                "type": "IC", "title": "Original IC",
+                "url": "https://geekhack.org/index.php?topic=99999.0",
+                "topic_id": "99999",
+            }],
+        })
+        out = gen.render_gb_item(item, {}, {})
+        self.assertIn("Original Interest Check", out)
+        self.assertIn('href="https://geekhack.org/index.php?topic=99999.0"',
+                      out)
+        self.assertIn("gb-related", out)
+
+    def test_related_thread_earlier_gb_label(self):
+        item = make_gb_item(type="GB", gb={
+            "related_threads": [{
+                "type": "GB", "title": "GMK Gregory",
+                "url": "https://geekhack.org/index.php?topic=110101.0",
+                "topic_id": "110101",
+            }],
+        })
+        out = gen.render_gb_item(item, {}, {})
+        self.assertIn("Earlier Group Buy", out)
+        self.assertNotIn("Interest Check", out)
+
+    def test_related_thread_priority_ic_over_other(self):
+        # When a GB card has both IC and GB related threads, IC wins.
+        item = make_gb_item(type="GB", gb={
+            "related_threads": [
+                {"type": "GB", "title": "Earlier GB",
+                 "url": "https://geekhack.org/?topic=1", "topic_id": "1"},
+                {"type": "IC", "title": "Original IC",
+                 "url": "https://geekhack.org/?topic=2", "topic_id": "2"},
+            ],
+        })
+        out = gen.render_gb_item(item, {}, {})
+        self.assertIn("Original Interest Check", out)
+        self.assertIn('href="https://geekhack.org/?topic=2"', out)
+        # The other (earlier-GB) related thread should not also render.
+        self.assertNotIn('href="https://geekhack.org/?topic=1"', out)
+        self.assertNotIn("Earlier Group Buy", out)
+
+    def test_related_thread_no_link_when_absent(self):
+        item = make_gb_item(type="GB")
+        out = gen.render_gb_item(item, {}, {})
+        self.assertNotIn("gb-related", out)
+        self.assertNotIn("Interest Check", out)
+
     def test_ic_without_vendor_links_stays_ic(self):
         item = make_gb_item(type="IC", gb={"vendor_links": []})
         out = gen.render_gb_item(item, {}, {})

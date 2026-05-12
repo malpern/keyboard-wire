@@ -282,6 +282,7 @@ def parse_thread_html(html_text: str) -> dict:
         "images": [],
         "op_body": None,
         "vendor_links": [],
+        "related_threads": [],
     }
 
     # Views — "Topic: ... (Read 9708 times)" appears in <title> and
@@ -361,6 +362,29 @@ def parse_thread_html(html_text: str) -> dict:
             if len(out["vendor_links"]) >= 12:
                 break
 
+        # Related Geekhack threads: any <a href> in the OP body that
+        # points back to a different topic on Geekhack. Common for
+        # "rerun" GBs ("He has returned" → predecessor thread) and
+        # GBs that link back to their original IC.
+        seen_related: set = set()
+        for m in re.finditer(
+            r'<a[^>]*\bhref=["\']'
+            r'(https?://(?:www\.)?geekhack\.org/[^"\']+)["\']',
+            op_html, re.IGNORECASE,
+        ):
+            url = html_lib.unescape(m.group(1)).strip()
+            tm = re.search(r"topic=(\d+)", url)
+            if not tm:
+                continue
+            tid = tm.group(1)
+            if tid in seen_related:
+                continue
+            seen_related.add(tid)
+            out["related_threads"].append({
+                "topic_id": tid,
+                "url": url,
+            })
+
         # Strip HTML for the OP body text. Geekhack quotes are wrapped
         # in <div class="quoteheader"> + <blockquote>; we drop those
         # blocks entirely (they're someone else's content quoted into
@@ -376,6 +400,52 @@ def parse_thread_html(html_text: str) -> dict:
             out["op_body"] = body
 
     return out
+
+
+def fetch_related_thread_label(url: str) -> dict | None:
+    """Fetch a related Geekhack thread's <title> and classify it as
+    IC / GB / other. Returns `{type, title, url}` (cleaned URL strips
+    PHPSESSID) or None on any failure."""
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            raw = resp.read()
+    except Exception:
+        return None
+    try:
+        text = raw.decode("cp1252")
+    except Exception:
+        text = raw.decode("utf-8", errors="replace")
+    m = re.search(r"<title>([^<]+)</title>", text, re.IGNORECASE)
+    if not m:
+        return None
+    full = html_lib.unescape(m.group(1)).strip()
+    # SMF titles are shaped like "[GB] Project Name (Read N times)" or
+    # "[IC] Project Name (Read N times)". Trim the read-count suffix.
+    full = re.sub(r"\s*\(Read\s+[0-9,]+\s+times?\)\s*$", "", full)
+    # The leading "[GB]" / "[IC]" prefix tells us the board.
+    kind_m = re.match(r"^\s*\[(GB|IC)\]\s*(.*)$", full, re.IGNORECASE)
+    if kind_m:
+        return {
+            "type": kind_m.group(1).upper(),
+            "title": kind_m.group(2).strip(),
+            "url": _clean_phpsessid(url),
+        }
+    return {
+        "type": "",
+        "title": full,
+        "url": _clean_phpsessid(url),
+    }
+
+
+def _clean_phpsessid(url: str) -> str:
+    """Strip PHPSESSID from a Geekhack URL so the stored form stays
+    valid past the session that scraped it."""
+    cleaned = re.sub(r"\?PHPSESSID=[^&;]+&", "?", url)
+    cleaned = re.sub(r"\?PHPSESSID=[^&;]+;", "?", cleaned)
+    cleaned = re.sub(r"\?PHPSESSID=[^&;]+$", "", cleaned)
+    cleaned = re.sub(r"[&;]PHPSESSID=[^&;]+", "", cleaned)
+    return cleaned
 
 
 def fetch_thread_metadata(thread_id: str) -> dict | None:
@@ -435,6 +505,20 @@ def enrich_items(items: list[dict], throttle: float = 1.0) -> None:
             # incoming products to their parent Geekhack thread by
             # exact URL.
             it.setdefault("gb", {})["vendor_links"] = meta["vendor_links"]
+        # Related Geekhack threads — classify each as IC / GB / other
+        # via one extra fetch per (typically rare) related link.
+        related_in = meta.get("related_threads") or []
+        if related_in:
+            related_out: list[dict] = []
+            for rt in related_in:
+                if throttle > 0:
+                    time.sleep(throttle)
+                label = fetch_related_thread_label(rt["url"])
+                if label:
+                    label["topic_id"] = rt["topic_id"]
+                    related_out.append(label)
+            if related_out:
+                it.setdefault("gb", {})["related_threads"] = related_out
         if i < len(items) - 1 and throttle > 0:
             time.sleep(throttle)
 

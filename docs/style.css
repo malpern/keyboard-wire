@@ -2285,3 +2285,16 @@ a.gb-vendor-pill-link:hover .gb-vendor-region {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
+
+/* Related Geekhack thread (IC predecessor or earlier GB). Sits in
+   the engagement row beside views/replies/CTA. Quieter than the CTA. */
+.gb-related {
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  white-space: nowrap;
+}
+.gb-related:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
