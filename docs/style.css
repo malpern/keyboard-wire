@@ -177,6 +177,12 @@ h1.site-title a:hover {
   border-bottom-color: var(--accent);
 }
 
+.subscribe a[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 700;
+  border-bottom-color: var(--ink);
+}
+
 .subscribe a#subscribe-trigger {
   color: var(--accent);
   font-weight: 600;

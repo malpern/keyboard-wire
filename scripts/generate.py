@@ -34,6 +34,18 @@ TAGS_FILE = ROOT / "data" / "tags.json"
 DOCS = ROOT / "docs"
 SITE_URL = "https://keyboard-newswire.com"
 
+# Sources quarantined from the main news surfaces (index, RSS, archive,
+# Slack, X, email, non-GB topic/tag pages). They render only on the
+# dedicated /groupbuys/ page and the auto-generated
+# /topics/group-buys-vendors/ page. See docs/GB_IC_FEED.md.
+GB_SOURCES = {"geekhack", "shopify"}
+GB_TOPIC_SLUG = "group-buys-vendors"
+
+
+def is_gb(item: dict) -> bool:
+    return (item.get("source") or "") in GB_SOURCES
+
+
 MONTHS = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -66,7 +78,17 @@ def source_label(item: dict) -> str:
     if src == "email":
         return f"✉ {item.get('via') or 'Inbox'}"
     sub = item.get("subreddit")
-    return f"r/{sub}" if sub else "Reddit"
+    if sub:
+        return f"r/{sub}"
+    if src == "reddit":
+        return "Reddit"
+    # Every non-Reddit pilot sets `via` to a human-readable attribution
+    # (kbdnews → "KBD.news", geekhack → "Geekhack · Group Buys", etc.).
+    # Fall back to a capitalized source slug if `via` is missing.
+    via = item.get("via")
+    if via:
+        return via
+    return src.capitalize() if src else "Source"
 
 
 def source_domain(item: dict) -> str:
@@ -231,6 +253,15 @@ def site_header(canonical: str) -> str:
     settings_path = relative_to_docs(canonical, "settings/")
     archive_path = relative_to_docs(canonical, "archive/")
     buylist_path = relative_to_docs(canonical, "buylist/")
+    groupbuys_path = relative_to_docs(canonical, "groupbuys/")
+
+    def aria_current(page_url: str) -> str:
+        return ' aria-current="page"' if canonical == page_url else ""
+
+    archive_attr = aria_current(f"{SITE_URL}/archive/")
+    groupbuys_attr = aria_current(f"{SITE_URL}/groupbuys/")
+    settings_attr = aria_current(f"{SITE_URL}/settings/")
+    about_attr = aria_current(f"{SITE_URL}/post/")
     source_path = "https://github.com/malpern/keyboard-newswire"
     icon_path = relative_to_docs(canonical, "post/assets/icon-final.png")
     return f'''<header>
@@ -245,13 +276,15 @@ def site_header(canonical: str) -> str:
       {home}
       <a href="#" id="subscribe-trigger" data-subscribe>subscribe</a>
       <span aria-hidden="true">·</span>
-      <a href="{archive_path}">archive</a>
+      <a href="{archive_path}"{archive_attr}>archive</a>
+      <span aria-hidden="true">·</span>
+      <a href="{groupbuys_path}"{groupbuys_attr}>group buys</a>
       <span aria-hidden="true">·</span>
       <a href="{feed_path}">RSS</a>
       <span aria-hidden="true">·</span>
-      <a href="{settings_path}">settings</a>
+      <a href="{settings_path}"{settings_attr}>settings</a>
       <span aria-hidden="true">·</span>
-      <a href="{relative_to_docs(canonical, 'post/')}">about</a>
+      <a href="{relative_to_docs(canonical, 'post/')}"{about_attr}>about</a>
       {font_controls()}
     </p>
     {subscribe_dialog(canonical)}
@@ -1613,6 +1646,53 @@ def render_directory(label: str, kind: str, entries: list[tuple]) -> str:
 </html>'''
 
 
+def filter_corpus(corpus: dict, predicate) -> dict:
+    """Return a corpus-shaped dict whose items pass `predicate`.
+    Day order preserved; empty days are kept (the index renders an
+    empty-day message which is fine and accurate)."""
+    assert callable(predicate), "predicate must be callable"
+    assert isinstance(corpus, dict) and "days" in corpus, \
+        "corpus must be a dict with a 'days' key"
+    return {
+        "title": corpus.get("title", ""),
+        "tagline": corpus.get("tagline", ""),
+        "days": [
+            {"date": d["date"],
+             "items": [it for it in d.get("items", []) if predicate(it)]}
+            for d in corpus.get("days", [])
+        ],
+    }
+
+
+def render_groupbuys_page(corpus: dict, topics_reg: dict, tags_reg: dict) -> str:
+    """Render /groupbuys/index.html — dedicated page for GB/IC sources.
+    Mirrors the daily-block layout of the main index, but reads only
+    items where is_gb(item) is true."""
+    title = "Group buys & ICs · keyboard newswire"
+    tagline = "Live group buys and interest checks from Geekhack and partner vendors."
+    canonical = f"{SITE_URL}/groupbuys/"
+    days = sorted(corpus["days"], key=lambda d: d["date"], reverse=True)
+    days_html = "\n".join(
+        render_day_block(d, topics_reg, tags_reg) for d in days if d.get("items")
+    )
+    body = days_html if days_html else (
+        '<p class="empty">No active group buys tracked yet — '
+        'check back as the ingest catches new threads.</p>'
+    )
+    return f'''{head(title, tagline, canonical, feed="feed.xml")}
+  {site_header(canonical)}
+  <p class="archive-stats" style="margin-top:1em;">
+    Group buys and interest checks are kept off the main news feed
+    while the source pipeline is being debugged. Expect rough edges.
+  </p>
+  {body}
+  {site_footer()}
+</main>
+{font_script()}
+</body>
+</html>'''
+
+
 # ── RSS ──────────────────────────────────────────────────────────
 
 
@@ -1693,6 +1773,10 @@ def main():
     topics_reg = json.loads(TOPICS_FILE.read_text())["topics"]
     tags_reg = json.loads(TAGS_FILE.read_text()).get("tags", {})
 
+    # Quarantine GB/IC sources from news surfaces. See docs/GB_IC_FEED.md.
+    news_corpus = filter_corpus(corpus, lambda it: not is_gb(it))
+    gb_corpus = filter_corpus(corpus, is_gb)
+
     DOCS.mkdir(parents=True, exist_ok=True)
     # Wipe and rebuild topic/tag dirs to drop stale slugs cleanly
     for sub in ("topics", "tags"):
@@ -1700,11 +1784,11 @@ def main():
         if d.exists():
             shutil.rmtree(d)
 
-    # --- index + main feed ---
-    (DOCS / "index.html").write_text(render_index(corpus, topics_reg, tags_reg))
+    # --- index + main feed (news only) ---
+    (DOCS / "index.html").write_text(render_index(news_corpus, topics_reg, tags_reg))
 
     flat = []
-    for day in corpus["days"]:
+    for day in news_corpus["days"]:
         for it in day.get("items", []):
             flat.append((day["date"], it))
     flat.sort(key=lambda r: (r[0], r[1].get("score") or 0), reverse=True)
@@ -1713,13 +1797,36 @@ def main():
         f"{SITE_URL}/", f"{SITE_URL}/feed.xml", flat, topics_reg
     ))
 
+    # --- group buys page (GB items only) ---
+    (DOCS / "groupbuys").mkdir(parents=True, exist_ok=True)
+    (DOCS / "groupbuys" / "index.html").write_text(
+        render_groupbuys_page(gb_corpus, topics_reg, tags_reg)
+    )
+    gb_flat = []
+    for day in gb_corpus["days"]:
+        for it in day.get("items", []):
+            gb_flat.append((day["date"], it))
+    gb_flat.sort(key=lambda r: r[0], reverse=True)
+    (DOCS / "groupbuys" / "feed.xml").write_text(render_rss(
+        "Group buys & ICs · keyboard newswire",
+        "Live group buys and interest checks from Geekhack and partner vendors.",
+        f"{SITE_URL}/groupbuys/", f"{SITE_URL}/groupbuys/feed.xml",
+        gb_flat, topics_reg,
+    ))
+
     # --- topic pages ---
+    # GB items appear on the group-buys-vendors topic page (so it
+    # mirrors /groupbuys/), but are excluded from every other topic.
     by_topic: dict[str, list[tuple]] = {slug: [] for slug in topics_reg}
     for day in corpus["days"]:
         for it in day.get("items", []):
+            allow_gb = is_gb(it)
             for ts in it.get("topics") or []:
-                if ts in by_topic:
-                    by_topic[ts].append((day["date"], it))
+                if ts not in by_topic:
+                    continue
+                if allow_gb and ts != GB_TOPIC_SLUG:
+                    continue
+                by_topic[ts].append((day["date"], it))
     for slug, items in by_topic.items():
         items.sort(key=lambda r: r[0], reverse=True)
         outdir = DOCS / "topics" / slug
@@ -1741,11 +1848,13 @@ def main():
     (DOCS / "topics").mkdir(parents=True, exist_ok=True)
     (DOCS / "topics" / "index.html").write_text(render_directory("Topics", "topic", topic_dir_entries))
 
-    # --- tag pages ---
+    # --- tag pages (news only — GB items never appear on tag pages) ---
     by_tag: dict[str, list[tuple]] = {}
     seen_tag_slugs = set()
     for day in corpus["days"]:
         for it in day.get("items", []):
+            if is_gb(it):
+                continue
             for tg in it.get("tags") or []:
                 seen_tag_slugs.add(tg)
                 by_tag.setdefault(tg, []).append((day["date"], it))
@@ -1775,10 +1884,10 @@ def main():
     (DOCS / "settings").mkdir(parents=True, exist_ok=True)
     (DOCS / "settings" / "index.html").write_text(render_settings_page())
 
-    # --- archive page ---
+    # --- archive page (news only) ---
     (DOCS / "archive").mkdir(parents=True, exist_ok=True)
     (DOCS / "archive" / "index.html").write_text(
-        render_archive_page(corpus, topics_reg, tags_reg)
+        render_archive_page(news_corpus, topics_reg, tags_reg)
     )
 
     # --- buylist page ---

@@ -41,6 +41,18 @@ ACCESS_TOKEN_SECRET = os.environ.get("X_ACCESS_TOKEN_SECRET", "")
 
 POST_URL = "https://api.x.com/2/tweets"
 
+# Sources that must NEVER post to X — kept in sync with GB_SOURCES in
+# scripts/generate.py. See docs/GB_IC_FEED.md. Today the cron order
+# (group-buys at 5:06, after the news drivers' Twitter calls) makes
+# the leak structurally impossible, but this filter removes the
+# dependency on schedule order.
+NEVER_POST_SOURCES = frozenset({"geekhack", "shopify"})
+
+
+def is_postable(item: dict) -> bool:
+    """True if this item is eligible for X delivery."""
+    return (item.get("source") or "") not in NEVER_POST_SOURCES
+
 
 def load_posted() -> set:
     if POSTED_FILE.exists():
@@ -174,7 +186,8 @@ def main():
     items = day.get("items", [])
     posted = load_posted()
 
-    new_items = [i for i in items if i["id"] not in posted]
+    new_items = [i for i in items
+                 if i["id"] not in posted and is_postable(i)]
     if not new_items:
         print(f"{date_str}: nothing new to post", file=sys.stderr)
         return

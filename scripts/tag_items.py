@@ -125,6 +125,32 @@ def parse_response(raw: str) -> dict:
         return {}
 
 
+def merge_topics(seeded, parsed, valid_topics: set,
+                 fallback: str = "community") -> list[str]:
+    """Combine ingestor-pre-seeded topics with LLM-parsed topics.
+
+    - Seeded topics come first and are preserved in their input order.
+    - LLM-parsed topics (capped at 2) are appended only if not already present.
+    - Invalid slugs (not in `valid_topics`) are dropped silently.
+    - Returns [`fallback`] if both inputs are empty after filtering.
+
+    Pure / no I/O — kept separate from `tag_item()` so it's unit-testable.
+    """
+    assert isinstance(valid_topics, set), "valid_topics must be a set"
+    out: list[str] = []
+    for t in (seeded or []):
+        slug = slugify(str(t))
+        if slug in valid_topics and slug not in out:
+            out.append(slug)
+    for t in (parsed or [])[:2]:
+        slug = slugify(str(t))
+        if slug in valid_topics and slug not in out:
+            out.append(slug)
+    if not out:
+        out = [fallback]
+    return out
+
+
 def tag_item(item: dict, topics: dict, tags_reg: dict) -> dict:
     valid_topics = set(topics.keys())
     top_tag_slugs = list(tags_reg.keys())
@@ -132,13 +158,9 @@ def tag_item(item: dict, topics: dict, tags_reg: dict) -> dict:
     raw = call_qwen(prompt)
     parsed = parse_response(raw)
 
-    item_topics = []
-    for t in (parsed.get("topics") or [])[:2]:
-        slug = slugify(str(t))
-        if slug in valid_topics:
-            item_topics.append(slug)
-    if not item_topics:
-        item_topics = ["community"]
+    item_topics = merge_topics(
+        item.get("topics"), parsed.get("topics"), valid_topics,
+    )
 
     item_tags = []
     for t in (parsed.get("tags") or [])[:5]:
