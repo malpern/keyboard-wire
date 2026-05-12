@@ -279,6 +279,29 @@ class RenderGbItem(unittest.TestCase):
         out_gb = gen.render_gb_item(make_gb_item(type="GB"), {}, {})
         self.assertNotIn("gb-item-ic", out_gb)
 
+    def test_ic_with_vendor_links_graduates_to_gb_chrome(self):
+        # Auto-graduate rule: once an IC has vendor_links, render as a GB.
+        # No subtitle, no empty-vendor placeholder, no muted CTA.
+        item = make_gb_item(type="IC", gb={
+            "vendor_links": [{
+                "vendor": "NovelKeys",
+                "url": "https://novelkeys.com/products/x",
+                "host": "novelkeys.com",
+            }],
+        })
+        out = gen.render_gb_item(item, {}, {})
+        self.assertNotIn("gb-item-ic", out)
+        self.assertNotIn("gb-ic-subtitle", out)
+        self.assertIn("open on Geekhack", out)
+        self.assertNotIn("join the discussion", out)
+
+    def test_ic_without_vendor_links_stays_ic(self):
+        item = make_gb_item(type="IC", gb={"vendor_links": []})
+        out = gen.render_gb_item(item, {}, {})
+        self.assertIn("gb-item-ic", out)
+        self.assertIn("gb-ic-subtitle", out)
+        self.assertIn("join the discussion", out)
+
     def test_vendor_pill_renders_as_link_when_vendor_links_match(self):
         item = make_gb_item(gb={
             "vendor_regions": [

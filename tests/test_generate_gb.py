@@ -235,6 +235,30 @@ class RenderGroupbuysSectionedPage(unittest.TestCase):
         self.assertIn('src="../img/geekhack-1-0.jpg"', html)
         self.assertIn('src="../img/geekhack-1-1.jpg"', html)
 
+    def test_ic_with_vendor_links_renders_in_live_section(self):
+        # Auto-graduate: an IC with vendor_links sits in the
+        # "Active group buys" section, not "Interest checks".
+        corpus = {
+            "title": "kw", "tagline": "t",
+            "days": [{"date": "2026-05-12", "items": [
+                {"id": "geekhack-ic-graduated", "title": "[IC] Y",
+                 "type": "IC", "source": "geekhack",
+                 "url": "https://x/", "via": "Geekhack",
+                 "category": "breaking", "takeaway": "",
+                 "gb": {"vendor_links": [
+                     {"vendor": "X", "url": "https://x/p", "host": "x.com"},
+                 ]}},
+            ]}],
+        }
+        html = gen.render_groupbuys_page(corpus, {}, {})
+        live_start = html.index("gb-section-live")
+        interest_start = (
+            html.index("gb-section-interest")
+            if "gb-section-interest" in html else len(html)
+        )
+        live_block = html[live_start:interest_start]
+        self.assertIn("geekhack-ic-graduated", live_block)
+
     def test_empty_corpus_shows_empty_message(self):
         empty = {"title": "kw", "tagline": "t", "days": []}
         html = gen.render_groupbuys_page(empty, {}, {})

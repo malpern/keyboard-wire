@@ -2257,3 +2257,31 @@ a.gb-vendor-pill-link:hover .gb-vendor-region {
   /* slightly muted when revealed via the toggle */
   opacity: 0.85;
 }
+
+/* Settings: region picker (manual override for /groupbuys/ geo logic). */
+.setting-select {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  cursor: default;
+}
+.setting-select-label { flex: 1; min-width: 0; }
+.setting-select select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.875rem;
+  padding: 0.4375rem 1.75rem 0.4375rem 0.625rem;
+  border-radius: 5px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' fill='none' stroke='%23999' stroke-width='1.5'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  cursor: pointer;
+}
+.setting-select select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}

@@ -1127,7 +1127,7 @@ def font_script() -> str:
   function detectGbRegion() {
     try {
       var override = localStorage.getItem('kw-region');
-      if (override) return override;
+      if (override) return override;  // includes "__all__" sentinel
     } catch (_) {}
     var tz = '';
     try {
@@ -1176,6 +1176,7 @@ def font_script() -> str:
   function initGbVendorGeo() {
     var userRegion = detectGbRegion();
     if (!userRegion) return;  // Unknown timezone — show everyone.
+    if (userRegion === '__all__') return;  // explicit "show all" override
     var containers = document.querySelectorAll('[data-gb-vendors]');
     Array.prototype.forEach.call(containers, function(container) {
       var pills = container.querySelectorAll('.gb-vendor-pill');
@@ -1214,6 +1215,25 @@ def font_script() -> str:
     });
   }
   initGbVendorGeo();
+
+  // ── Settings: region picker (only present on /settings/) ──
+  // Reads current localStorage on load, writes on change. Empty
+  // value clears the override and falls back to timezone detection.
+  var regionSelect = document.getElementById('region-select');
+  if (regionSelect) {
+    try {
+      regionSelect.value = localStorage.getItem('kw-region') || '';
+    } catch (_) {}
+    regionSelect.addEventListener('change', function() {
+      try {
+        if (regionSelect.value) {
+          localStorage.setItem('kw-region', regionSelect.value);
+        } else {
+          localStorage.removeItem('kw-region');
+        }
+      } catch (_) {}
+    });
+  }
 })();
 </script>'''
 
@@ -1466,7 +1486,11 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
     """
     title = item.get("title") or ""
     raw_type = (item.get("type") or "").upper()
-    is_ic = raw_type == "IC"
+    # IC → GB auto-graduate: once an Interest Check thread has vendors
+    # listed (≥1 link in gb.vendor_links), the designer has committed
+    # — render and route it as a GB. The data still says type=IC; we
+    # just stop using the speculative-stage chrome for the card.
+    is_ic = raw_type == "IC" and not (item.get("gb") or {}).get("vendor_links")
     # Strip "[GB] " / "[IC] " prefix from displayed title — the chip
     # carries that info now, no need to double-encode.
     display_title = title
@@ -2464,6 +2488,32 @@ def render_settings_page() -> str:
       </label>
     </div>
 
+    <h2 class="settings-section-label">Region</h2>
+    <div class="setting-row">
+      <label class="setting-select">
+        <span class="setting-select-label">
+          <strong>Show local vendors first</strong>
+          <small>When viewing the group-buys page, vendors in your region appear
+          expanded by default; others collapse behind a "+ N more worldwide" toggle.
+          Auto-detected from your browser timezone — set explicitly here to override.</small>
+        </span>
+        <select id="region-select" aria-label="Your region">
+          <option value="">Auto (use timezone)</option>
+          <option value="US">US — United States</option>
+          <option value="CA">CA — Canada</option>
+          <option value="UK">UK — United Kingdom</option>
+          <option value="EU">EU — Europe</option>
+          <option value="JP">JP — Japan</option>
+          <option value="KR">KR — Korea</option>
+          <option value="CN">CN — China</option>
+          <option value="SG">SG — Singapore / SEA</option>
+          <option value="AU">AU — Australia / Oceania</option>
+          <option value="NZ">NZ — New Zealand</option>
+          <option value="__all__">All regions (no collapse)</option>
+        </select>
+      </label>
+    </div>
+
     <h2 class="settings-section-label">Lists</h2>
     <div class="setting-row">
       <a class="settings-list-link" href="../buylist/" id="nav-buylist">
@@ -2568,14 +2618,19 @@ def render_groupbuys_page(corpus: dict, topics_reg: dict, tags_reg: dict) -> str
     tagline = "Live group buys and interest checks from Geekhack and partner vendors."
     canonical = f"{SITE_URL}/groupbuys/"
 
-    def _type_of(it):
-        return (it.get("type") or "").upper()
+    def _effective_type(it):
+        """Mirror render_gb_item's IC→GB auto-graduate rule: an IC
+        with vendor_links lands in the GB section."""
+        t = (it.get("type") or "").upper()
+        if t == "IC" and (it.get("gb") or {}).get("vendor_links"):
+            return "GB"
+        return t
 
-    gb_only = filter_corpus(corpus, lambda it: _type_of(it) == "GB")
-    ic_only = filter_corpus(corpus, lambda it: _type_of(it) == "IC")
+    gb_only = filter_corpus(corpus, lambda it: _effective_type(it) == "GB")
+    ic_only = filter_corpus(corpus, lambda it: _effective_type(it) == "IC")
     # Untyped items (rare — older Shopify items will land here) fall
     # back to the GB section since they're closer in cadence.
-    untyped = filter_corpus(corpus, lambda it: _type_of(it) not in ("GB", "IC"))
+    untyped = filter_corpus(corpus, lambda it: _effective_type(it) not in ("GB", "IC"))
     # Merge untyped into gb_only.
     for du, dg in zip(untyped["days"], gb_only["days"]):
         dg["items"].extend(du["items"])

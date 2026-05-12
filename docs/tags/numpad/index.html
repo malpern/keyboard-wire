@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Numpad · mechanical keyboard newswire</title>
 <meta name="description" content="All keyboard wire entries tagged Numpad.">
-<link rel="stylesheet" href="../../style.css?v=1778624671">
+<link rel="stylesheet" href="../../style.css?v=1778624937">
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="alternate" type="application/rss+xml" title="Numpad · mechanical keyboard newswire" href="feed.xml">
 <link rel="canonical" href="https://keyboard-newswire.com/tags/numpad/">
@@ -944,7 +944,7 @@
   function detectGbRegion() {
     try {
       var override = localStorage.getItem('kw-region');
-      if (override) return override;
+      if (override) return override;  // includes "__all__" sentinel
     } catch (_) {}
     var tz = '';
     try {
@@ -993,6 +993,7 @@
   function initGbVendorGeo() {
     var userRegion = detectGbRegion();
     if (!userRegion) return;  // Unknown timezone — show everyone.
+    if (userRegion === '__all__') return;  // explicit "show all" override
     var containers = document.querySelectorAll('[data-gb-vendors]');
     Array.prototype.forEach.call(containers, function(container) {
       var pills = container.querySelectorAll('.gb-vendor-pill');
@@ -1031,6 +1032,25 @@
     });
   }
   initGbVendorGeo();
+
+  // ── Settings: region picker (only present on /settings/) ──
+  // Reads current localStorage on load, writes on change. Empty
+  // value clears the override and falls back to timezone detection.
+  var regionSelect = document.getElementById('region-select');
+  if (regionSelect) {
+    try {
+      regionSelect.value = localStorage.getItem('kw-region') || '';
+    } catch (_) {}
+    regionSelect.addEventListener('change', function() {
+      try {
+        if (regionSelect.value) {
+          localStorage.setItem('kw-region', regionSelect.value);
+        } else {
+          localStorage.removeItem('kw-region');
+        }
+      } catch (_) {}
+    });
+  }
 })();
 </script>
 </body>
