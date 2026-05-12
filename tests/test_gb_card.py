@@ -16,6 +16,162 @@ import fetch_images as fi  # noqa: E402
 # ─────────────────────────── helpers ───────────────────────────
 
 
+class InferGbCategory(unittest.TestCase):
+    def _make(self, **kw):
+        base = {"title": "", "tags": []}
+        base.update(kw)
+        return base
+
+    def test_keycap_tag_wins(self):
+        self.assertEqual(
+            gen.infer_gb_category(
+                self._make(title="random title", tags=["keycap-design"])
+            ),
+            "Keycap",
+        )
+
+    def test_switch_tag_wins(self):
+        self.assertEqual(
+            gen.infer_gb_category(
+                self._make(tags=["switch-development", "magnetic-switch"])
+            ),
+            "Switch",
+        )
+
+    def test_pcb_tag(self):
+        self.assertEqual(
+            gen.infer_gb_category(self._make(tags=["pcb-design"])), "PCB",
+        )
+
+    def test_keycap_title_fallback(self):
+        # No tag hint — title says "GMK CYL Greg 2" → keycap.
+        self.assertEqual(
+            gen.infer_gb_category(self._make(title="[GB] GMK CYL Greg 2")),
+            "Keycap",
+        )
+
+    def test_switch_title_fallback(self):
+        self.assertEqual(
+            gen.infer_gb_category(self._make(title="[IC] YuRui HE Switch")),
+            "Switch",
+        )
+
+    def test_housing_falls_back_to_keyboard(self):
+        self.assertEqual(
+            gen.infer_gb_category(
+                self._make(title="[IC] RF8X by keyhub - a housing for Realforce"),
+            ),
+            "Keyboard",
+        )
+
+    def test_deskmat(self):
+        self.assertEqual(
+            gen.infer_gb_category(self._make(title="[GB] DSS Deskmat")),
+            "Deskmat",
+        )
+
+    def test_default_keyboard(self):
+        # Nothing matches → default to Keyboard.
+        self.assertEqual(
+            gen.infer_gb_category(self._make(title="some unrelated thing")),
+            "Keyboard",
+        )
+
+
+class RepresentativeVendorPrice(unittest.TestCase):
+    def test_picks_lowest_base_kit_in_stock(self):
+        gb = {"vendor_links": [
+            {"price_low": 15000, "currency": "USD", "available": True},
+            {"price_low": 12000, "currency": "USD", "available": True},
+            {"price_low": 9000,  "currency": "USD", "available": False},
+        ]}
+        price, vl = gen.representative_vendor_price(gb)
+        self.assertEqual(price, "$120")
+        self.assertEqual(vl["price_low"], 12000)
+
+    def test_ranks_by_base_kit_not_lowest_variant(self):
+        # Vendor A: 4500 (novelties) + 13500 (base kit). Base = 13500.
+        # Vendor B: 10000 (base, no add-ons).
+        # Vendor B's base is cheaper → it should win.
+        gb = {"vendor_links": [
+            {"vendor": "A", "price_low": 4500, "price_high": 13500,
+             "currency": "USD", "available": True},
+            {"vendor": "B", "price_low": 10000,
+             "currency": "USD", "available": True},
+        ]}
+        price, vl = gen.representative_vendor_price(gb)
+        self.assertEqual(vl["vendor"], "B")
+        self.assertEqual(price, "$100")
+
+    def test_falls_back_to_unknown_when_no_in_stock(self):
+        gb = {"vendor_links": [
+            {"price_low": 9000, "currency": "USD", "available": False},
+            {"price_low": 10000, "currency": "USD"},  # available: None
+        ]}
+        price, vl = gen.representative_vendor_price(gb)
+        self.assertEqual(price, "$100")
+        self.assertEqual(vl["price_low"], 10000)
+
+    def test_none_when_no_prices(self):
+        gb = {"vendor_links": [{"vendor": "X"}]}  # no price_low
+        self.assertEqual(gen.representative_vendor_price(gb), (None, None))
+
+    def test_none_when_empty(self):
+        self.assertEqual(gen.representative_vendor_price({}), (None, None))
+
+
+class BadgeRender(unittest.TestCase):
+    def _item(self, **kw):
+        base = {
+            "id": "geekhack-1", "title": "[GB] GMK Greg 2", "type": "GB",
+            "source": "geekhack", "url": "https://x/",
+            "via": "Geekhack", "category": "breaking", "takeaway": "",
+            "tags": ["keycap-design"],
+            "image": "img/x.jpg",
+        }
+        base.update(kw)
+        return base
+
+    def test_badge_on_first_slide_only(self):
+        item = self._item(image=None, images=[
+            "img/x-0.jpg", "img/x-1.jpg", "img/x-2.jpg",
+        ])
+        out = gen.render_gb_item(item, {}, {})
+        # Exactly one badge across the entire carousel.
+        self.assertEqual(out.count('class="gb-badge"'), 1)
+        # The badge is inside the first slide (appears before slide 2).
+        idx_badge = out.index('class="gb-badge"')
+        idx_slide2 = out.index('aria-label="Image 2 of 3"')
+        self.assertLess(idx_badge, idx_slide2)
+
+    def test_badge_shows_category_and_stage(self):
+        out = gen.render_gb_item(self._item(), {}, {})
+        self.assertIn('class="gb-badge-cat">Keycap</span>', out)
+        self.assertIn('class="gb-badge-stage gb-badge-stage-gb">GB<', out)
+
+    def test_badge_shows_price_when_available(self):
+        item = self._item(gb={"vendor_links": [
+            {"vendor": "NK", "price_low": 13500, "currency": "USD",
+             "available": True},
+        ]})
+        out = gen.render_gb_item(item, {}, {})
+        self.assertIn('class="gb-badge-price">$135</span>', out)
+
+    def test_badge_omits_price_when_no_metadata(self):
+        out = gen.render_gb_item(self._item(), {}, {})
+        self.assertNotIn("gb-badge-price", out)
+
+    def test_badge_ic_stage(self):
+        out = gen.render_gb_item(self._item(type="IC"), {}, {})
+        self.assertIn("gb-badge-stage-ic", out)
+        self.assertIn(">IC<", out)
+
+    def test_badge_absent_when_no_images(self):
+        # No carousel at all → no badge.
+        out = gen.render_gb_item(self._item(image=None), {}, {})
+        self.assertNotIn("gb-badge", out)
+
+
 class CleanRemoteImageUrl(unittest.TestCase):
     def test_strips_geekhack_phpsessid_first_param(self):
         url = ("https://geekhack.org/index.php?PHPSESSID=abc123"

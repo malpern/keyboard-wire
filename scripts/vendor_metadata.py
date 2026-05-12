@@ -34,6 +34,59 @@ import http_polite
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 USER_AGENT = "keyboard-wire/1.0 (+https://keyboard-newswire.com)"
 
+# Shopify's `.js` endpoint exposes availability per variant but
+# omits `price_currency`. The `.json` endpoint has currency but no
+# availability. Rather than fetch both, we infer currency from the
+# vendor's host — stores rarely switch currency. Map is hand-curated;
+# unknown hosts fall back to None and the price chip renders without
+# a symbol.
+_HOST_CURRENCY = {
+    # USD
+    "novelkeys.com":       "USD",
+    "cannonkeys.com":      "USD",
+    "bowlkeyboards.com":   "USD",
+    "saberkeebs.com":      "USD",
+    "mechsandco.com":      "USD",
+    "minokeys.com":        "USD",
+    "kbdfans.com":         "USD",
+    "geon.works":          "USD",
+    "geonworks.com":       "USD",
+    "zfrontier.com":       "USD",
+    # GBP
+    "prototypist.net":     "GBP",
+    "proto-typist.com":    "GBP",
+    # EUR
+    "oblotzky.industries": "EUR",
+    "mykeyboard.eu":       "EUR",
+    "keeb.supply":         "EUR",
+    "coffeekeys.de":       "EUR",
+    "torokeeb.store":      "EUR",
+    "www.torokeeb.store":  "EUR",
+    "delta-key.co":        "EUR",
+    # JPY
+    "shop.yushakobo.jp":   "JPY",
+    "yushakobo.jp":        "JPY",
+    # CNY
+    "typist.club":         "CNY",
+    # SGD
+    "ilumkb.com":          "SGD",
+    "monokei.co":          "SGD",
+    "ktechs.store":        "SGD",
+    # AUD
+    "keebzncables.com":     "AUD",
+    "www.keebzncables.com": "AUD",
+    "dailyclack.com":      "AUD",
+    # CAD
+    "deskhero.ca":         "CAD",
+    "www.deskhero.ca":     "CAD",
+}
+
+
+def currency_for_host(host: str | None) -> str | None:
+    if not host:
+        return None
+    return _HOST_CURRENCY.get(host.lower().lstrip("."))
+
 # Per-host throttle for vendor fetches — same instance type used in
 # fetch_images.py, distinct instance because different code paths.
 _THROTTLE = http_polite.HostThrottle(min_interval=1.0)
@@ -136,7 +189,9 @@ def fetch_product_metadata(product_page_url: str, *,
                            throttle: http_polite.HostThrottle | None = None,
                            timeout: float = 12) -> dict | None:
     """One-shot fetch + parse. Returns metadata dict or None on any
-    failure. Honors the per-host throttle when given."""
+    failure. Honors the per-host throttle when given. Currency is
+    backfilled from the host map when the .js endpoint omits it
+    (which is always — see _HOST_CURRENCY)."""
     json_url = product_json_url(product_page_url)
     if not json_url:
         return None
@@ -152,7 +207,13 @@ def fetch_product_metadata(product_page_url: str, *,
         payload = json.loads(raw)
     except Exception:
         return None
-    return parse_product_metadata(payload)
+    meta = parse_product_metadata(payload)
+    if meta is not None and "currency" not in meta:
+        host = (urllib.parse.urlparse(product_page_url).hostname or "").lower()
+        cur = currency_for_host(host)
+        if cur:
+            meta["currency"] = cur
+    return meta
 
 
 def is_stale(link: dict, *, max_age_hours: float) -> bool:

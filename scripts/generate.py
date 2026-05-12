@@ -1406,6 +1406,103 @@ def fmt_date_chip(iso: str | None, *, prefix: str) -> str | None:
         return None
 
 
+def infer_gb_category(item: dict) -> str:
+    """One-word product category for the at-a-glance first-slide badge.
+
+    Returns "Keycap" / "Switch" / "Keyboard" / "PCB" / "Deskmat" /
+    "Cable" / "Artisan", or the catch-all "Keyboard" when uncertain.
+    Reads tags (Qwen-assigned, most reliable) first, then falls back
+    to keyword matching against the title.
+    """
+    title = (item.get("title") or "").lower()
+    tags = {t.lower() for t in (item.get("tags") or [])}
+
+    # Tag signals — set by tag_items.py against data/tags.json.
+    if tags & {"keycap-design", "keycaps", "keycap-set", "keycap"}:
+        return "Keycap"
+    if tags & {"switch-development", "magnetic-switch", "switches",
+               "switch-design"}:
+        return "Switch"
+    if tags & {"pcb-design", "pcb"}:
+        return "PCB"
+    if tags & {"deskmat"}:
+        return "Deskmat"
+    if tags & {"cable", "cables"}:
+        return "Cable"
+    if tags & {"artisan", "artisans"}:
+        return "Artisan"
+
+    # Title-keyword fallbacks. Order: most specific first.
+    # Deskmat checked before keycap so "DSS Deskmat" doesn't trip the
+    # DSS-profile keycap heuristic.
+    if any(w in title for w in ("deskmat", "desk mat", "deskpad")):
+        return "Deskmat"
+    if any(w in title for w in (" switch", " switches ", "tactile",
+                                "magnetic switch", "he switch", "linear ")):
+        return "Switch"
+    if any(w in title for w in (
+            "keycap", "keyset", " gmk ", " kat ", " dss ", " dsa ",
+            " dcs ", " sa ", " cherry profile", " mt3 ", " kam ",
+            " jtk ", " ept ", " ddx ")):
+        return "Keycap"
+    if any(w in title for w in (" pcb", "pcb ")):
+        return "PCB"
+    if any(w in title for w in ("artisan", " sculpt")):
+        return "Artisan"
+    if any(w in title for w in ("cable", "coiled")):
+        return "Cable"
+    if any(w in title for w in ("housing", "case ", " case", "barebones")):
+        return "Keyboard"
+
+    return "Keyboard"
+
+
+def _effective_base_price(vl: dict) -> int:
+    """Best estimate of a vendor's base-kit price (vs the cheap
+    add-on variants that the .js endpoint exposes alongside it).
+    When price_high > 2× price_low, we treat the low end as add-ons
+    and the high end as base — same heuristic format_vendor_price
+    uses for display. Otherwise the low price IS the base."""
+    lo = vl.get("price_low") or 0
+    hi = vl.get("price_high") or lo
+    return hi if hi > 2 * lo else lo
+
+
+def representative_vendor_price(gb: dict) -> tuple[str | None, dict | None]:
+    """Pick a single price + vendor to show on the first-slide badge.
+
+    Preference (highest signal first):
+      1. lowest *base-kit* price among in-stock vendors
+      2. lowest base-kit price among unknown-stock vendors
+      3. (None, None) — no usable prices
+
+    Ranking uses _effective_base_price so a vendor with
+    `price_low=2000` (novelties) and `price_high=10250` (base kit)
+    sorts on the base value (10250) rather than the cheap variant.
+    """
+    links = gb.get("vendor_links") or []
+    in_stock: list[dict] = []
+    unknown: list[dict] = []
+    for vl in links:
+        if vl.get("price_low") is None:
+            continue
+        if vl.get("available") is True:
+            in_stock.append(vl)
+        elif vl.get("available") is None:
+            unknown.append(vl)
+    pool = in_stock if in_stock else unknown
+    if not pool:
+        return None, None
+    pool.sort(key=_effective_base_price)
+    pick = pool[0]
+    return (
+        format_vendor_price(
+            pick["price_low"], pick.get("price_high"), pick.get("currency"),
+        ),
+        pick,
+    )
+
+
 def unified_vendor_pills(gb: dict) -> list[dict]:
     """Combine `gb.vendor_regions` (parsed from the OP's structured
     "Vendors US: X" list) with `gb.vendor_links` (hyperlinks in the
@@ -1536,6 +1633,30 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
     # fall through to the local 1280px crop.
     remotes_raw = item.get("images_remote") or []
     remotes = [clean_remote_image_url(u) for u in remotes_raw]
+    # ── first-slide badge: category · stage · price ──
+    # Overlay-rendered on the first slide only (where the user's
+    # eye lands first). Quietly omitted on the rest of the carousel.
+    _badge_gb = item.get("gb") or {}
+    category = infer_gb_category(item)
+    stage = raw_type if raw_type in ("GB", "IC") else ""
+    price_str, _picked_vendor = representative_vendor_price(_badge_gb)
+    badge_parts = [
+        f'<span class="gb-badge-cat">{html.escape(category)}</span>'
+    ]
+    if stage:
+        badge_parts.append(
+            f'<span class="gb-badge-stage gb-badge-stage-{stage.lower()}">'
+            f'{html.escape(stage)}</span>'
+        )
+    if price_str:
+        badge_parts.append(
+            f'<span class="gb-badge-price">{html.escape(price_str)}</span>'
+        )
+    badge_html = (
+        f'<div class="gb-badge" aria-hidden="false">'
+        f'{"".join(badge_parts)}</div>'
+    )
+
     carousel_html = ""
     if images:
         slides = []
@@ -1547,12 +1668,14 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
                 data_full = (
                     f' data-full="{html.escape(remotes[idx], quote=True)}"'
                 )
+            badge = badge_html if idx == 0 else ""
             slides.append(
                 f'<div class="gb-slide" role="group" '
                 f'aria-label="Image {idx + 1} of {len(images)}" '
                 f'aria-roledescription="slide">'
                 f'<img src="{html.escape(src)}" alt="" '
                 f'loading="{loading}" decoding="async"{data_full}>'
+                f'{badge}'
                 f'</div>'
             )
         if len(images) == 1:

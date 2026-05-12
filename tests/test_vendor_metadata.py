@@ -16,6 +16,23 @@ import vendor_metadata as vm  # noqa: E402
 # ────────────────── product_json_url ──────────────────
 
 
+class CurrencyForHost(unittest.TestCase):
+    def test_known_hosts(self):
+        self.assertEqual(vm.currency_for_host("novelkeys.com"), "USD")
+        self.assertEqual(vm.currency_for_host("prototypist.net"), "GBP")
+        self.assertEqual(vm.currency_for_host("oblotzky.industries"), "EUR")
+        self.assertEqual(vm.currency_for_host("shop.yushakobo.jp"), "JPY")
+        self.assertEqual(vm.currency_for_host("ilumkb.com"), "SGD")
+        self.assertEqual(vm.currency_for_host("deskhero.ca"), "CAD")
+
+    def test_unknown_host_returns_none(self):
+        self.assertIsNone(vm.currency_for_host("randomshop.com"))
+
+    def test_empty(self):
+        self.assertIsNone(vm.currency_for_host(""))
+        self.assertIsNone(vm.currency_for_host(None))
+
+
 class ProductJsonUrl(unittest.TestCase):
     def test_basic_product_url_defaults_to_js(self):
         self.assertEqual(
