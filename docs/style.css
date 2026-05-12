@@ -1958,3 +1958,29 @@ footer a:hover {
   .gb-track { scroll-behavior: auto; }
   .gb-dot, .gb-nav { transition: none; }
 }
+
+/* GB vendors-by-region pill row */
+.gb-vendors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem 0.5rem;
+  margin: 0 0 0.625rem;
+  font-size: 0.8125rem;
+}
+.gb-vendor-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3125rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.gb-vendor-region {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  padding: 0.0625rem 0.3125rem;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  text-transform: uppercase;
+}

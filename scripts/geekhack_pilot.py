@@ -450,6 +450,14 @@ def main():
     if items and not args.no_enrich and not args.feed_file:
         enrich_items(items, throttle=args.throttle)
 
+    # Step 2.3: title+body extractors fill the gb chip row.
+    # Pure / offline, so always safe to run.
+    import gb_extract  # local import to keep the test-only path light
+    for it in items:
+        facets = gb_extract.extract_gb_facets(it)
+        if facets:
+            it.setdefault("gb", {}).update(facets)
+
     if args.dry_run:
         print(f"geekhack: {len(items)} new threads "
               f"(state has {len(seen)} known)")

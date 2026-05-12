@@ -1096,6 +1096,26 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
         if facet_bits else ""
     )
 
+    # ── vendors by region ──
+    vendor_html = ""
+    vendors = gb.get("vendor_regions") or []
+    if vendors:
+        pills = []
+        for v in vendors:
+            region = html.escape(str(v.get("region") or ""))
+            name = html.escape(str(v.get("name") or ""))
+            if region and name:
+                pills.append(
+                    f'<span class="gb-vendor-pill">'
+                    f'<span class="gb-vendor-region">{region}</span>'
+                    f'{name}</span>'
+                )
+        if pills:
+            vendor_html = (
+                f'<div class="gb-vendors" '
+                f'aria-label="Vendors by region">{"".join(pills)}</div>'
+            )
+
     # ── takeaway ──
     takeaway = html.escape(item.get("takeaway") or "")
     takeaway_html = (
@@ -1142,6 +1162,7 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
   {carousel_html}
   {chips_row}
   {facets}
+  {vendor_html}
   {takeaway_html}
   {engage_row}
   {permalink}

@@ -198,7 +198,10 @@
         "img/geekhack-110579-2.jpg",
         "img/geekhack-110579-4.jpg",
         "img/geekhack-110579-5.jpg"
-      ]
+      ],
+      "gb": {
+        "status": "postponed"
+      }
     },
     {
       "id": "geekhack-126032",
@@ -321,7 +324,31 @@
         "img/geekhack-126450-3.jpg",
         "img/geekhack-126450-4.jpg",
         "img/geekhack-126450-5.jpg"
-      ]
+      ],
+      "gb": {
+        "vendor_regions": [
+          {
+            "region": "US",
+            "name": "Bowl Keyboards"
+          },
+          {
+            "region": "EU",
+            "name": "Delta Key Co"
+          },
+          {
+            "region": "UK",
+            "name": "Proto[Typist]"
+          },
+          {
+            "region": "CN",
+            "name": "KBDFans"
+          },
+          {
+            "region": "SG",
+            "name": "iLumkb"
+          }
+        ]
+      }
     },
     {
       "id": "geekhack-126526",
@@ -360,7 +387,24 @@
         "img/geekhack-126526-3.jpg",
         "img/geekhack-126526-4.jpg",
         "img/geekhack-126526-5.jpg"
-      ]
+      ],
+      "gb": {
+        "designer": "beardgrylls",
+        "starts_at": "2026-04-13",
+        "ends_at": "2026-05-15",
+        "status": "live",
+        "moq": 50,
+        "vendor_regions": [
+          {
+            "region": "US",
+            "name": "SabreKeebs"
+          },
+          {
+            "region": "UK",
+            "name": "ProtoTypist"
+          }
+        ]
+      }
     },
     {
       "id": "geekhack-126530",
@@ -453,7 +497,11 @@
         "img/geekhack-126598-4.jpg",
         "img/geekhack-126598-5.jpg"
       ],
-      "image": "img/geekhack-126598-0.jpg"
+      "image": "img/geekhack-126598-0.jpg",
+      "gb": {
+        "ends_at": "2026-05-10",
+        "status": "live"
+      }
     },
     {
       "id": "geekhack-126645",
@@ -499,7 +547,33 @@
         "img/geekhack-126645-3.jpg",
         "img/geekhack-126645-4.jpg",
         "img/geekhack-126645-5.jpg"
-      ]
+      ],
+      "gb": {
+        "starts_at": "2026-05-01",
+        "ends_at": "2026-06-01",
+        "status": "live",
+        "moq": 50,
+        "price_low": 11300,
+        "price_high": 14900,
+        "vendor_regions": [
+          {
+            "region": "US",
+            "name": "Bowl"
+          },
+          {
+            "region": "CN",
+            "name": "Typist Club"
+          },
+          {
+            "region": "UK",
+            "name": "Proto[Typist]"
+          },
+          {
+            "region": "SG",
+            "name": "ktechs"
+          }
+        ]
+      }
     },
     {
       "id": "geekhack-126649",
@@ -550,7 +624,36 @@
         "img/geekhack-126649-3.jpg",
         "img/geekhack-126649-4.jpg",
         "img/geekhack-126649-5.jpg"
-      ]
+      ],
+      "gb": {
+        "designer": "chamelemon_64 and pancake",
+        "starts_at": "2026-05-01",
+        "ends_at": "2026-05-29",
+        "status": "live",
+        "price_low": 13500,
+        "vendor_regions": [
+          {
+            "region": "US",
+            "name": "NovelKeys"
+          },
+          {
+            "region": "UK",
+            "name": "Proto[Typist]"
+          },
+          {
+            "region": "EU",
+            "name": "Oblotzky Industries"
+          },
+          {
+            "region": "KR",
+            "name": "GEONWORKS"
+          },
+          {
+            "region": "CN",
+            "name": "KBDfans"
+          }
+        ]
+      }
     },
     {
       "id": "geekhack-126673",
