@@ -2817,26 +2817,80 @@ def filter_corpus(corpus: dict, predicate) -> dict:
     }
 
 
+# Order categories appear within a day block on /groupbuys/. The
+# whole-set products (keyboards, keycaps, switches) lead — they're
+# the items most readers are deciding to buy. Add-ons / accessories
+# (PCBs, deskmats, cables, artisans) come after. Anything we couldn't
+# categorize falls through to the end under "Other".
+_CATEGORY_DAY_ORDER = (
+    "Keyboard", "Keycap", "Switch",
+    "PCB", "Deskmat", "Cable", "Artisan",
+)
+
+
 def render_gb_day_block(day: dict, topics_reg: dict, tags_reg: dict,
                         *, rel_prefix: str = "") -> str:
-    """Day block specialized for /groupbuys/. Like render_day_block
-    but no Breaking/Evergreen sections (irrelevant to GB items —
-    they're not news), items sorted by views descending so the most
-    talked-about appear first within each day.
+    """Day block specialized for /groupbuys/. Within a day, items are
+    grouped by inferred product category (Keyboards before Keycaps,
+    Switches, then accessories) with a small subsection header per
+    category. Items within a category are sorted by views descending.
 
     `rel_prefix` must point from the rendered page back to docs/ root
     (e.g. `"../"` when this is called for `/groupbuys/index.html`) so
     that image src attributes resolve correctly.
     """
-    items = sorted(day.get("items", []),
-                   key=lambda i: -(i.get("score") or 0))
-    body = "\n".join(
-        render_item(i, topics_reg, tags_reg, page="day",
-                    date=day["date"], rel_prefix=rel_prefix)
-        for i in items
-    )
-    if not body.strip():
+    raw = list(day.get("items", []))
+    if not raw:
         return ""
+
+    # Bucket items by category. Anything not in the ordered list
+    # ends up in "Other" (rendered last).
+    buckets: dict[str, list[dict]] = {}
+    for it in raw:
+        cat = infer_gb_category(it)
+        if cat not in _CATEGORY_DAY_ORDER:
+            cat = "Other"
+        buckets.setdefault(cat, []).append(it)
+
+    ordered_cats = [c for c in _CATEGORY_DAY_ORDER if c in buckets]
+    if "Other" in buckets:
+        ordered_cats.append("Other")
+
+    sections_html = []
+    for cat in ordered_cats:
+        items = sorted(buckets[cat], key=lambda i: -(i.get("score") or 0))
+        items_html = "\n".join(
+            render_item(i, topics_reg, tags_reg, page="day",
+                        date=day["date"], rel_prefix=rel_prefix)
+            for i in items
+        )
+        # Suppress the header when there's only one category total —
+        # no need for a "Keycaps" label if every item that day IS a
+        # keycap; it's noise.
+        header_html = ""
+        if len(ordered_cats) > 1:
+            label = "Keyboards" if cat == "Keyboard" else (
+                "Keycaps" if cat == "Keycap" else (
+                    "Switches" if cat == "Switch" else (
+                        "PCBs" if cat == "PCB" else (
+                            "Deskmats" if cat == "Deskmat" else (
+                                "Cables" if cat == "Cable" else (
+                                    "Artisans" if cat == "Artisan" else "Other"
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+            header_html = (
+                f'<h3 class="gb-category-label">{html.escape(label)}</h3>'
+            )
+        sections_html.append(
+            f'<div class="gb-category gb-category-{cat.lower()}">'
+            f'{header_html}{items_html}</div>'
+        )
+
+    body = "\n".join(sections_html)
     date = day["date"]
     y, m, d = date.split("-")
     return f'''<section class="day gb-day" id="{date}">

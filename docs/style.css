@@ -2379,3 +2379,20 @@ a.gb-vendor-pill-link:hover .gb-vendor-region {
   background: rgba(255, 255, 255, 0.18);
   color: rgba(255, 255, 255, 0.85);
 }
+
+/* Per-day category subsections on /groupbuys/. Small uppercase
+   label so the eye groups items by product class within a day. */
+.gb-category + .gb-category {
+  margin-top: 1.5rem;
+}
+.gb-category-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--ink-faint);
+  margin: 0.75rem 0 0.625rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--rule);
+}
