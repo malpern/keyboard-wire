@@ -222,6 +222,12 @@ levenshtein on designer + product name) to group related items.
 Decision point: build this once Geekhack + Shopify are live and we have
 enough collision data to drive the algorithm choice.
 
+**Audit tool**: `scripts/dedup_audit.py` scans the archive for
+cross-source title overlap. Re-run when the source mix changes — first
+appearance of real positives is the signal to actually build the
+clusterer. Full background and the next-steps checklist live in
+`docs/DEDUP_RESEARCH.md`.
+
 ## Adding a new ingestor
 
 Pattern (~150 lines total):

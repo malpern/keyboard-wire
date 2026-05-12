@@ -6,7 +6,7 @@
   <atom:link href="https://keyboard-newswire.com/topics/firmware/feed.xml" rel="self" type="application/rss+xml"/>
   <description>On-board keyboard firmware: QMK, ZMK, KMK, custom firmware development, matrix scanning, encoders, RGB, BLE, controllers.</description>
   <language>en-us</language>
-  <lastBuildDate>Tue, 12 May 2026 12:05:18 +0000</lastBuildDate>
+  <lastBuildDate>Tue, 12 May 2026 13:30:32 +0000</lastBuildDate>
   <item>
     <title>QMK discussion on verifying NKRO status without magic key combos</title>
     <link>https://www.reddit.com/r/olkb/comments/1tadbr4/how_to_enable_nkro/</link>
