@@ -183,15 +183,38 @@ h1.site-title a:hover {
   border-bottom-color: var(--ink);
 }
 
-.subscribe a#subscribe-trigger {
-  color: var(--accent);
+/* Subscribe button (header CTA). margin-left:auto pushes it to the
+   right of the nav row. Visually distinct from the inline text links
+   so the call-to-action stands out without dominating. */
+.site-subscribe-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  margin-left: auto;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.8125rem;
   font-weight: 600;
-  border-bottom-color: var(--accent);
-  border-bottom-width: 2px;
-  padding-bottom: 0;
+  letter-spacing: 0.01em;
+  padding: 0.4375rem 0.875rem;
+  cursor: pointer;
+  line-height: 1.15;
+  transition: filter 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
 }
-.subscribe a#subscribe-trigger:hover {
-  filter: brightness(1.1);
+.site-subscribe-btn:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 2px 4px rgba(192, 57, 43, 0.25);
+}
+.site-subscribe-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+}
+.site-subscribe-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* ── Day blocks ──────────────────────── */

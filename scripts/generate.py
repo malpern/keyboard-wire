@@ -246,9 +246,11 @@ def subscribe_card(canonical: str) -> str:
 
 
 def site_header(canonical: str) -> str:
-    is_root = canonical == f"{SITE_URL}/"
-    home_path = relative_to_docs(canonical, "")
-    home = "" if is_root else f'<a href="{home_path}">home</a><span aria-hidden="true">·</span>'
+    # On the root page itself, relative_to_docs("") yields "", which
+    # browsers technically resolve to the current document but renders
+    # the empty-string href noisily. Use "./" so the link target is
+    # always a real path.
+    home_path = relative_to_docs(canonical, "") or "./"
     feed_path = relative_to_docs(canonical, "feed.xml")
     settings_path = relative_to_docs(canonical, "settings/")
     archive_path = relative_to_docs(canonical, "archive/")
@@ -258,6 +260,7 @@ def site_header(canonical: str) -> str:
     def aria_current(page_url: str) -> str:
         return ' aria-current="page"' if canonical == page_url else ""
 
+    home_attr = aria_current(f"{SITE_URL}/")
     archive_attr = aria_current(f"{SITE_URL}/archive/")
     groupbuys_attr = aria_current(f"{SITE_URL}/groupbuys/")
     settings_attr = aria_current(f"{SITE_URL}/settings/")
@@ -272,9 +275,8 @@ def site_header(canonical: str) -> str:
         <p class="tagline">daily mechanical keyboards, firmware &amp; tools</p>
       </div>
     </div>
-    <p class="subscribe">
-      {home}
-      <a href="#" id="subscribe-trigger" data-subscribe>subscribe</a>
+    <nav class="subscribe" aria-label="Site navigation">
+      <a href="{home_path}"{home_attr}>home</a>
       <span aria-hidden="true">·</span>
       <a href="{archive_path}"{archive_attr}>archive</a>
       <span aria-hidden="true">·</span>
@@ -286,7 +288,9 @@ def site_header(canonical: str) -> str:
       <span aria-hidden="true">·</span>
       <a href="{relative_to_docs(canonical, 'post/')}"{about_attr}>about</a>
       {font_controls()}
-    </p>
+      <button type="button" class="site-subscribe-btn"
+              id="subscribe-trigger" data-subscribe>Subscribe</button>
+    </nav>
     {subscribe_dialog(canonical)}
     {subscribe_card(canonical)}
   </header>'''

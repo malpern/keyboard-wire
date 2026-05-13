@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>mechanical keyboard newswire</title>
 <meta name="description" content="daily mechanical keyboards, firmware &amp; tools">
-<link rel="stylesheet" href="style.css?v=1778631979">
+<link rel="stylesheet" href="style.css?v=1778632450">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="alternate" type="application/rss+xml" title="mechanical keyboard newswire" href="feed.xml">
 <link rel="canonical" href="https://keyboard-newswire.com/">
@@ -21,15 +21,14 @@
 <main>
   <header>
     <div class="site-masthead">
-      <a href="" class="site-icon-link"><img src="post/assets/icon-final.png" alt="" class="site-icon"></a>
+      <a href="./" class="site-icon-link"><img src="post/assets/icon-final.png" alt="" class="site-icon"></a>
       <div class="site-masthead-text">
-        <h1 class="site-title"><a href="">mechanical keyboard newswire</a></h1>
+        <h1 class="site-title"><a href="./">mechanical keyboard newswire</a></h1>
         <p class="tagline">daily mechanical keyboards, firmware &amp; tools</p>
       </div>
     </div>
-    <p class="subscribe">
-      
-      <a href="#" id="subscribe-trigger" data-subscribe>subscribe</a>
+    <nav class="subscribe" aria-label="Site navigation">
+      <a href="./" aria-current="page">home</a>
       <span aria-hidden="true">·</span>
       <a href="archive/">archive</a>
       <span aria-hidden="true">·</span>
@@ -41,7 +40,9 @@
       <span aria-hidden="true">·</span>
       <a href="post/">about</a>
       
-    </p>
+      <button type="button" class="site-subscribe-btn"
+              id="subscribe-trigger" data-subscribe>Subscribe</button>
+    </nav>
     <dialog id="subscribe-dialog" class="subscribe-dialog" aria-labelledby="subscribe-title">
       <form method="dialog" class="subscribe-close-form">
         <button class="subscribe-close" type="submit" value="cancel" aria-label="Close">×</button>
