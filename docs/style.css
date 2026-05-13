@@ -183,13 +183,38 @@ h1.site-title a:hover {
   border-bottom-color: var(--ink);
 }
 
-/* Subscribe button (header CTA). margin-left:auto pushes it to the
-   right of the nav row. Visually distinct from the inline text links
-   so the call-to-action stands out without dominating. */
+/* RSS icon link. Pulled out of the inline nav so it doesn't compete
+   with the text links — sits to the immediate left of the Subscribe
+   button as a quiet, icon-only affordance. margin-left:auto pushes
+   the right cluster (RSS icon + Subscribe button) to the far right;
+   the button below has no auto-margin so it tucks against the icon. */
+.site-rss-icon {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.875rem;
+  height: 1.875rem;
+  color: var(--ink-faint);
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding-bottom: 0;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.site-rss-icon:hover,
+.site-rss-icon:focus-visible {
+  color: var(--accent);
+  border-color: var(--rule);
+  background: rgba(192, 57, 43, 0.05);
+  outline: none;
+}
+
+/* Subscribe button (header CTA). Visually distinct from the inline
+   text links so the call-to-action stands out without dominating. */
 .site-subscribe-btn {
   appearance: none;
   -webkit-appearance: none;
-  margin-left: auto;
   background: var(--accent);
   color: white;
   border: none;

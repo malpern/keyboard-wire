@@ -282,12 +282,17 @@ def site_header(canonical: str) -> str:
       <span aria-hidden="true">·</span>
       <a href="{groupbuys_path}"{groupbuys_attr}>group buys</a>
       <span aria-hidden="true">·</span>
-      <a href="{feed_path}">RSS</a>
-      <span aria-hidden="true">·</span>
       <a href="{settings_path}"{settings_attr}>settings</a>
       <span aria-hidden="true">·</span>
       <a href="{relative_to_docs(canonical, 'post/')}"{about_attr}>about</a>
       {font_controls()}
+      <a href="{feed_path}" class="site-rss-icon" aria-label="RSS feed" title="RSS feed">
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+          <circle cx="3.5" cy="12.5" r="1.5" fill="currentColor"/>
+          <path d="M2 7.5 a6 6 0 0 1 6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M2 3.5 a10 10 0 0 1 10 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </a>
       <button type="button" class="site-subscribe-btn"
               id="subscribe-trigger" data-subscribe>Subscribe</button>
     </nav>
