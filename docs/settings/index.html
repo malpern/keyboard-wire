@@ -196,6 +196,42 @@
       <p class="source-card-desc">Pulls messages from the personal Gmail &quot;Keyboard&quot; label (and sublabels like Keyboard/Tech) from the last 24h. Reddit notification emails are filtered out to avoid duplicating the Reddit pipeline. For each remaining email, Qwen extracts the primary article link, a one-line takeaway, and a clean title from the body — turning vendor newsletters and indie keyboard blogs into wire items.</p>
       <ul class="source-card-endpoints"><li><code>gog gmail search -a malpern@gmail.com -j &#x27;label:Keyboard newer_than:1d&#x27;</code></li></ul>
     </article>
+    <article class="source-card">
+      <header class="source-card-header">
+        <span class="source-card-label">kbdnews</span>
+        <h3 class="source-card-name">KBD.news</h3>
+      </header>
+      <dl class="source-card-meta">
+        <dt>Schedule</dt><dd>Daily, 5:05 PT</dd>
+        <dt>Model</dt><dd>No LLM — hand-curated upstream</dd>
+      </dl>
+      <p class="source-card-desc">Parses Tamás Dövényi-Nagy&#x27;s KBD.news RSS feed — a hand-curated weekly e-zine of mechanical-keyboard and DIY-ergo posts. Strict 24h window, skips the &quot;Behind the scenes&quot; weekly meta-posts (those summarize content we&#x27;d already ingest individually). Since Tamás does the editorial filtering upstream, no LLM pass is needed — items go straight to tag → fetch-image → append. Conditional GET via If-Modified-Since means quiet days short-circuit on 304.</p>
+      <ul class="source-card-endpoints"><li><code>https://kbd.news/rss.xml</code></li></ul>
+    </article>
+    <article class="source-card">
+      <header class="source-card-header">
+        <span class="source-card-label">geekhack</span>
+        <h3 class="source-card-name">Geekhack (Group Buys + Interest Checks)</h3>
+      </header>
+      <dl class="source-card-meta">
+        <dt>Schedule</dt><dd>Daily, 5:06 PT</dd>
+        <dt>Model</dt><dd>No LLM — direct RSS + thread-page scrape</dd>
+      </dl>
+      <p class="source-card-desc">Pulls boards 70 (Group Buys &amp; Preorders) and 132 (Interest Checks) from Geekhack&#x27;s RSS, dedupes per thread via data/geekhack_seen.json. For each newly-seen thread, scrapes the thread root page once to extract views, replies, OP body, multi-image carousel, vendor product URLs, and any back-link to a related thread (original IC / earlier GB). Items are quarantined from the main news feed and rendered on /groupbuys/. Polite: 1s throttle between thread fetches, conditional GET on the RSS (though Geekhack&#x27;s server doesn&#x27;t honor it yet).</p>
+      <ul class="source-card-endpoints"><li><code>https://geekhack.org/index.php?action=.xml;type=rss;board=70</code></li><li><code>https://geekhack.org/index.php?action=.xml;type=rss;board=132</code></li><li><code>https://geekhack.org/index.php?topic=&lt;id&gt;.0  (per-thread scrape)</code></li></ul>
+    </article>
+    <article class="source-card">
+      <header class="source-card-header">
+        <span class="source-card-label">shopify-meta</span>
+        <h3 class="source-card-name">Shopify vendor metadata refresh</h3>
+      </header>
+      <dl class="source-card-meta">
+        <dt>Schedule</dt><dd>Daily, after group-buys</dd>
+        <dt>Model</dt><dd>No LLM — JSON-only fetch</dd>
+      </dl>
+      <p class="source-card-desc">Walks every vendor product URL in the corpus (extracted from Geekhack OP hyperlinks) and fetches the Shopify .js endpoint to refresh price + availability. Per-host throttle keeps us under vendor rate limits. Currency falls back to a hand-curated host map since .js doesn&#x27;t expose price_currency. Per-link refresh skipped when metadata is &lt; 6h old.</p>
+      <ul class="source-card-endpoints"><li><code>https://&lt;vendor&gt;/products/&lt;slug&gt;.js</code></li></ul>
+    </article>
     </div>
   </section>
   <footer><a href="../">home</a></footer>

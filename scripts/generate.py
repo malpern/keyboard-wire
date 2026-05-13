@@ -2819,6 +2819,68 @@ def render_settings_page() -> str:
             ],
             "label": "email",
         },
+        {
+            "name": "KBD.news",
+            "schedule": "Daily, 5:05 PT",
+            "model": "No LLM — hand-curated upstream",
+            "description": (
+                "Parses Tamás Dövényi-Nagy's KBD.news RSS feed — a "
+                "hand-curated weekly e-zine of mechanical-keyboard and "
+                "DIY-ergo posts. Strict 24h window, skips the \"Behind "
+                "the scenes\" weekly meta-posts (those summarize content "
+                "we'd already ingest individually). Since Tamás does the "
+                "editorial filtering upstream, no LLM pass is needed — "
+                "items go straight to tag → fetch-image → append. "
+                "Conditional GET via If-Modified-Since means quiet days "
+                "short-circuit on 304."
+            ),
+            "endpoints": [
+                "https://kbd.news/rss.xml",
+            ],
+            "label": "kbdnews",
+        },
+        {
+            "name": "Geekhack (Group Buys + Interest Checks)",
+            "schedule": "Daily, 5:06 PT",
+            "model": "No LLM — direct RSS + thread-page scrape",
+            "description": (
+                "Pulls boards 70 (Group Buys & Preorders) and 132 "
+                "(Interest Checks) from Geekhack's RSS, dedupes per "
+                "thread via data/geekhack_seen.json. For each newly-"
+                "seen thread, scrapes the thread root page once to "
+                "extract views, replies, OP body, multi-image carousel, "
+                "vendor product URLs, and any back-link to a related "
+                "thread (original IC / earlier GB). Items are quarantined "
+                "from the main news feed and rendered on /groupbuys/. "
+                "Polite: 1s throttle between thread fetches, conditional "
+                "GET on the RSS (though Geekhack's server doesn't honor "
+                "it yet)."
+            ),
+            "endpoints": [
+                "https://geekhack.org/index.php?action=.xml;type=rss;board=70",
+                "https://geekhack.org/index.php?action=.xml;type=rss;board=132",
+                "https://geekhack.org/index.php?topic=<id>.0  (per-thread scrape)",
+            ],
+            "label": "geekhack",
+        },
+        {
+            "name": "Shopify vendor metadata refresh",
+            "schedule": "Daily, after group-buys",
+            "model": "No LLM — JSON-only fetch",
+            "description": (
+                "Walks every vendor product URL in the corpus (extracted "
+                "from Geekhack OP hyperlinks) and fetches the Shopify "
+                ".js endpoint to refresh price + availability. Per-host "
+                "throttle keeps us under vendor rate limits. Currency "
+                "falls back to a hand-curated host map since .js doesn't "
+                "expose price_currency. Per-link refresh skipped when "
+                "metadata is < 6h old."
+            ),
+            "endpoints": [
+                "https://<vendor>/products/<slug>.js",
+            ],
+            "label": "shopify-meta",
+        },
     ]
 
     sources_html = ""
