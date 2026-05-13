@@ -442,6 +442,13 @@ def font_script() -> str:
     rootEl.addEventListener('pointerup', cancel);
     rootEl.addEventListener('pointercancel', cancel);
     rootEl.addEventListener('pointerleave', cancel);
+    // Block native drag on whatever element we're long-pressing —
+    // otherwise desktop browsers show a translucent link/image ghost
+    // that persists for the entire hold and creates a visible
+    // artifact even after we open the popover.
+    rootEl.addEventListener('dragstart', function(e) {
+      if (anchor && e.target.closest(selector)) e.preventDefault();
+    });
   }
 
   // ── Popover ─────────────────────────────────────────────

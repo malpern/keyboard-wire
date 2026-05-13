@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Neovim · mechanical keyboard newswire</title>
 <meta name="description" content="All keyboard wire entries tagged Neovim.">
-<link rel="stylesheet" href="../../style.css?v=1778640958">
+<link rel="stylesheet" href="../../style.css?v=1778641137">
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="alternate" type="application/rss+xml" title="Neovim · mechanical keyboard newswire" href="feed.xml">
 <link rel="canonical" href="https://keyboard-newswire.com/tags/neovim/">
@@ -256,6 +256,13 @@
     rootEl.addEventListener('pointerup', cancel);
     rootEl.addEventListener('pointercancel', cancel);
     rootEl.addEventListener('pointerleave', cancel);
+    // Block native drag on whatever element we're long-pressing —
+    // otherwise desktop browsers show a translucent link/image ghost
+    // that persists for the entire hold and creates a visible
+    // artifact even after we open the popover.
+    rootEl.addEventListener('dragstart', function(e) {
+      if (anchor && e.target.closest(selector)) e.preventDefault();
+    });
   }
 
   // ── Popover ─────────────────────────────────────────────

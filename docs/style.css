@@ -389,11 +389,18 @@ h1.site-title a:hover {
 /* Disable iOS callout + text selection on the card chrome — we
    handle long-press ourselves via the popover. Text in the title
    and takeaway is still copy-selectable via the OS double-tap
-   gesture. */
+   gesture. -webkit-user-drag: none stops the browser's link-drag
+   ghost from appearing when the user holds the title link on
+   desktop (this was the persistent visual artifact). */
 .item {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
+  -webkit-user-drag: none;
+}
+.item a,
+.item img {
+  -webkit-user-drag: none;
 }
 .item-title a,
 .item-takeaway,
