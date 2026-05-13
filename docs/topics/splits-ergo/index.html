@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Splits &amp; Ergo · mechanical keyboard newswire</title>
 <meta name="description" content="All keyboard wire entries tagged Splits &amp; Ergo.">
-<link rel="stylesheet" href="../../style.css?v=1778633742">
+<link rel="stylesheet" href="../../style.css?v=1778640958">
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="alternate" type="application/rss+xml" title="Splits &amp; Ergo · mechanical keyboard newswire" href="feed.xml">
 <link rel="canonical" href="https://keyboard-newswire.com/topics/splits-ergo/">
@@ -483,6 +483,13 @@
       timer = setTimeout(function() {
         if (!anchor) return;
         try { navigator.vibrate && navigator.vibrate(15); } catch (err) {}
+        // Clear any text selection the user accidentally made while
+        // holding — otherwise a selection highlight stays painted
+        // on the page after the popover opens.
+        try {
+          var sel = window.getSelection && window.getSelection();
+          if (sel && sel.removeAllRanges) sel.removeAllRanges();
+        } catch (err) {}
         onTrigger(anchor, startX, startY);
         anchor = null;
       }, ms);
@@ -578,38 +585,49 @@
     }
   }
 
-  // Re-build the title popover (font controls + rewrite toggle) keeping
-  // its position since user is still holding it.
+  // The action popover. Keeps its position across re-renders because
+  // the user may still be holding when an action (e.g. font A+/A−)
+  // rebuilds it. `lastItemId` tracks the item context so we keep the
+  // "Want to buy" action visible during font/rewrite toggles.
   var lastTitlePopX = 0, lastTitlePopY = 0;
-  function buildTitlePopover() {
+  var lastItemId = null;
+
+  function buildActionPopover(opts) {
+    opts = opts || {};
+    var itemId = ('itemId' in opts) ? opts.itemId : lastItemId;
+    lastItemId = itemId;
+    var saved = !!itemId && inBL(itemId);
     var rewriteOn = readRewrite();
     var atMin = scale <= MIN + 0.001;
     var atMax = scale >= MAX - 0.001;
-    showPopover([
+    var actions = [];
+    if (itemId) {
+      actions.push(
+        saved
+          ? { act: 'buylist-remove', arg: itemId, label: '♥ Want to buy' }
+          : { act: 'buylist-add', arg: itemId, label: '♡ Want to buy' }
+      );
+      actions.push({ kind: 'sep' });
+    }
+    actions.push(
       { kind: 'note', text: 'Text size · ' + Math.round(scale * 100) + '%' },
       { kind: 'row', children: [
-        { act: 'font-down', label: 'A−', disabled: atMin },
-        { act: 'font-up', label: 'A+', disabled: atMax },
+        { act: 'font-down', label: 'A−' },
+        { act: 'font-up', label: 'A+' },
       ]},
       { kind: 'sep' },
-      { act: 'rewrite-toggle', label: (rewriteOn ? '✓ ' : '') + 'Use rewritten titles' },
-    ], lastTitlePopX, lastTitlePopY);
-    // Apply disabled state
+      { act: 'rewrite-toggle', label: (rewriteOn ? '✓ ' : '') + 'Use rewritten titles' }
+    );
+    showPopover(actions, lastTitlePopX, lastTitlePopY);
     if (popover) {
       if (atMin) { var b = popover.querySelector('[data-act="font-down"]'); if (b) b.disabled = true; }
       if (atMax) { var b2 = popover.querySelector('[data-act="font-up"]'); if (b2) b2.disabled = true; }
     }
   }
 
-  function buildItemPopover(itemEl, x, y) {
-    var id = itemEl.dataset.id;
-    var saved = inBL(id);
-    showPopover([
-      saved
-        ? { act: 'buylist-remove', arg: id, label: '♥ Want to buy' }
-        : { act: 'buylist-add', arg: id, label: '♡ Want to buy' },
-    ], x, y);
-  }
+  // Back-compat shim for the buylist-add / -remove path which
+  // rebuilds the popover after toggling.
+  function buildTitlePopover() { buildActionPopover(); }
 
   // Buylist row move (used by buylist page)
   function kwBuylistMove(id, dir) {
@@ -655,17 +673,25 @@
     applyRewrite(readRewrite());
     refreshNavCount();
 
-    // Long-press on title → font/rewrite controls
-    attachLongPress(document, '.item-title, .archive-title, .bl-title', function(el, x, y) {
-      lastTitlePopX = x; lastTitlePopY = y;
-      buildTitlePopover();
-    });
-
-    // Long-press on item card → buylist add/remove (excluding clicks on the
-    // title link, the play button, or any nested anchor)
+    // Long-press anywhere on an item card → single merged action
+    // popover (Want to buy + font + rewrite). The title link IS
+    // included — tap-and-release still navigates because the
+    // long-press detector requires 500ms + no movement to fire;
+    // a fast tap doesn't trigger it. Permalinks, the play button,
+    // and explicit within-card action targets are excluded so
+    // they keep their own click behavior.
     attachLongPress(document, '.item', function(el, x, y) {
-      buildItemPopover(el, x, y);
-    }, { exclude: '.item-title a, .item-meta a, .item-topmeta a, .play-day' });
+      lastTitlePopX = x; lastTitlePopY = y;
+      buildActionPopover({ itemId: el.dataset.id || null });
+    }, { exclude: '.item-permalink, .item-meta a, .item-topmeta a, .play-day, .gb-cta, .gb-related, .gb-vendor-pill-link, .gb-dot, .gb-nav, .gb-carousel button' });
+
+    // Long-press on titles outside an item card (archive list rows,
+    // buylist rows) → font/rewrite only. No item-id context to
+    // attach a buylist action to.
+    attachLongPress(document, '.archive-title, .bl-title', function(el, x, y) {
+      lastTitlePopX = x; lastTitlePopY = y;
+      buildActionPopover({ itemId: null });
+    });
 
     initSpeech();
   });

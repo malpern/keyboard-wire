@@ -386,12 +386,22 @@ h1.site-title a:hover {
 
 .item:last-child { border-bottom: none; }
 
-/* Disable iOS callout on long-press of the card */
+/* Disable iOS callout + text selection on the card chrome — we
+   handle long-press ourselves via the popover. Text in the title
+   and takeaway is still copy-selectable via the OS double-tap
+   gesture. */
 .item {
   -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
-.item-title a {
-  -webkit-touch-callout: default;
+.item-title a,
+.item-takeaway,
+.gb-takeaway,
+.gb-photo-credit {
+  -webkit-touch-callout: none;
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 .item-permalink {
