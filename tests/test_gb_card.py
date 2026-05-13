@@ -956,13 +956,13 @@ class UnifiedVendorPills(unittest.TestCase):
 
 
 class ShortenGbTakeaway(unittest.TestCase):
-    def test_cuts_at_vendors_section(self):
+    def test_cuts_at_vendors_with_region_tag(self):
         body = ("Cool keycap set inspired by old keyboards. "
                 "Vendors: US: NovelKeys UK: ProtoTypist EU: Oblotzky")
         out = gen.shorten_gb_takeaway(body)
         self.assertEqual(out, "Cool keycap set inspired by old keyboards")
 
-    def test_cuts_at_pricing(self):
+    def test_cuts_at_pricing_label(self):
         body = ("Quick description here. "
                 "Pricing: Base $135 ...")
         out = gen.shorten_gb_takeaway(body)
@@ -973,36 +973,59 @@ class ShortenGbTakeaway(unittest.TestCase):
         out = gen.shorten_gb_takeaway(body)
         self.assertEqual(out, "GMK Foo by Bar")
 
-    def test_cuts_at_moq(self):
-        body = ("Short pitch text. MOQ of 50 @ 110 USD Vendors:")
+    def test_cuts_at_base_price_ladder(self):
+        body = ("Project pitch text. Base: $149.00 - 50 MOQ $130.00 - 75 MOQ")
         out = gen.shorten_gb_takeaway(body)
-        self.assertEqual(out, "Short pitch text")
+        self.assertEqual(out, "Project pitch text")
 
-    def test_cuts_at_where_to_buy(self):
+    def test_cuts_at_where_to_buy_with_colon(self):
         body = ("INSPIRATION The set was inspired by Vaporwave aesthetics. "
                 "WHERE TO BUY: North America: Mechs & Co")
         out = gen.shorten_gb_takeaway(body)
         self.assertIn("Vaporwave aesthetics", out)
         self.assertNotIn("Mechs", out)
 
-    def test_no_markers_returns_short_text(self):
+    def test_keeps_inline_moq_in_prose(self):
+        # "MOQ of 50 @ 110 USD" is useful inline detail; only
+        # *structured* MOQ tables should be cut, and those land at
+        # a vendor / pricing marker downstream.
+        body = ("Cool set going live April 13. MOQ of 50 @ 110 USD. "
+                "Vendors: US: SabreKeebs UK: ProtoTypist")
+        out = gen.shorten_gb_takeaway(body)
+        self.assertIn("MOQ of 50 @ 110 USD", out)
+        self.assertNotIn("SabreKeebs", out)
+
+    def test_keeps_inline_renders_by(self):
+        # "Renders by Geon" is photo credit prose — leave it.
+        body = ("Project description. Renders by Geon and MelonBred.")
+        out = gen.shorten_gb_takeaway(body)
+        self.assertIn("Renders by Geon", out)
+
+    def test_keeps_inline_designer_discord(self):
+        body = ("Project pitch. Join the Designer Discord for updates.")
+        out = gen.shorten_gb_takeaway(body)
+        self.assertIn("Designer Discord", out)
+
+    def test_no_markers_returns_text_intact(self):
         body = "Just a plain pitch with no structured sections at all."
         self.assertEqual(gen.shorten_gb_takeaway(body), body)
 
-    def test_caps_at_240_chars(self):
-        body = "Long description. " * 30  # ~540 chars, no markers
+    def test_caps_at_500_chars(self):
+        body = "Long description. " * 40  # ~720 chars, no markers
         out = gen.shorten_gb_takeaway(body)
-        self.assertLessEqual(len(out), 240 + 2)  # +2 slack for trailing "…"
+        self.assertLessEqual(len(out), 500 + 2)
 
     def test_caps_at_sentence_boundary_when_possible(self):
-        body = ("First sentence here describing a project in detail. "
-                "Second sentence adds more context to the description. "
-                "Third sentence goes on and continues talking about it. "
-                "Fourth sentence is even more text just to pad out the body.")
+        body = (
+            "First sentence here describing a project in detail. "
+            "Second sentence adds more context to the description. "
+            "Third sentence goes on and continues talking about it. "
+            "Fourth sentence is even more text just to pad out the body."
+            * 3
+        )
         out = gen.shorten_gb_takeaway(body)
-        # Should end with a "." (sentence boundary) within 240.
         self.assertTrue(out.endswith(".") or out.endswith("…"))
-        self.assertLessEqual(len(out), 240 + 2)
+        self.assertLessEqual(len(out), 500 + 2)
 
     def test_empty(self):
         self.assertEqual(gen.shorten_gb_takeaway(""), "")

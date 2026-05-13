@@ -1591,25 +1591,29 @@ def shorten_gb_takeaway(text: str | None) -> str:
     """
     if not text:
         return ""
-    # Section headers that, when seen, mean the OP has switched from
-    # prose-pitch to structured metadata. Cut at the earliest one.
-    # Case-insensitive; "?i:" flag in regex below.
+    # Section headers that ONLY appear at the boundary between prose
+    # and structured metadata — vendor tables, pricing ladders, MOQ
+    # tier breakdowns. We do NOT cut on words that commonly appear
+    # inline in prose pitches (MOQ, Date, Delivery Estimate, Designer
+    # Discord, Renders/Photo by, Special thanks). The goal is to
+    # preserve the OP's project pitch — including useful inline
+    # detail — and only strip the visually-redundant tables.
     markers = (
-        r"\bVendors?\s*[:\-]",
-        r"\bPricing\b",
-        r"\bGroup\s*Buy\s*Info\b",
-        r"\bGB\s*Info\b",
-        r"\bDates?\s*:",
-        r"\bDelivery\s+Estimate",
-        r"\bMOQ\b",
+        # Vendors followed by a region tag or colon — "Vendors: US: …"
+        # or "Vendors US- SabreKeebs". Inline "Vendors include
+        # NovelKeys" won't match (no following region/colon).
+        r"\bVendors?\s*[:\-]\s*(?:US|USA|UK|EU|CA|JP|KR|CN|SG|AU|"
+        r"OC|OCO|OCN|NZ|SEA|IN|MX|TR|PH|MY|TH|BR|RU|ID|VN|HK|TW)\b",
+        r"\bVendors?\s*:\s*[A-Z]",
+        # Pricing: / Price: / Where to buy: — explicit table headers
+        r"\bPricing\s*[:\-]",
+        r"\bPrice\s*list\b",
+        r"\bWhere\s+to\s+buy\s*[:\-]",
+        # Group Buy Info: / GB Info:
+        r"\bGroup\s*Buy\s*Info\s*[:\-]",
+        r"\bGB\s*Info\s*[:\-]",
+        # MOQ-tier price ladder: "Base: $135 - 50 MOQ"
         r"\bBase\s*:\s*\$",
-        r"\bWhere\s+to\s+buy\b",
-        r"\bRenders?\s+by\b",
-        r"\bPhoto\s+by\b",
-        r"\bSpecial\s+thanks\b",
-        r"\bKits?\s+Renders",
-        r"\bKit\s*:\s",
-        r"\bDesigner\s+Discord\b",
     )
     cut = None
     for pat in markers:
@@ -1625,12 +1629,12 @@ def shorten_gb_takeaway(text: str | None) -> str:
         # No marker — return the text as written (preserve sentence
         # punctuation; the OP was already prose-only).
         short = text.strip()
-    # Hard cap at ~240 chars so even prose-only OPs don't dominate
-    # the card. Try to land on a sentence boundary.
-    if len(short) > 240:
-        candidate = short[:240]
+    # Hard cap at ~500 chars so even prose-only OPs stay readable
+    # without dominating the card. Try to land on a sentence boundary.
+    if len(short) > 500:
+        candidate = short[:500]
         period = candidate.rfind(". ")
-        if period > 80:
+        if period > 150:
             short = candidate[:period + 1]
         else:
             short = candidate.rstrip(" ,;:-") + "…"
