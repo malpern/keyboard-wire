@@ -1578,6 +1578,65 @@ def vendor_price_by_region(gb: dict) -> dict:
     return {k: v[0] for k, v in out.items()}
 
 
+def shorten_gb_takeaway(text: str | None) -> str:
+    """Trim a Geekhack OP-body takeaway down to its lead description,
+    stripping the structured blocks (Vendors, Pricing, MOQ ladders,
+    Date ranges) we already surface as chips + vendor pills.
+
+    Without this, cards like DCS Grass Valley render a 600-char wall
+    of text duplicating every piece of metadata we extracted. After
+    this, the same card reads as a single-sentence project pitch
+    above the chip row — chips and vendor pills carry the structured
+    info.
+    """
+    if not text:
+        return ""
+    # Section headers that, when seen, mean the OP has switched from
+    # prose-pitch to structured metadata. Cut at the earliest one.
+    # Case-insensitive; "?i:" flag in regex below.
+    markers = (
+        r"\bVendors?\s*[:\-]",
+        r"\bPricing\b",
+        r"\bGroup\s*Buy\s*Info\b",
+        r"\bGB\s*Info\b",
+        r"\bDates?\s*:",
+        r"\bDelivery\s+Estimate",
+        r"\bMOQ\b",
+        r"\bBase\s*:\s*\$",
+        r"\bWhere\s+to\s+buy\b",
+        r"\bRenders?\s+by\b",
+        r"\bPhoto\s+by\b",
+        r"\bSpecial\s+thanks\b",
+        r"\bKits?\s+Renders",
+        r"\bKit\s*:\s",
+        r"\bDesigner\s+Discord\b",
+    )
+    cut = None
+    for pat in markers:
+        m = re.search(pat, text, re.IGNORECASE)
+        if m and (cut is None or m.start() < cut):
+            cut = m.start()
+    if cut is not None:
+        # Cut at a marker — drop the leftover punctuation before it
+        # ("Cool keycap set. Vendors:" → "Cool keycap set", no
+        # dangling period).
+        short = text[:cut].rstrip(" ,;:.-—")
+    else:
+        # No marker — return the text as written (preserve sentence
+        # punctuation; the OP was already prose-only).
+        short = text.strip()
+    # Hard cap at ~240 chars so even prose-only OPs don't dominate
+    # the card. Try to land on a sentence boundary.
+    if len(short) > 240:
+        candidate = short[:240]
+        period = candidate.rfind(". ")
+        if period > 80:
+            short = candidate[:period + 1]
+        else:
+            short = candidate.rstrip(" ,;:-") + "…"
+    return short.strip()
+
+
 def representative_vendor_price(gb: dict) -> tuple[str | None, dict | None]:
     """Pick a single price + vendor to show on the first-slide badge.
 
@@ -1958,7 +2017,13 @@ def render_gb_item(item: dict, topics_reg: dict, tags_reg: dict, *,
         )
 
     # ── takeaway ──
-    takeaway = html.escape(item.get("takeaway") or "")
+    # Trim the OP-body takeaway to its lead description for GB items
+    # so the chip data (vendors, pricing, dates, MOQ) doesn't repeat
+    # as a wall of prose below the chips. News-card takeaway path
+    # is unaffected (different render function).
+    raw_takeaway = item.get("takeaway") or ""
+    short = shorten_gb_takeaway(raw_takeaway)
+    takeaway = html.escape(short)
     takeaway_html = (
         f'<p class="gb-takeaway">{takeaway}</p>' if takeaway else ""
     )

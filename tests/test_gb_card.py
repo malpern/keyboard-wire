@@ -955,6 +955,77 @@ class UnifiedVendorPills(unittest.TestCase):
         self.assertEqual(gen.unified_vendor_pills({}), [])
 
 
+class ShortenGbTakeaway(unittest.TestCase):
+    def test_cuts_at_vendors_section(self):
+        body = ("Cool keycap set inspired by old keyboards. "
+                "Vendors: US: NovelKeys UK: ProtoTypist EU: Oblotzky")
+        out = gen.shorten_gb_takeaway(body)
+        self.assertEqual(out, "Cool keycap set inspired by old keyboards")
+
+    def test_cuts_at_pricing(self):
+        body = ("Quick description here. "
+                "Pricing: Base $135 ...")
+        out = gen.shorten_gb_takeaway(body)
+        self.assertEqual(out, "Quick description here")
+
+    def test_cuts_at_group_buy_info(self):
+        body = ("GMK Foo by Bar. Group Buy Info: Date May 1st ...")
+        out = gen.shorten_gb_takeaway(body)
+        self.assertEqual(out, "GMK Foo by Bar")
+
+    def test_cuts_at_moq(self):
+        body = ("Short pitch text. MOQ of 50 @ 110 USD Vendors:")
+        out = gen.shorten_gb_takeaway(body)
+        self.assertEqual(out, "Short pitch text")
+
+    def test_cuts_at_where_to_buy(self):
+        body = ("INSPIRATION The set was inspired by Vaporwave aesthetics. "
+                "WHERE TO BUY: North America: Mechs & Co")
+        out = gen.shorten_gb_takeaway(body)
+        self.assertIn("Vaporwave aesthetics", out)
+        self.assertNotIn("Mechs", out)
+
+    def test_no_markers_returns_short_text(self):
+        body = "Just a plain pitch with no structured sections at all."
+        self.assertEqual(gen.shorten_gb_takeaway(body), body)
+
+    def test_caps_at_240_chars(self):
+        body = "Long description. " * 30  # ~540 chars, no markers
+        out = gen.shorten_gb_takeaway(body)
+        self.assertLessEqual(len(out), 240 + 2)  # +2 slack for trailing "…"
+
+    def test_caps_at_sentence_boundary_when_possible(self):
+        body = ("First sentence here describing a project in detail. "
+                "Second sentence adds more context to the description. "
+                "Third sentence goes on and continues talking about it. "
+                "Fourth sentence is even more text just to pad out the body.")
+        out = gen.shorten_gb_takeaway(body)
+        # Should end with a "." (sentence boundary) within 240.
+        self.assertTrue(out.endswith(".") or out.endswith("…"))
+        self.assertLessEqual(len(out), 240 + 2)
+
+    def test_empty(self):
+        self.assertEqual(gen.shorten_gb_takeaway(""), "")
+        self.assertEqual(gen.shorten_gb_takeaway(None), "")
+
+    def test_real_dcs_grass_valley_sample(self):
+        body = (
+            "DCS Grass Valley Keycap set inspired by media / film "
+            "editing keyboards from the '80s and '90s. Designer "
+            "Discord Group Buy Info: Date: May 1st - June 1st "
+            "Delivery Estimate: Q3-Q4 2026 Vendors: US: Bowl CA: "
+            "Minokeys Korea: Geon CN: Typist Club"
+        )
+        out = gen.shorten_gb_takeaway(body)
+        # Cut at "Designer Discord" or "Group Buy Info" — both come
+        # before the long structured tail.
+        self.assertIn("DCS Grass Valley", out)
+        self.assertIn("'80s and '90s", out)
+        self.assertNotIn("Vendors:", out)
+        self.assertNotIn("Bowl", out)
+        self.assertNotIn("Minokeys", out)
+
+
 class FormatVendorPrice(unittest.TestCase):
     def test_usd_single(self):
         self.assertEqual(gen.format_vendor_price(13500), "$135")
