@@ -3,26 +3,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;700;900&family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-  --bg: #fdfcf9;
-  --ink: #1a1a1a;
-  --ink-soft: #555;
-  --ink-faint: #999;
-  --rule: #e5e1d8;
-  --accent: #c0392b;
+  /* Forced dark mode — site always uses dark palette regardless of
+     the visitor's prefers-color-scheme. color-scheme below also
+     hints the browser to render scrollbars + form controls dark. */
+  color-scheme: dark;
+
+  --bg: #14110d;
+  --ink: #e8e4dc;
+  --ink-soft: #a8a298;
+  --ink-faint: #6f6a62;
+  --rule: #2c2823;
+  --accent: #e85d4a;
   --hn: #ff6600;
   --reddit: #ff4500;
   --font-scale: 1;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #14110d;
-    --ink: #e8e4dc;
-    --ink-soft: #a8a298;
-    --ink-faint: #6f6a62;
-    --rule: #2c2823;
-    --accent: #e85d4a;
-  }
 }
 
 * { box-sizing: border-box; }
@@ -1498,9 +1492,7 @@ footer a:hover {
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
 }
-@media (prefers-color-scheme: dark) {
-  .subscribe-dialog::backdrop { background: rgba(0,0,0,0.55); }
-}
+.subscribe-dialog::backdrop { background: rgba(0,0,0,0.55); }
 
 .subscribe-close-form {
   margin: 0;
@@ -1642,9 +1634,7 @@ footer a:hover {
   color: #2f9e44;
   flex: none;
 }
-@media (prefers-color-scheme: dark) {
-  .subscribe-check { color: #51cf66; }
-}
+.subscribe-check { color: #51cf66; }
 .subscribe-success.is-shown {
   opacity: 1;
   transform: translateY(0);
@@ -1974,11 +1964,9 @@ footer a:hover {
   color: var(--ink-faint);
   text-decoration: line-through;
 }
-@media (prefers-color-scheme: dark) {
-  .gb-status-live {
-    background: rgba(80, 200, 80, 0.12);
-    color: #6fcf6f;
-  }
+.gb-status-live {
+  background: rgba(80, 200, 80, 0.12);
+  color: #6fcf6f;
 }
 
 .gb-facets {
@@ -2264,10 +2252,8 @@ a.gb-vendor-pill-link:hover .gb-vendor-region {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
-@media (prefers-color-scheme: dark) {
-  .gb-vendor-price {
-    background: rgba(232, 93, 74, 0.16);
-  }
+.gb-vendor-price {
+  background: rgba(232, 93, 74, 0.16);
 }
 
 /* Sold-out badge inside the vendor pill. Mutes the pill text + strikes
@@ -2292,10 +2278,8 @@ a.gb-vendor-pill-link:hover .gb-vendor-region {
 .gb-vendor-pill-out:hover {
   opacity: 1;
 }
-@media (prefers-color-scheme: dark) {
-  .gb-vendor-status-out {
-    background: rgba(255, 255, 255, 0.08);
-  }
+.gb-vendor-status-out {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* Geo-collapse: "+ N more worldwide" toggle button. */
@@ -2561,9 +2545,7 @@ a.gb-vendor-pill-link:hover .gb-vendor-region {
 @media (prefers-reduced-motion: reduce) {
   .gb-chip-urgent::before { animation: none; }
 }
-@media (prefers-color-scheme: dark) {
-  .gb-chip-urgent {
-    background: rgba(232, 93, 74, 0.14);
-    border-color: rgba(232, 93, 74, 0.45);
-  }
+.gb-chip-urgent {
+  background: rgba(232, 93, 74, 0.14);
+  border-color: rgba(232, 93, 74, 0.45);
 }
