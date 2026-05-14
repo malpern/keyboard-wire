@@ -6,7 +6,17 @@
   <atom:link href="https://keyboard-newswire.com/topics/tools-software/feed.xml" rel="self" type="application/rss+xml"/>
   <description>Software utilities relevant to keyboard users: launchers, shortcut managers, dotfile/config tools, productivity tools, programming tooling adjacent to the hobby.</description>
   <language>en-us</language>
-  <lastBuildDate>Wed, 13 May 2026 02:59:12 +0000</lastBuildDate>
+  <lastBuildDate>Thu, 14 May 2026 12:02:40 +0000</lastBuildDate>
+  <item>
+    <title>The New Raycast</title>
+    <link>https://www.raycast.com/blog/the-new-raycast</link>
+    <guid isPermaLink="false">hn-48134017</guid>
+    <pubDate>Thu, 14 May 2026 12:00:00 +0000</pubDate>
+    <category>evergreen</category>
+    <category>Tools &amp; Software</category>
+    <source url="https://keyboard-newswire.com/feed.xml">Hacker News</source>
+    <description>3 pts · 0 comments · Hacker News</description>
+  </item>
   <item>
     <title>Building ZMK Firmware Locally on Apple Silicon MacBooks Without Docker</title>
     <link>https://www.reddit.com/r/ErgoMechKeyboards/comments/1tacozg/building_zmk_firmware_locally_on_apple_silicon/</link>

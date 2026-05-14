@@ -6,7 +6,27 @@
   <atom:link href="https://keyboard-newswire.com/feed.xml" rel="self" type="application/rss+xml"/>
   <description>daily mechanical keyboards, firmware &amp; tools</description>
   <language>en-us</language>
-  <lastBuildDate>Wed, 13 May 2026 02:59:12 +0000</lastBuildDate>
+  <lastBuildDate>Thu, 14 May 2026 12:02:40 +0000</lastBuildDate>
+  <item>
+    <title>The New Raycast</title>
+    <link>https://www.raycast.com/blog/the-new-raycast</link>
+    <guid isPermaLink="false">hn-48134017</guid>
+    <pubDate>Thu, 14 May 2026 12:00:00 +0000</pubDate>
+    <category>evergreen</category>
+    <category>Tools &amp; Software</category>
+    <source url="https://keyboard-newswire.com/feed.xml">Hacker News</source>
+    <description>3 pts · 0 comments · Hacker News</description>
+  </item>
+  <item>
+    <title>Show HN: GreenType – That Mechanical Keyboard You've Always Wanted</title>
+    <link>https://greentype.lamdera.app/</link>
+    <guid isPermaLink="false">hn-48121009</guid>
+    <pubDate>Thu, 14 May 2026 12:00:00 +0000</pubDate>
+    <category>evergreen</category>
+    <category>Builds &amp; Hardware</category>
+    <source url="https://keyboard-newswire.com/feed.xml">Hacker News</source>
+    <description>2 pts · 1 comments · Hacker News</description>
+  </item>
   <item>
     <title>Guide on using Alps switches in hot-swappable keyboards via desoldering and custom plates</title>
     <link>https://www.reddit.com/r/MechanicalKeyboards/comments/1tas42n/they_dont_want_you_to_know_this_but_alps_switches/</link>

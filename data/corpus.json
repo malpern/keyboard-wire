@@ -3,6 +3,50 @@
   "tagline": "daily mechanical keyboards, firmware & tools",
   "days": [
     {
+      "date": "2026-05-14",
+      "items": [
+        {
+          "id": "hn-48134017",
+          "title": "The New Raycast",
+          "url": "https://www.raycast.com/blog/the-new-raycast",
+          "discussion_url": "https://news.ycombinator.com/item?id=48134017",
+          "source": "hn",
+          "subreddit": null,
+          "score": 3,
+          "comments": 0,
+          "category": "evergreen",
+          "takeaway": "",
+          "topics": [
+            "tools-software"
+          ],
+          "tags": [
+            "shortcut-manager",
+            "macos-utilities"
+          ],
+          "image": "img/hn-48134017.jpg"
+        },
+        {
+          "id": "hn-48121009",
+          "title": "Show HN: GreenType – That Mechanical Keyboard You've Always Wanted",
+          "url": "https://greentype.lamdera.app/",
+          "discussion_url": "https://news.ycombinator.com/item?id=48121009",
+          "source": "hn",
+          "subreddit": null,
+          "score": 2,
+          "comments": 1,
+          "category": "evergreen",
+          "takeaway": "",
+          "topics": [
+            "builds-hardware"
+          ],
+          "tags": [
+            "custom-firmware",
+            "pcb-design"
+          ]
+        }
+      ]
+    },
+    {
       "date": "2026-05-12",
       "items": [
         {
