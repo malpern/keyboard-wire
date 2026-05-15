@@ -44,6 +44,30 @@
             "macos-utilities"
           ],
           "image": "img/hn-48134369.jpg"
+        },
+        {
+          "id": "email-19e26bb95be237bd",
+          "title": "ZSA releases Navigator trackpad for Voyager",
+          "url": "https://www.zsa.io/voyager/navigator?mc_cid=caf0002167&mc_eid=UNIQID#trackpad",
+          "discussion_url": "https://www.zsa.io/voyager/navigator?mc_cid=caf0002167&mc_eid=UNIQID#trackpad",
+          "source": "email",
+          "subreddit": null,
+          "via": "Zsa",
+          "score": null,
+          "comments": null,
+          "category": "evergreen",
+          "takeaway": "ZSA launched the Navigator trackpad, a swappable input core for the Voyager shell, priced at $99, featuring a smooth surface and firmware tuned with Cirque.",
+          "sender": "Erez Zukerman - ZSA <contact@zsa.io>",
+          "topics": [
+            "group-buys-vendors",
+            "builds-hardware"
+          ],
+          "tags": [
+            "pricing",
+            "vendor-news",
+            "accessories"
+          ],
+          "image": "img/email-19e26bb95be237bd.jpg"
         }
       ]
     },
