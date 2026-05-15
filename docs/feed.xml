@@ -6,7 +6,7 @@
   <atom:link href="https://keyboard-newswire.com/feed.xml" rel="self" type="application/rss+xml"/>
   <description>daily mechanical keyboards, firmware &amp; tools</description>
   <language>en-us</language>
-  <lastBuildDate>Fri, 15 May 2026 12:04:47 +0000</lastBuildDate>
+  <lastBuildDate>Fri, 15 May 2026 12:05:09 +0000</lastBuildDate>
   <item>
     <title>A Technical Deep Dive into the New Raycast</title>
     <link>https://www.raycast.com/blog/a-technical-deep-dive-into-the-new-raycast</link>
@@ -37,6 +37,17 @@
     <category>Builds &amp; Hardware</category>
     <source url="https://keyboard-newswire.com/feed.xml">✉ Zsa</source>
     <description>ZSA launched the Navigator trackpad, a swappable input core for the Voyager shell, priced at $99, featuring a smooth surface and firmware tuned with Cirque. — ✉ Zsa</description>
+  </item>
+  <item>
+    <title>KiiBOOM Phantom 98 Lite review</title>
+    <link>https://kbd.news/KiiBOOM-Phantom-98-Lite-review-2853.html</link>
+    <guid isPermaLink="false">kbdnews-2853</guid>
+    <pubDate>Fri, 15 May 2026 12:00:00 +0000</pubDate>
+    <category>breaking</category>
+    <category>Keycaps &amp; Aesthetics</category>
+    <category>Builds &amp; Hardware</category>
+    <source url="https://keyboard-newswire.com/feed.xml">KBD.news</source>
+    <description>I reviewed KiiBOOM's Phantom 98 Lite, a cute wireless keyboard with 1800-ish layout and the silly froggy keycap design. — KBD.news</description>
   </item>
   <item>
     <title>The New Raycast</title>

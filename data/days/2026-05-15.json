@@ -64,6 +64,29 @@
         "accessories"
       ],
       "image": "img/email-19e26bb95be237bd.jpg"
+    },
+    {
+      "id": "kbdnews-2853",
+      "title": "KiiBOOM Phantom 98 Lite review",
+      "url": "https://kbd.news/KiiBOOM-Phantom-98-Lite-review-2853.html",
+      "discussion_url": "https://kbd.news/KiiBOOM-Phantom-98-Lite-review-2853.html",
+      "source": "kbdnews",
+      "subreddit": null,
+      "via": "KBD.news",
+      "score": null,
+      "comments": null,
+      "category": "breaking",
+      "takeaway": "I reviewed KiiBOOM's Phantom 98 Lite, a cute wireless keyboard with 1800-ish layout and the silly froggy keycap design.",
+      "image_hint": "https://kbd.news/pic/2026/211/480/2853.jpg",
+      "topics": [
+        "keycaps-aesthetics",
+        "builds-hardware"
+      ],
+      "tags": [
+        "keycap-design",
+        "mechanical-keyboard"
+      ],
+      "image": "img/kbdnews-2853.jpg"
     }
   ]
 }
