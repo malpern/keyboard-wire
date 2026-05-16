@@ -6,7 +6,28 @@
   <atom:link href="https://keyboard-newswire.com/tags/pcb-design/feed.xml" rel="self" type="application/rss+xml"/>
   <description>All keyboard wire entries tagged Pcb Design.</description>
   <language>en-us</language>
-  <lastBuildDate>Fri, 15 May 2026 12:05:09 +0000</lastBuildDate>
+  <lastBuildDate>Sat, 16 May 2026 12:05:22 +0000</lastBuildDate>
+  <item>
+    <title>Tucky Two Times</title>
+    <link>https://kbd.news/Tucky-Two-Times-2855.html</link>
+    <guid isPermaLink="false">kbdnews-2855</guid>
+    <pubDate>Sat, 16 May 2026 12:00:00 +0000</pubDate>
+    <category>breaking</category>
+    <category>Splits &amp; Ergo</category>
+    <category>Builds &amp; Hardware</category>
+    <source url="https://keyboard-newswire.com/feed.xml">KBD.news</source>
+    <description>Tucky Two Times is a low-pro split keyboard with funny placement of the thumb keys – by Stephan Møller. — KBD.news</description>
+  </item>
+  <item>
+    <title>Willis</title>
+    <link>https://kbd.news/Willis-2854.html</link>
+    <guid isPermaLink="false">kbdnews-2854</guid>
+    <pubDate>Sat, 16 May 2026 12:00:00 +0000</pubDate>
+    <category>breaking</category>
+    <category>Builds &amp; Hardware</category>
+    <source url="https://keyboard-newswire.com/feed.xml">KBD.news</source>
+    <description>A wireless version of Bruce the Keyboard: Willis by Alexander Krikun. — KBD.news</description>
+  </item>
   <item>
     <title>Show HN: GreenType – That Mechanical Keyboard You've Always Wanted</title>
     <link>https://greentype.lamdera.app/</link>

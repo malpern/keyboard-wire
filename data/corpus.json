@@ -3,6 +3,56 @@
   "tagline": "daily mechanical keyboards, firmware & tools",
   "days": [
     {
+      "date": "2026-05-16",
+      "items": [
+        {
+          "id": "kbdnews-2855",
+          "title": "Tucky Two Times",
+          "url": "https://kbd.news/Tucky-Two-Times-2855.html",
+          "discussion_url": "https://kbd.news/Tucky-Two-Times-2855.html",
+          "source": "kbdnews",
+          "subreddit": null,
+          "via": "KBD.news",
+          "score": null,
+          "comments": null,
+          "category": "breaking",
+          "takeaway": "Tucky Two Times is a low-pro split keyboard with funny placement of the thumb keys – by Stephan Møller.",
+          "image_hint": "https://kbd.news/pic/2026/211/480/2855.jpg",
+          "topics": [
+            "splits-ergo",
+            "builds-hardware"
+          ],
+          "tags": [
+            "split-keyboard",
+            "pcb-design"
+          ],
+          "image": "img/kbdnews-2855.jpg"
+        },
+        {
+          "id": "kbdnews-2854",
+          "title": "Willis",
+          "url": "https://kbd.news/Willis-2854.html",
+          "discussion_url": "https://kbd.news/Willis-2854.html",
+          "source": "kbdnews",
+          "subreddit": null,
+          "via": "KBD.news",
+          "score": null,
+          "comments": null,
+          "category": "breaking",
+          "takeaway": "A wireless version of Bruce the Keyboard: Willis by Alexander Krikun.",
+          "image_hint": "https://kbd.news/pic/2026/211/480/2854.jpg",
+          "topics": [
+            "builds-hardware"
+          ],
+          "tags": [
+            "split-keyboard",
+            "pcb-design"
+          ],
+          "image": "img/kbdnews-2854.jpg"
+        }
+      ]
+    },
+    {
       "date": "2026-05-15",
       "items": [
         {

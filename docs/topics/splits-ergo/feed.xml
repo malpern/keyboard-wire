@@ -6,7 +6,18 @@
   <atom:link href="https://keyboard-newswire.com/topics/splits-ergo/feed.xml" rel="self" type="application/rss+xml"/>
   <description>Split keyboards, ergonomic boards, columnar staggered, ortholinear, thumb clusters, dactyl, corne, ergodox, lily58, sofle, etc.</description>
   <language>en-us</language>
-  <lastBuildDate>Fri, 15 May 2026 12:05:09 +0000</lastBuildDate>
+  <lastBuildDate>Sat, 16 May 2026 12:05:22 +0000</lastBuildDate>
+  <item>
+    <title>Tucky Two Times</title>
+    <link>https://kbd.news/Tucky-Two-Times-2855.html</link>
+    <guid isPermaLink="false">kbdnews-2855</guid>
+    <pubDate>Sat, 16 May 2026 12:00:00 +0000</pubDate>
+    <category>breaking</category>
+    <category>Splits &amp; Ergo</category>
+    <category>Builds &amp; Hardware</category>
+    <source url="https://keyboard-newswire.com/feed.xml">KBD.news</source>
+    <description>Tucky Two Times is a low-pro split keyboard with funny placement of the thumb keys – by Stephan Møller. — KBD.news</description>
+  </item>
   <item>
     <title>Vanguard Keyboard Outsider</title>
     <link>https://kbd.news/Vanguard-Keyboard-Outsider-2852.html</link>
